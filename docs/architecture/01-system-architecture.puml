@@ -1,0 +1,89 @@
+@startuml VIDEX-System-Architecture
+
+title VIDEX — Video Intelligence & Evidence Extraction
+caption High-level system architecture
+
+skinparam backgroundColor #0D1117
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #A8B3C7
+
+skinparam component {
+    BackgroundColor #162033
+    BorderColor #4A6FA5
+}
+
+skinparam package {
+    BackgroundColor #111827
+    BorderColor #374151
+}
+
+actor "User" as user
+
+package "VIDEX" {
+
+    component "Video Ingestion\n& Validation" as ingestion
+
+    package "Multimodal Perception" {
+        component "Object Detection" as detection
+        component "Object Tracking" as tracking
+        component "OCR" as ocr
+        component "Audio / ASR" as asr
+        component "Scene Detection" as scenes
+    }
+
+    component "Temporal Analysis\n& Event Engine" as temporal
+
+    component "Evidence Store" as evidence
+
+    component "Semantic Reasoning\nRouter" as semantic
+
+    component "Event Fusion" as fusion
+
+    component "Evidence Graph" as graph
+
+    component "Structured Video Report" as report
+
+    component "FastAPI Backend" as api
+
+    component "React + TypeScript\nIntelligence UI" as ui
+}
+
+user --> ingestion : Upload video
+
+ingestion --> detection
+ingestion --> tracking
+ingestion --> ocr
+ingestion --> asr
+ingestion --> scenes
+
+detection --> tracking
+tracking --> temporal
+ocr --> temporal
+asr --> temporal
+scenes --> temporal
+
+detection --> evidence
+tracking --> evidence
+ocr --> evidence
+asr --> evidence
+scenes --> evidence
+temporal --> evidence
+
+evidence --> semantic
+temporal --> semantic
+
+semantic --> fusion
+temporal --> fusion
+
+evidence --> graph
+fusion --> graph
+
+graph --> report
+report --> api
+api --> ui
+
+user --> ui : Investigate / Search / Review
+
+@enduml

@@ -1,0 +1,9 @@
+# data/
+
+This directory is used at runtime for:
+- `videos/`  — raw video files (not committed)
+- `frames/`  — decoded frame images (not committed)
+- `evidence/` — serialised evidence records (not committed)
+
+All subdirectories are listed in `.gitignore`.
+This `.gitkeep` ensures the `data/` directory is tracked by git.

@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.coveragerc
+
+# Type checking
+.mypy_cache/
+.pytype/
+pyrightconfig.json
+
+# Linting
+.ruff_cache/
+
+# IDE / editors
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Model weights — never commit weights to git
+models/weights/
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.bin
+*.safetensors
+*.gguf
+
+# Data — raw video and frames are too large for git
+data/videos/
+data/frames/
+data/raw/
+data/cache/
+data/tmp/
+
+# Outputs
+outputs/
+reports/
+evidence/
+
+# Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.docker-data/
+
+# Temporary
+tmp/
+temp/
+scratch/

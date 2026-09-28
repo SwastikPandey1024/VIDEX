@@ -1,0 +1,15 @@
+# models/
+
+This directory stores model weight files at runtime.
+Weights are never committed to git (see .gitignore).
+Place your model files here following the paths configured in `.env`.
+
+Example layout:
+```
+models/
+  weights/
+    detector.pt        ← detector model weights (ADR-001)
+    tracker/           ← tracker model files (ADR-002)
+    ocr/               ← OCR model files (ADR-003)
+    asr/               ← ASR model files (ADR-004)
+```

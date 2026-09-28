@@ -1,0 +1,95 @@
+@startuml VIDEX-Processing-Sequence
+
+title VIDEX — Video Processing Runtime Sequence
+
+skinparam backgroundColor #0D1117
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #9CA3AF
+
+actor User as user
+
+participant "React UI" as ui
+participant "FastAPI" as api
+participant "Job Queue" as queue
+participant "Ingestion" as ingestion
+participant "Scene Detector" as scenes
+participant "Frame Router" as router
+participant "Detector" as detector
+participant "Tracker" as tracker
+participant "OCR Router" as ocr
+participant "ASR" as asr
+database "Evidence Store" as evidence
+participant "Temporal Engine" as temporal
+participant "Semantic Router" as semantic
+participant "Qwen3-VL" as qwen
+participant "InternVideo3" as internvideo
+participant "Event Fusion" as fusion
+database "Evidence Graph" as graph
+
+user -> ui : Upload video
+ui -> api : POST /videos
+
+api -> ingestion : Validate + inspect video
+ingestion --> api : Video metadata
+
+api -> queue : Create processing job
+queue --> api : job_id
+
+api --> ui : 202 Accepted + job_id
+
+queue -> ingestion : Start processing
+
+ingestion -> scenes : Detect scenes
+scenes --> ingestion : Scene boundaries
+
+ingestion -> router : Route frames
+
+router -> detector : Detect objects
+detector --> router : Detections
+
+router -> tracker : Update tracks
+tracker --> router : Track states
+
+router -> ocr : OCR selected frames
+ocr --> router : OCR observations
+
+ingestion -> asr : Extract/transcribe audio
+asr --> ingestion : Timestamped transcript
+
+router -> evidence : Store detections/tracks/OCR
+asr -> evidence : Store audio evidence
+scenes -> evidence : Store scene evidence
+
+evidence -> temporal : Analyze temporal evidence
+
+temporal --> temporal : Movement
+temporal --> temporal : Lifecycle
+temporal --> temporal : Candidate events
+
+temporal -> semantic : Send selected evidence
+
+alt Short / medium reasoning
+    semantic -> qwen : Analyze evidence
+    qwen --> semantic : Structured reasoning
+else Long-horizon reasoning required
+    semantic -> internvideo : Analyze long context
+    internvideo --> semantic : Structured reasoning
+end
+
+semantic -> fusion : Semantic events
+temporal -> fusion : Deterministic events
+evidence -> fusion : Supporting evidence
+
+fusion -> graph : Build event/evidence relationships
+
+graph --> api : Results available
+
+api --> ui : Timeline + evidence + events
+
+user -> ui : Select event
+ui -> api : Request evidence
+
+api --> ui : Frame + timestamp + track + evidence
+
+@enduml

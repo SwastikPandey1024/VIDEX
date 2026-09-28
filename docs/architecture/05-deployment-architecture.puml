@@ -1,0 +1,103 @@
+@startuml VIDEX-Deployment-Architecture
+
+title VIDEX — Deployment Architecture
+
+skinparam backgroundColor #0D1117
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #9CA3AF
+
+skinparam node {
+    BackgroundColor #162033
+    BorderColor #4B6B9A
+}
+
+skinparam database {
+    BackgroundColor #17351F
+    BorderColor #4F9D69
+}
+
+actor "Developer / User" as user
+
+cloud "GitHub" as github {
+    node "Repository" as repo
+    node "GitHub Actions\nCI/CD" as actions
+}
+
+cloud "Frontend Hosting" as vercel {
+    node "Vercel\nReact + TypeScript" as frontend
+}
+
+cloud "AWS" as aws {
+
+    node "IAM" as iam
+
+    node "S3\nVideo / Media / Artifact Storage\n(Object Storage — not a database)" as s3
+
+    node "ECR\nContainer Registry" as ecr
+
+    node "EC2\nCPU API / Worker" as ec2
+
+    node "GPU Worker\n<<conditional>>" as gpu
+
+    node "SQS\nProcessing Queue\n<<when justified>>" as sqs
+
+    database "PostgreSQL\nPrimary Evidence Store" as rds
+
+    node "CloudWatch\nLogs / Metrics" as cloudwatch
+}
+
+cloud "Local / Supabase\nReference Option" as supabase {
+    database "PostgreSQL / SQLite\nMetadata & Evidence" as postgres
+    node "Local / Cloud Storage\nMedia Artifacts" as storage
+}
+
+user --> frontend
+
+github --> actions
+
+actions --> vercel : Frontend deployment
+actions --> ecr : Build / push image
+
+frontend --> ec2 : API requests
+
+frontend --> s3 : Signed upload/download
+
+ec2 --> s3 : Read / write videos
+ec2 --> sqs : Submit processing jobs
+sqs --> ec2 : Consume jobs
+
+ec2 --> gpu : Complex inference
+gpu --> s3 : Media / artifacts
+
+ec2 --> postgres : Metadata / evidence
+ec2 --> rds : Alternative managed DB
+
+ec2 --> cloudwatch : Structured logs
+gpu --> cloudwatch : Inference metrics
+
+iam ..> s3 : Permissions
+iam ..> ec2 : Roles
+iam ..> ecr : Permissions
+
+note right of gpu
+GPU inference is isolated
+behind a model router.
+Provider can change without
+changing application logic.
+end note
+
+note right of s3
+S3 is strictly object storage
+for video and media artifacts,
+not a database.
+end note
+
+note bottom of postgres
+PostgreSQL = primary structured store.
+SQLite = local dev/testing option.
+Evidence Graph = relationship model
+over persisted evidence (no graph DB).
+end note
+
+@enduml

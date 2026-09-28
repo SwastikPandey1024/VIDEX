@@ -1,0 +1,101 @@
+@startuml VIDEX-Processing-Pipeline
+
+title VIDEX — Multimodal Video Processing Pipeline
+
+skinparam backgroundColor #0D1117
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #9CA3AF
+
+skinparam rectangle {
+    BackgroundColor #172033
+    BorderColor #4B6B9A
+}
+
+skinparam database {
+    BackgroundColor #17351F
+    BorderColor #4F9D69
+}
+
+rectangle "USER VIDEO\nMP4 / MOV / MKV / ..." as video
+
+rectangle "INGESTION & VALIDATION\nFFmpeg + metadata parser" as ingest
+
+rectangle "VIDEO PIPELINE" as vp
+rectangle "AUDIO PIPELINE" as ap
+
+rectangle "Scene / Shot\nDetection" as scenes
+rectangle "Frame Router" as router
+
+rectangle "Object Detection" as detection
+rectangle "Object Tracking" as tracking
+rectangle "OCR" as ocr
+
+rectangle "Audio Extraction" as audioextract
+rectangle "faster-whisper ASR" as asr
+rectangle "Speech Timestamps" as speech
+rectangle "Sound Event Detection\n<<conditional>>" as audioevents
+
+rectangle "Temporal Event Engine\n\n• movement\n• appearance / disappearance\n• interactions\n• activities\n• scene changes\n• object attributes" as temporal
+
+database "Evidence Store\n\n• PostgreSQL (primary)\n• SQLite (local dev)\n• S3 (media storage)" as store
+
+rectangle "Multimodal Reasoner\n\nscene understanding\nactivity interpretation\nsemantic relationships\nstructured extraction" as reasoner
+
+rectangle "Evidence Fusion Layer\n\nFrame ↔ Track ↔ OCR\nFrame ↔ Event ↔ Audio\nEvent ↔ Timestamp" as fusion
+
+rectangle "Evidence Graph\n\n(Relationship Model over\nPersisted Evidence)" as graph
+
+rectangle "Structured Video Report\n\nObjects\nTracks\nEvents\nOCR\nAudio transcript\nTimeline\nSummary\nEvidence" as report
+
+rectangle "Web Intelligence UI\n\nVideo player\nTimeline\nBounding boxes\nObject panel\nEvent panel\nOCR panel\nSearch\nEvidence jump" as ui
+
+video --> ingest
+
+ingest --> vp
+ingest --> ap
+
+vp --> scenes
+vp --> router
+
+ap --> audioextract
+audioextract --> asr
+audioextract --> speech
+audioextract --> audioevents
+
+router --> detection
+router --> tracking
+router --> ocr
+
+detection --> tracking
+
+detection --> temporal
+tracking --> temporal
+ocr --> temporal
+scenes --> temporal
+asr --> temporal
+audioevents --> temporal
+speech --> temporal
+
+detection --> store
+tracking --> store
+ocr --> store
+scenes --> store
+asr --> store
+audioevents --> store
+speech --> store
+
+store --> reasoner
+temporal --> reasoner
+
+temporal --> fusion
+reasoner --> fusion
+store --> fusion
+
+fusion --> graph
+store --> graph
+
+graph --> report
+report --> ui
+
+@enduml

@@ -1,0 +1,211 @@
+@startuml VIDEX-Technology-Architecture
+
+title VIDEX — Technology & Model Architecture
+
+skinparam backgroundColor #0D1117
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #9CA3AF
+
+skinparam component {
+    BackgroundColor #162033
+    BorderColor #4B6B9A
+}
+
+skinparam database {
+    BackgroundColor #17351F
+    BorderColor #4F9D69
+}
+
+skinparam rectangle {
+    BackgroundColor #211A2B
+    BorderColor #76559B
+}
+
+rectangle "Video Input" as video
+
+component "FFmpeg" as ffmpeg
+component "OpenCV" as opencv
+component "PySceneDetect" as pyscene
+
+rectangle "Ingestion Engine" as ingestion
+
+rectangle "Frame Router" as frameRouter
+
+package "Perception" {
+
+    component "YOLO26\nBaseline Detector" as yolo26
+
+    component "YOLOE-26\n<<conditional>>\nOpen-Vocabulary Detector" as yoloe
+
+    component "BoT-SORT\nDefault Tracker" as botsort
+
+    component "ByteTrack\n<<alternative>>" as bytetrack
+}
+
+package "OCR" {
+
+    component "OCR Router" as ocrrouter
+
+    component "PP-OCRv6" as ppcv6
+
+    component "Hindi / Indic OCR\n<<specialized route>>" as hindiocr
+
+    component "Temporal OCR Fusion" as ocrfusion
+}
+
+package "Audio Pipeline" {
+
+    component "Audio Extraction\nFFmpeg" as audioextract
+
+    component "faster-whisper\nASR (Baseline)" as whisper
+
+    component "Speech Timestamps\nWord / Segment" as speechtimestamps
+
+    component "Sound Event Detection\n<<conditional>>" as soundevents
+}
+
+package "Temporal Intelligence" {
+
+    component "Trajectory Analysis" as trajectory
+
+    component "Lifecycle Detection" as lifecycle
+
+    component "Movement Analysis" as movement
+
+    component "Temporal Event Engine" as temporal
+}
+
+database "Evidence Store\n• PostgreSQL (primary)\n• SQLite (local dev)\n• S3 (media storage)" as evidence
+
+package "Advanced Perception\n<<conditional>>" {
+
+    component "SAM 3.1\nPrecision Segmentation" as sam
+
+    component "Action Recognition\nVideoMAE / MMAction2" as action
+}
+
+package "Semantic Reasoning" {
+
+    component "Semantic Router" as semantic
+
+    component "Qwen3-VL\nShort / Medium Horizon" as qwen
+
+    component "InternVideo3\nLong-Horizon Research Layer" as internvideo
+}
+
+component "Event Fusion" as fusion
+
+component "Evidence Graph\n(Relationship Model)" as graph
+
+component "Search / RAG\n<<when justified>>" as rag
+
+component "Summary Generator" as summary
+
+component "FastAPI" as api
+
+component "React + TypeScript\nIntelligence UI" as ui
+
+video --> ingestion
+
+ffmpeg --> ingestion
+opencv --> ingestion
+pyscene --> ingestion
+
+ingestion --> frameRouter
+ingestion --> audioextract
+
+frameRouter --> yolo26
+frameRouter --> yoloe
+frameRouter --> ocrrouter
+
+audioextract --> whisper
+audioextract --> speechtimestamps
+audioextract --> soundevents
+
+yolo26 --> botsort
+yolo26 --> bytetrack
+
+botsort --> trajectory
+bytetrack --> trajectory
+
+trajectory --> lifecycle
+trajectory --> movement
+
+ocrrouter --> ppcv6
+ocrrouter --> hindiocr
+
+ppcv6 --> ocrfusion
+hindiocr --> ocrfusion
+
+whisper --> temporal
+speechtimestamps --> temporal
+soundevents --> temporal
+
+trajectory --> temporal
+lifecycle --> temporal
+movement --> temporal
+ocrfusion --> temporal
+
+yolo26 --> evidence
+botsort --> evidence
+trajectory --> evidence
+lifecycle --> evidence
+movement --> evidence
+ocrfusion --> evidence
+whisper --> evidence
+speechtimestamps --> evidence
+soundevents --> evidence
+
+evidence --> sam
+evidence --> action
+evidence --> semantic
+
+temporal --> semantic
+
+semantic --> qwen
+semantic --> internvideo
+
+qwen --> fusion
+internvideo --> fusion
+
+temporal --> fusion
+sam --> fusion
+action --> fusion
+
+evidence --> fusion
+
+fusion --> graph
+
+graph --> rag
+graph --> summary
+
+rag --> api
+summary --> api
+
+api --> ui
+
+note right of yoloe
+Use only when the fixed
+detector vocabulary becomes
+a measurable limitation.
+end note
+
+note right of sam
+Do not run on every frame.
+Use for precision evidence
+or segmentation-dependent tasks.
+end note
+
+note right of internvideo
+Research / long-video route.
+Not the default semantic engine.
+end note
+
+note right of graph
+Graph-like relationship model
+over persisted evidence.
+No dedicated graph database.
+end note
+
+@enduml

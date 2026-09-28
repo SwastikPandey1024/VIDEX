@@ -1,0 +1,147 @@
+@startuml VIDEX-Evidence-Graph
+
+title VIDEX — Evidence Graph & Domain Model
+
+skinparam backgroundColor #0D1117
+skinparam shadowing false
+skinparam defaultFontColor white
+skinparam ArrowColor #9CA3AF
+
+skinparam class {
+    BackgroundColor #162033
+    BorderColor #4B6B9A
+}
+
+class Video {
+    +video_id: UUID
+    +filename: str
+    +duration_sec: float
+    +fps: float
+    +width: int
+    +height: int
+    +has_audio: bool
+}
+
+class Scene {
+    +scene_id: UUID
+    +start_time: float
+    +end_time: float
+    +scene_index: int
+}
+
+class Frame {
+    +frame_id: UUID
+    +frame_index: int
+    +timestamp_sec: float
+    +uri: str
+}
+
+class Detection {
+    +detection_id: UUID
+    +class_name: str
+    +confidence: float
+    +bbox: BBox
+}
+
+class Track {
+    +track_id: UUID
+    +class_name: str
+    +first_seen: float
+    +last_seen: float
+    +confidence: float
+}
+
+class TrajectoryPoint {
+    +timestamp_sec: float
+    +x: float
+    +y: float
+    +pixel_velocity: float
+    +direction: str
+}
+
+class OCRObservation {
+    +ocr_id: UUID
+    +text: str
+    +confidence: float
+    +first_seen: float
+    +last_seen: float
+    +bbox: BBox
+}
+
+class AudioSegment {
+    +audio_id: UUID
+    +start_time: float
+    +end_time: float
+    +source: str
+}
+
+class TranscriptSegment {
+    +text: str
+    +language: str
+    +confidence: float
+}
+
+class Event {
+    +event_id: UUID
+    +event_type: str
+    +start_time: float
+    +end_time: float
+    +confidence: float
+    +status: str
+}
+
+class Evidence {
+    +evidence_id: UUID
+    +evidence_type: str
+    +timestamp_sec: float
+    +source: str
+    +confidence: float
+    +frame_id: UUID
+    +track_id: UUID
+}
+
+class Attribute {
+    +name: str
+    +value: str
+    +confidence: float
+}
+
+class BBox {
+    +x1: float
+    +y1: float
+    +x2: float
+    +y2: float
+}
+
+Video "1" --> "*" Scene : contains
+Video "1" --> "*" Frame : contains
+
+Scene "1" --> "*" Frame : contains
+
+Frame "1" --> "*" Detection : produces
+Detection "*" --> "0..1" Track : assigned to
+
+Track "1" --> "*" TrajectoryPoint : follows
+Track "1" --> "*" Attribute : has
+
+Frame "1" --> "*" OCRObservation : contains
+OCRObservation "*" --> "*" Frame : supported by
+
+AudioSegment "1" --> "*" TranscriptSegment : contains
+
+Frame "*" --> "*" AudioSegment : temporally aligned
+
+Track "*" --> "*" Event : participates in
+OCRObservation "*" --> "*" Event : supports
+AudioSegment "*" --> "*" Event : supports
+Scene "*" --> "*" Event : contextualizes
+
+Event "1" --> "*" Evidence : supported by
+
+Evidence "*" --> "1" Frame : references
+Evidence "*" --> "0..1" Track : references
+Evidence "*" --> "0..1" OCRObservation : references
+Evidence "*" --> "0..1" AudioSegment : references
+Evidence "*" --> "0..1" Event : supports
+
+@enduml
