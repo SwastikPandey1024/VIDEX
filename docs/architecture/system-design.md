@@ -23,16 +23,37 @@ VIDEX (Video Intelligence & Evidence Extraction) is an open-source, model-agnost
 
 ## 2. Canonical Architecture Diagrams
 
-The definitive visual models for VIDEX are maintained as PlantUML diagrams within `docs/architecture/`:
+The definitive visual models for VIDEX are maintained as PlantUML diagrams within `docs/architecture/`, with canonical rendered vector graphics in `docs/architecture/rendered/`:
 
-| Diagram | Source File | Description |
-|---|---|---|
-| **01 System Architecture** | [01-system-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/01-system-architecture.puml) | High-level component interactions from ingestion to UI |
-| **02 Processing Pipeline** | [02-processing-pipeline.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/02-processing-pipeline.puml) | End-to-end dataflow across video, audio, temporal, and fusion stages |
-| **03 Technology Architecture** | [03-technology-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/03-technology-architecture.puml) | Model selections, conditional components, and routing topology |
-| **04 Evidence Graph** | [04-evidence-graph.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/04-evidence-graph.puml) | Domain schema, entity attributes, and relational graph links |
-| **05 Deployment Architecture** | [05-deployment-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/05-deployment-architecture.puml) | Cloud/hybrid infrastructure, storage, GPU workers, and API hosting |
-| **06 Processing Sequence** | [06-processing-sequence.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/06-processing-sequence.puml) | Runtime event and message lifecycle across asynchronous services |
+| Diagram | Source File | Canonical Rendered Vector (SVG) | Description |
+|---|---|---|---|
+| **01 System Architecture** | [01-system-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/01-system-architecture.puml) | [VIDEX-System-Architecture.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-System-Architecture.svg) | High-level component interactions from ingestion to UI |
+| **02 Processing Pipeline** | [02-processing-pipeline.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/02-processing-pipeline.puml) | [VIDEX-Processing-Pipeline.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-Processing-Pipeline.svg) | End-to-end dataflow across video, audio, temporal, and fusion stages |
+| **03 Technology Architecture** | [03-technology-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/03-technology-architecture.puml) | [VIDEX-Technology-Architecture.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-Technology-Architecture.svg) | Model selections, conditional components, and routing topology |
+| **04 Evidence Graph** | [04-evidence-graph.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/04-evidence-graph.puml) | [VIDEX-Evidence-Graph.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-Evidence-Graph.svg) | Domain schema, entity attributes, and relational graph links |
+| **05 Deployment Architecture** | [05-deployment-architecture.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/05-deployment-architecture.puml) | [VIDEX-Deployment-Architecture.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-Deployment-Architecture.svg) | Cloud/hybrid infrastructure, storage, GPU workers, and API hosting |
+| **06 Processing Sequence** | [06-processing-sequence.puml](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/06-processing-sequence.puml) | [VIDEX-Processing-Sequence.svg](file:///c:/Users/Swastik%20Pandey/Downloads/VIDEX/docs/architecture/rendered/VIDEX-Processing-Sequence.svg) | Runtime event and message lifecycle across asynchronous services |
+
+### Regenerating Architecture Diagrams
+
+The repository includes a reusable PowerShell rendering workflow in `scripts/render_architecture.ps1` that automatically verifies prerequisites and renders all source `.puml` files into `docs/architecture/rendered/`.
+
+**Prerequisites:**
+- **Java Runtime Environment:** Java 11+ / 21+ (`java.exe` in `PATH` or standard JDK directories).
+- **PlantUML JAR (`tools/plantuml.jar`):** Local rendering binary. PlantUML JAR is a local tool and is intentionally not committed to version control (`tools/plantuml.jar` is listed in `.gitignore`). The rendering script automatically fetches the standalone JAR on first run if it is not already present locally, or it can be placed manually.
+- **Layout Engine:** Graphviz or PlantUML's built-in Smetana engine (verified automatically).
+
+**Usage:**
+```powershell
+# 1. Canonical SVG generation (default for documentation)
+powershell -ExecutionPolicy Bypass -File .\scripts\render_architecture.ps1
+
+# 2. Canonical SVG + PNG preview generation
+powershell -ExecutionPolicy Bypass -File .\scripts\render_architecture.ps1 -IncludePng
+
+# 3. Explicit Java path (if not in PATH or non-standard directory)
+powershell -ExecutionPolicy Bypass -File .\scripts\render_architecture.ps1 -JavaPath "C:\path\to\java.exe"
+```
 
 ---
 

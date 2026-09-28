@@ -86,3 +86,7 @@ logs/
 tmp/
 temp/
 scratch/
+
+# Local tools
+tools/plantuml.jar
+tools/*.jar
