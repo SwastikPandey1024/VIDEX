@@ -30,7 +30,9 @@ Usage::
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Any, Protocol, runtime_checkable
+from uuid import UUID
 
 from videx.domain.schemas import (
     AudioSegment,
@@ -39,9 +41,10 @@ from videx.domain.schemas import (
     Evidence,
     Frame,
     OCRObservation,
+    SoundObservation,
     Track,
     TrajectoryPoint,
-    Video,
+    TranscriptSegment,
 )
 from videx.ingestion.base import DecodedFrame
 
@@ -178,17 +181,51 @@ class OCRProvider(Protocol):
     """Optical character recognition provider.
 
     Detects and recognises text in a video frame, returning structured
-    OCR observations with bounding boxes and confidence scores.
+    OCR observations with bounding boxes, confidence scores, and authoritative
+    FrameTimestamp provenance.
     """
 
     @property
     def provider_name(self) -> str:
-        """Unique string key identifying this OCR provider (e.g., 'easyocr_hi')."""
+        """Unique string key identifying this OCR provider (e.g. 'paddle_indic')."""
         ...
 
     @property
-    def supported_languages(self) -> list[str]:
-        """ISO 639-1 language codes this provider supports (e.g., ['hi', 'en'])."""
+    def supported_languages(self) -> tuple[str, ...] | list[str]:
+        """ISO 639-1 language codes this provider supports (e.g., ('en',), ('hi',))."""
+        ...
+
+    def warmup(self) -> None:
+        """Warm up model weights and runtime context before batch processing."""
+        ...
+
+    def detect_text(
+        self,
+        frame: DecodedFrame | Frame,
+    ) -> list[OCRObservation]:
+        """Detect and recognise text in a single frame.
+
+        Args:
+            frame: Either DecodedFrame with raw numpy pixel array and FrameTimestamp,
+                   or Frame domain metadata.
+
+        Returns:
+            List of OCRObservation records. Empty if no text found.
+        """
+        ...
+
+    def detect_text_batch(
+        self,
+        frames: Sequence[DecodedFrame | Frame],
+    ) -> list[list[OCRObservation]]:
+        """Batch detect and recognise text across multiple frames.
+
+        Args:
+            frames: Sequence of DecodedFrame or Frame objects.
+
+        Returns:
+            List of observation lists, one per input frame.
+        """
         ...
 
     def recognise(self, frame_data: FrameBytes, frame_meta: Frame) -> list[OCRObservation]:
@@ -200,44 +237,92 @@ class OCRProvider(Protocol):
 
         Returns:
             List of OCRObservation records. Empty if no text found.
-            Each observation includes the detected text, confidence, and bbox.
         """
         ...
 
 
-# ── ASR ────────────────────────────────────────────────────────────────────
+# ── ASR & Audio Intelligence ──────────────────────────────────────────────
+
+
+@runtime_checkable
+class AudioProvider(Protocol):
+    """Base audio intelligence provider."""
+
+    @property
+    def provider_name(self) -> str:
+        """Unique string key identifying this provider."""
+        ...
+
+    def warmup(self) -> None:
+        """Warm up model weights and runtime context."""
+        ...
 
 
 @runtime_checkable
 class ASRProvider(Protocol):
     """Automatic speech recognition provider.
 
-    Transcribes the audio track of a video, returning time-aligned
-    transcript segments.
+    Transcribes the audio stream/file of a video, returning time-aligned
+    transcript segments with explicit temporal provenance without independent clock drift.
     """
 
     @property
     def provider_name(self) -> str:
-        """Unique string key identifying this ASR provider (e.g., 'faster_whisper_hi')."""
+        """Unique string key identifying this ASR provider (e.g. 'faster_whisper')."""
         ...
 
     @property
-    def primary_language(self) -> str:
-        """Primary language this provider is configured for (ISO 639-1, e.g., 'hi')."""
+    def supported_languages(self) -> tuple[str, ...] | list[str]:
+        """ISO 639-1 language codes supported (e.g. ('en', 'hi'))."""
         ...
 
-    def transcribe(self, audio_data: bytes, video: Video) -> list[AudioSegment]:
-        """Transcribe audio and return timestamped segments.
+    def warmup(self) -> None:
+        """Warm up model weights and runtime context."""
+        ...
+
+    def transcribe(
+        self,
+        audio_input: Any,  # noqa: ANN401
+        video_id: UUID | None = None,
+        language: str | None = None,
+        **kwargs: Any,  # noqa: ANN401
+    ) -> list[TranscriptSegment]:
+        """Transcribe audio and return timestamped TranscriptSegment records.
 
         Args:
-            audio_data: Raw audio bytes (WAV, 16kHz mono recommended).
-            video: The parent Video record (for video_id association).
+            audio_input: Audio file path, raw audio bytes, or numpy audio array.
+            video_id: Parent video UUID for association.
+            language: Optional language ISO code hint (e.g. 'en', 'hi').
+            **kwargs: Extra provider-specific keyword arguments.
 
         Returns:
-            List of AudioSegment records ordered by ``start_timestamp_seconds``.
-            Each segment covers a continuous speech utterance or pause.
+            List of TranscriptSegment records ordered by start_timestamp_seconds.
         """
         ...
+
+
+@runtime_checkable
+class SoundEventProvider(Protocol):
+    """Acoustic sound event provider hook."""
+
+    @property
+    def provider_name(self) -> str:
+        """Unique string key identifying this sound event provider."""
+        ...
+
+    def warmup(self) -> None:
+        """Warm up model weights and runtime context."""
+        ...
+
+    def detect_events(
+        self,
+        audio_input: Any,  # noqa: ANN401
+        video_id: UUID | None = None,
+        **kwargs: Any,  # noqa: ANN401
+    ) -> list[SoundObservation]:
+        """Detect acoustic sound events in audio stream."""
+        ...
+
 
 
 # ── VLM / Semantic Reasoning ───────────────────────────────────────────────

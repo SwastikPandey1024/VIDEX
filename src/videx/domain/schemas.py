@@ -429,27 +429,332 @@ class TrajectoryPoint(BaseModel):
 class OCRObservation(BaseModel):
     """Text detected and recognised in a single video frame.
 
-    Produced by an ``OCRProvider``.
+    Produced by an ``OCRProvider``. Preserves first-class FrameTimestamp provenance.
     """
 
-    ocr_id: UUID = Field(default_factory=uuid4)
+    observation_id: UUID = Field(default_factory=uuid4, description="Unique observation ID")
     frame_id: UUID = Field(..., description="Frame the text was found in")
     video_id: UUID = Field(..., description="Parent video")
-    timestamp_seconds: float = Field(..., ge=0.0)
-    text: str = Field(..., description="Recognised text string")
-    language: str | None = Field(
-        default=None,
-        description="Detected language ISO code (e.g., 'hi', 'en')",
+    frame_number: int = Field(default=0, ge=0, description="Sequential 0-based frame index")
+    timestamp_seconds: float = Field(
+        default=0.0, ge=0.0, description="Synchronized presentation time in seconds"
     )
-    confidence: float = Field(..., ge=0.0, le=1.0)
+    frame_timestamp: FrameTimestamp = Field(
+        default=None,  # type: ignore[assignment]
+        description="Authoritative temporal provenance from DecodedFrame",
+    )
+    text: str = Field(..., description="Raw recognised text string returned by engine")
+    normalized_text: str = Field(default="", description="Conservatively normalized text string")
+    confidence: float = Field(..., ge=0.0, le=1.0, description="Primary confidence score [0, 1]")
     bbox: BoundingBox | None = Field(
         default=None,
-        description="Location of the text in the frame (if available)",
+        description="Bounding box of the text region (if available)",
+    )
+    polygon: list[list[float]] | None = Field(
+        default=None,
+        description="Optional 4-point polygon of the text box [[x1, y1], [x2, y2], ...]",
+    )
+    language: str | None = Field(
+        default="en",
+        description="Language code (e.g. 'en', 'hi')",
+    )
+    script: str = Field(
+        default="Latin",
+        description="Writing script (e.g. 'Latin', 'Devanagari')",
     )
     provider: str = Field(..., description="OCR backend that produced this result")
+    recognition_confidence: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Text recognition confidence score"
+    )
+    detection_confidence: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Text region detection confidence score"
+    )
+    orientation: float | None = Field(
+        default=None, description="Estimated text angle/rotation in degrees"
+    )
+    crop_quality: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Optional quality score of text crop"
+    )
+    preprocessing_applied: list[str] = Field(
+        default_factory=list, description="List of preprocessing transforms applied"
+    )
+    attributes: dict[str, Any] = Field(
+        default_factory=dict, description="Provider-specific attributes"
+    )
+
+    @property
+    def ocr_id(self) -> UUID:
+        """Backward-compatible alias for observation_id."""
+        return self.observation_id
+
+    @model_validator(mode="before")
+    @classmethod
+    def _validate_ocr_observation(cls, data: object) -> object:
+        if isinstance(data, dict):
+            # Support ocr_id alias
+            if "ocr_id" in data and "observation_id" not in data:
+                data["observation_id"] = data["ocr_id"]
+            # Ensure frame_timestamp
+            if data.get("frame_timestamp") is None:
+                frame_num = int(data.get("frame_number", 0))
+                ts_sec = float(data.get("timestamp_seconds", 0.0))
+                data["frame_timestamp"] = FrameTimestamp(
+                    frame_index=frame_num,
+                    pts_seconds=ts_sec,
+                    timestamp_source=TimestampSource.DERIVED,
+                )
+            elif (
+                "timestamp_seconds" not in data
+                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            ):
+                data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
+            # Ensure normalized_text
+            if not data.get("normalized_text") and "text" in data:
+                data["normalized_text"] = " ".join(str(data["text"]).split()).strip()
+        return data
+
+
+RawOCRObservation = OCRObservation
+
+
+class TextObservation(BaseModel):
+    """Fused temporal text observation spanning multiple frames.
+
+    Synthesized by ``TemporalOCRFusion`` by grouping raw OCRObservations
+    across time by normalized text identity, spatial proximity, and temporal continuity.
+    """
+
+    observation_id: UUID = Field(
+        default_factory=uuid4, description="Unique fused text observation ID"
+    )
+    video_id: UUID = Field(..., description="Parent video ID")
+    text: str = Field(..., description="Representative text string (highest confidence)")
+    normalized_text: str = Field(..., description="Normalized text string used for fusion")
+    first_seen_timestamp: FrameTimestamp = Field(
+        ..., description="Authoritative timestamp of first observation"
+    )
+    last_seen_timestamp: FrameTimestamp = Field(
+        ..., description="Authoritative timestamp of last observation"
+    )
+    first_seen_frame: int = Field(
+        ..., ge=0, description="Frame index where text was first detected"
+    )
+    last_seen_frame: int = Field(..., ge=0, description="Frame index where text was last detected")
+    first_seen_timestamp_seconds: float = Field(
+        default=0.0, ge=0.0, description="Presentation time in seconds of first observation"
+    )
+    last_seen_timestamp_seconds: float = Field(
+        default=0.0, ge=0.0, description="Presentation time in seconds of last observation"
+    )
+    supporting_frames: list[int] = Field(
+        default_factory=list, description="All frame numbers containing this text"
+    )
+    supporting_observation_ids: list[UUID] = Field(
+        default_factory=list, description="IDs of underlying raw OCRObservations"
+    )
+    confidence_summary: dict[str, float] = Field(
+        default_factory=dict, description="Summary statistics: mean, min, max, count"
+    )
+    bbox_history: list[Any] | dict[int, Any] = Field(
+        default_factory=list, description="Sequence of bounding boxes across supporting frames"
+    )
+    language: str | None = Field(default="en", description="Detected or configured language code")
+    script: str = Field(
+        default="Latin", description="Writing script (e.g. 'Latin', 'Devanagari')"
+    )
+    provider: str = Field(..., description="Primary OCR backend that recognized this text")
+    attributes: dict[str, Any] = Field(default_factory=dict, description="Extended attributes")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _validate_text_observation(cls, data: object) -> object:
+        if isinstance(data, dict):
+            if "first_seen_timestamp_seconds" not in data and "first_seen_timestamp" in data:
+                ts = data["first_seen_timestamp"]
+                if isinstance(ts, FrameTimestamp):
+                    data["first_seen_timestamp_seconds"] = ts.pts_seconds
+            if "last_seen_timestamp_seconds" not in data and "last_seen_timestamp" in data:
+                ts = data["last_seen_timestamp"]
+                if isinstance(ts, FrameTimestamp):
+                    data["last_seen_timestamp_seconds"] = ts.pts_seconds
+        return data
+
+    @property
+    def frame_count(self) -> int:
+        """Total number of frames supporting this text observation."""
+        return len(self.supporting_frames)
+
+    @property
+    def duration_seconds(self) -> float:
+        """Temporal duration this text was continuously observed."""
+        return max(0.0, self.last_seen_timestamp_seconds - self.first_seen_timestamp_seconds)
+
+    @property
+    def mean_confidence(self) -> float:
+        """Mean confidence score across all supporting observations."""
+        return self.confidence_summary.get("mean", 0.0)
+
+    @property
+    def latest_bbox(self) -> BoundingBox | None:
+        """Most recent bounding box location, if available."""
+        return self.bbox_history[-1] if self.bbox_history else None
 
 
 # ── Audio / ASR ────────────────────────────────────────────────────────────
+
+
+class AudioMetadata(BaseModel):
+    """Metadata extracted from an audio stream or container."""
+
+    model_config = ConfigDict(frozen=True)
+
+    sample_rate: int = Field(..., gt=0, description="Audio sample rate in Hz (e.g. 16000, 44100)")
+    channels: int = Field(..., ge=1, description="Number of audio channels (1=mono, 2=stereo)")
+    duration_seconds: float = Field(..., ge=0.0, description="Audio stream duration in seconds")
+    codec_name: str | None = Field(
+        default=None, description="Audio codec identifier (e.g. 'aac', 'pcm_s16le')"
+    )
+    bit_rate: int | None = Field(default=None, description="Bit rate in bps if available")
+    channel_layout: str | None = Field(
+        default=None, description="Channel layout (e.g. 'mono', 'stereo')"
+    )
+    attributes: dict[str, Any] = Field(
+        default_factory=dict, description="Additional container/stream attributes"
+    )
+
+
+class WordTimestamp(BaseModel):
+    """Word-level alignment timestamp."""
+
+    model_config = ConfigDict(frozen=True)
+
+    word: str = Field(..., description="Individual word token")
+    start_timestamp_seconds: float = Field(
+        ..., ge=0.0, description="Word start presentation time in seconds"
+    )
+    end_timestamp_seconds: float = Field(
+        ..., ge=0.0, description="Word end presentation time in seconds"
+    )
+    confidence: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Confidence score for this word"
+    )
+
+    @property
+    def duration_seconds(self) -> float:
+        """Duration of this individual word."""
+        return max(0.0, self.end_timestamp_seconds - self.start_timestamp_seconds)
+
+
+class TranscriptSegment(BaseModel):
+    """Time-aligned rich speech transcript segment produced by an ASRProvider.
+
+    Preserves raw text, normalized text, explicit presentation timestamps,
+    word-level alignments, and language/provider provenance without independent clock drift.
+    """
+
+    segment_id: UUID = Field(default_factory=uuid4, description="Unique segment identifier")
+    video_id: UUID = Field(..., description="Parent video identifier")
+    start_timestamp_seconds: float = Field(
+        ..., ge=0.0, description="Start presentation timestamp in seconds"
+    )
+    end_timestamp_seconds: float = Field(
+        ..., ge=0.0, description="End presentation timestamp in seconds"
+    )
+    start_timestamp: float | FrameTimestamp | None = Field(
+        default=None, description="Authoritative start timestamp"
+    )
+    end_timestamp: float | FrameTimestamp | None = Field(
+        default=None, description="Authoritative end timestamp"
+    )
+    raw_text: str = Field(..., description="Exact raw text output from ASR model")
+    normalized_text: str = Field(default="", description="Conservatively normalized text string")
+    language: str = Field(default="en", description="Language ISO code (e.g. 'en', 'hi')")
+    confidence: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Segment confidence score [0, 1]"
+    )
+    provider: str = Field(
+        ..., description="ASR provider backend identifier (e.g. 'faster_whisper')"
+    )
+    source: str = Field(default="", description="Source provider identifier alias")
+    words: list[WordTimestamp] = Field(
+        default_factory=list, description="Word-level timestamps if supported"
+    )
+    speaker_id: str | None = Field(
+        default=None, description="Speaker identification / diarization tag"
+    )
+    no_speech_prob: float | None = Field(
+        default=None, ge=0.0, le=1.0, description="Probability of no speech in segment"
+    )
+    attributes: dict[str, Any] = Field(
+        default_factory=dict, description="Provider-specific attributes"
+    )
+
+    @property
+    def text(self) -> str:
+        """Alias for raw_text for interface compatibility."""
+        return self.raw_text
+
+    @property
+    def duration_seconds(self) -> float:
+        """Duration of this transcript segment."""
+        return max(0.0, self.end_timestamp_seconds - self.start_timestamp_seconds)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _validate_transcript_segment(cls, data: object) -> object:
+        if isinstance(data, dict):
+            if not data.get("source") and "provider" in data:
+                data["source"] = str(data["provider"])
+            if not data.get("provider") and "source" in data:
+                data["provider"] = str(data["source"])
+            if "start_timestamp" in data and "start_timestamp_seconds" not in data:
+                st = data["start_timestamp"]
+                data["start_timestamp_seconds"] = float(st) if st is not None else 0.0
+            elif "start_timestamp_seconds" in data and data.get("start_timestamp") is None:
+                data["start_timestamp"] = float(data["start_timestamp_seconds"])
+            if "end_timestamp" in data and "end_timestamp_seconds" not in data:
+                et = data["end_timestamp"]
+                data["end_timestamp_seconds"] = float(et) if et is not None else 0.0
+            elif "end_timestamp_seconds" in data and data.get("end_timestamp") is None:
+                data["end_timestamp"] = float(data["end_timestamp_seconds"])
+            if not data.get("normalized_text") and "raw_text" in data:
+                data["normalized_text"] = " ".join(str(data["raw_text"]).split()).strip()
+            elif not data.get("raw_text") and "text" in data:
+                data["raw_text"] = str(data["text"])
+                if not data.get("normalized_text"):
+                    data["normalized_text"] = " ".join(str(data["text"]).split()).strip()
+            elif not data.get("raw_text") and "transcript" in data:
+                data["raw_text"] = str(data["transcript"])
+                if not data.get("normalized_text"):
+                    data["normalized_text"] = " ".join(str(data["transcript"]).split()).strip()
+        return data
+
+
+class SoundObservation(BaseModel):
+    """Sound event observation produced by an acoustic event provider."""
+
+    observation_id: UUID = Field(
+        default_factory=uuid4, description="Unique sound observation ID"
+    )
+    video_id: UUID = Field(..., description="Parent video ID")
+    start_timestamp_seconds: float = Field(..., ge=0.0, description="Start timestamp in seconds")
+    end_timestamp_seconds: float = Field(..., ge=0.0, description="End timestamp in seconds")
+    label: str = Field(
+        ...,
+        description="Sound event classification label (e.g. 'speech', 'siren', 'applause')",
+    )
+    confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Sound event confidence score [0, 1]"
+    )
+    provider: str = Field(..., description="Audio acoustic event backend provider identifier")
+    attributes: dict[str, Any] = Field(
+        default_factory=dict, description="Provider-specific attributes"
+    )
+
+    @property
+    def duration_seconds(self) -> float:
+        """Duration of this sound observation."""
+        return max(0.0, self.end_timestamp_seconds - self.start_timestamp_seconds)
 
 
 class AudioSegment(BaseModel):
@@ -561,6 +866,9 @@ class EvidenceType(StrEnum):
 
     OCR = "ocr"
     """Derived from text recognised in a frame."""
+
+    AUDIO = "audio"
+    """Derived from an audio observation."""
 
     AUDIO_TRANSCRIPT = "audio_transcript"
     """Derived from an ASR transcription."""

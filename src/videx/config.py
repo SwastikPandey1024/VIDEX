@@ -96,13 +96,17 @@ class Settings(BaseSettings):
         description="Comma-separated ISO language codes for OCR",
     )
 
-    # ── ASR / Audio (Phase 1+) ────────────────────────────────
-    asr_provider: str = Field(default="whisper", description="ASR backend key")
+    # ── ASR / Audio (Phase 1+ / Phase 4.0) ────────────────────
+    asr_provider: str = Field(default="faster_whisper", description="ASR backend key")
     asr_model_size: str = Field(
-        default="medium",
+        default="base",
         description="Whisper model size: tiny, base, small, medium, large-v3",
     )
-    asr_language: str = Field(default="hi", description="Primary ASR language code")
+    asr_language: str = Field(default="en", description="Primary ASR language code ('en', 'hi')")
+    asr_device: str = Field(default="cpu", description="Inference device ('cpu', 'cuda')")
+    asr_compute_type: str = Field(
+        default="int8", description="Quantization/compute type ('int8', 'float16', 'float32')"
+    )
 
     # ── VLM / Semantic Reasoning (Phase 2+) ──────────────────
     vlm_provider: str = Field(default="openai", description="VLM backend key")

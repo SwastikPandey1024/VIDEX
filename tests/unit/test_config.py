@@ -71,7 +71,7 @@ class TestSettings:
 
     def test_default_asr_language(self) -> None:
         s = Settings()
-        assert s.asr_language == "hi"
+        assert s.asr_language == "en"
 
 
 class TestGetSettings:

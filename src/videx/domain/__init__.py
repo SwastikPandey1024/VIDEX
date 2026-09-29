@@ -1,6 +1,7 @@
 """VIDEX domain package."""
 
 from videx.domain.schemas import (
+    AudioMetadata,
     AudioSegment,
     BoundingBox,
     CoordinateType,
@@ -12,16 +13,22 @@ from videx.domain.schemas import (
     Frame,
     FrameTimestamp,
     OCRObservation,
+    RawOCRObservation,
     Scene,
+    SoundObservation,
+    TextObservation,
     TimestampSource,
     Track,
     TrackStatus,
     TrajectoryPoint,
+    TranscriptSegment,
     Video,
     VideoManifest,
+    WordTimestamp,
 )
 
 __all__ = [
+    "AudioMetadata",
     "AudioSegment",
     "BoundingBox",
     "CoordinateType",
@@ -33,11 +40,16 @@ __all__ = [
     "Frame",
     "FrameTimestamp",
     "OCRObservation",
+    "RawOCRObservation",
     "Scene",
+    "SoundObservation",
+    "TextObservation",
     "TimestampSource",
     "Track",
     "TrackStatus",
     "TrajectoryPoint",
+    "TranscriptSegment",
     "Video",
     "VideoManifest",
+    "WordTimestamp",
 ]

@@ -1,0 +1,35 @@
+# VIDEX Core Direct Runtime Dependencies
+# Canonical configuration is maintained in pyproject.toml and uv.lock.
+# This file provides a bootstrap/pip-installable direct dependency surface.
+# Note: Do not add indirect/transitive dependencies here.
+
+# Web framework & server
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+
+# Validation & settings
+pydantic>=2.9.0
+pydantic-settings>=2.6.0
+
+# Environment management
+python-dotenv>=1.0.0
+
+# Video ingestion & timing foundations
+opencv-python-headless>=4.8.0
+scenedetect>=0.6.0
+av>=14.0.0
+
+# Perception & Tracking runtime (Phase 2.0 / 2.0R)
+ultralytics>=8.3.0
+
+# OCR Runtime (Phase 3.0 / 3.0R)
+# Note: paddlepaddle has hardware/platform-specific packages:
+#   - Standard CPU: paddlepaddle>=3.3.0
+#   - CUDA 11.8/12.x GPU: install from PaddlePaddle wheels (e.g. paddlepaddle-gpu)
+#   - Windows Python 3.13: pre-built wheels for Paddle 3.3.0+ / paddlex are supported
+paddlepaddle>=3.3.0
+paddleocr>=3.7.0
+
+# Audio & Speech Recognition Runtime (Phase 4.0)
+# CTranslate2-accelerated faster-whisper engine
+faster-whisper>=1.2.1
