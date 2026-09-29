@@ -43,6 +43,7 @@ from videx.domain.schemas import (
     TrajectoryPoint,
     Video,
 )
+from videx.ingestion.base import DecodedFrame
 
 # ``bytes`` represents encoded frame image data (e.g., JPEG or PNG bytes).
 # Concrete providers decode this to their preferred array format internally.
@@ -56,28 +57,34 @@ FrameBytes = bytes
 class DetectionProvider(Protocol):
     """Object detection provider.
 
-    Accepts a raw video frame and returns a list of detected objects.
-    Implementations wrap a specific model backend (e.g., YOLOv8, PP-YOLOE+).
+    Accepts a raw video frame (or DecodedFrame) and returns a list of detected objects.
+    Implementations wrap a specific model backend (e.g., YOLO26, mock detector).
     """
 
     @property
     def provider_name(self) -> str:
-        """Unique string key identifying this provider (e.g., 'yolov8l').
+        """Unique string key identifying this provider (e.g., 'yolo26', 'mock_detector').
 
         Used as ``Detection.provider`` in output records.
         """
         ...
 
-    def detect(self, frame_data: FrameBytes, frame_meta: Frame) -> list[Detection]:
+    def detect(
+        self,
+        frame_data: FrameBytes | DecodedFrame,
+        frame_meta: Frame | None = None,
+    ) -> list[Detection]:
         """Run inference on a single frame.
 
         Args:
-            frame_data: Encoded frame bytes (JPEG / PNG).
-            frame_meta: Frame metadata (video_id, frame_id, timestamp, dimensions).
+            frame_data: Encoded frame bytes (JPEG / PNG) or an in-memory DecodedFrame.
+            frame_meta: Optional Frame metadata (video_id, frame_id, timestamp, dimensions).
+                If frame_data is a DecodedFrame, frame_meta can be derived automatically.
 
         Returns:
             List of Detection records. May be empty if nothing is detected.
             Detection IDs and frame/video IDs must be correctly set.
+            Timestamp and provenance MUST inherit from DecodedFrame / frame_meta.
 
         Raises:
             RuntimeError: If the provider is not initialised or inference fails.
@@ -86,7 +93,7 @@ class DetectionProvider(Protocol):
 
     def detect_batch(
         self,
-        batch: list[tuple[FrameBytes, Frame]],
+        batch: list[tuple[FrameBytes | DecodedFrame, Frame | None]],
     ) -> list[list[Detection]]:
         """Run inference on a batch of frames.
 
@@ -124,22 +131,22 @@ class TrackingProvider(Protocol):
 
     @property
     def provider_name(self) -> str:
-        """Unique string key identifying this tracker (e.g., 'bytetrack')."""
+        """Unique string key identifying this tracker (e.g., 'botsort', 'mock_tracker')."""
         ...
 
     def update(
         self,
         detections: list[Detection],
-        frame_meta: Frame,
+        frame_meta: Frame | DecodedFrame,
     ) -> list[TrajectoryPoint]:
         """Update the tracker with detections from a new frame.
 
         This is called once per frame, in chronological order. The tracker
-        internally manages track lifecycle (new / active / lost / deleted).
+        internally manages track lifecycle (new / active / lost / terminated).
 
         Args:
             detections: All detections from the current frame.
-            frame_meta: Current frame metadata.
+            frame_meta: Current frame metadata (Frame or DecodedFrame).
 
         Returns:
             List of TrajectoryPoints for all currently active tracks.

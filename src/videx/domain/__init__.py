@@ -1,1 +1,43 @@
 """VIDEX domain package."""
+
+from videx.domain.schemas import (
+    AudioSegment,
+    BoundingBox,
+    CoordinateType,
+    Detection,
+    Event,
+    EventType,
+    Evidence,
+    EvidenceType,
+    Frame,
+    FrameTimestamp,
+    OCRObservation,
+    Scene,
+    TimestampSource,
+    Track,
+    TrackStatus,
+    TrajectoryPoint,
+    Video,
+    VideoManifest,
+)
+
+__all__ = [
+    "AudioSegment",
+    "BoundingBox",
+    "CoordinateType",
+    "Detection",
+    "Event",
+    "EventType",
+    "Evidence",
+    "EvidenceType",
+    "Frame",
+    "FrameTimestamp",
+    "OCRObservation",
+    "Scene",
+    "TimestampSource",
+    "Track",
+    "TrackStatus",
+    "TrajectoryPoint",
+    "Video",
+    "VideoManifest",
+]

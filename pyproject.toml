@@ -21,6 +21,10 @@ dependencies = [
     "pydantic-settings>=2.6.0",
     # Environment loading
     "python-dotenv>=1.0.0",
+    # Video ingestion & perception foundations
+    "opencv-python-headless>=4.8.0",
+    "scenedetect>=0.6.0",
+    "av>=14.0.0",
 ]
 
 [project.optional-dependencies]
@@ -68,18 +72,14 @@ indent-style = "space"
 
 # ── mypy — type checking ─────────────────────────────────────────────────────
 [tool.mypy]
+plugins = ["pydantic.mypy"]
 mypy_path = "src"
-packages = ["videx"]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 show_error_codes = true
 pretty = true
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
 
 # ── pytest ───────────────────────────────────────────────────────────────────
 [tool.pytest.ini_options]
@@ -87,3 +87,6 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
 addopts = ["-v", "--tb=short"]
+filterwarnings = [
+    "ignore:.*Using `httpx` with `starlette.testclient` is deprecated.*:UserWarning",
+]

@@ -24,8 +24,10 @@ from videx.domain.schemas import (
     Evidence,
     EvidenceType,
     Frame,
+    FrameTimestamp,
     OCRObservation,
     Scene,
+    TimestampSource,
     Track,
     TrajectoryPoint,
     Video,
@@ -104,8 +106,9 @@ class TestBoundingBox:
 
     def test_frozen(self) -> None:
         bbox = make_bbox()
+        field_name = "x"
         with pytest.raises((ValidationError, TypeError)):
-            bbox.x = 999  # type: ignore[misc]
+            setattr(bbox, field_name, 999)
 
     def test_serialise_deserialise(self) -> None:
         bbox = make_bbox()
@@ -130,6 +133,7 @@ class TestVideo:
         v = Video(source_path="http://example.com/stream")
         assert v.fps is None
         assert v.duration_seconds is None
+        assert v.video_codec is None
 
     def test_json_roundtrip(self) -> None:
         v = make_video()
@@ -200,6 +204,45 @@ class TestDetection:
         data = det.model_dump_json()
         det2 = Detection.model_validate_json(data)
         assert det.detection_id == det2.detection_id
+        assert isinstance(det2.frame_timestamp, FrameTimestamp)
+        assert det2.frame_timestamp == det.frame_timestamp
+
+    def test_detection_frame_timestamp_provenance(self) -> None:
+        frame = make_frame()
+        ts = FrameTimestamp(
+            frame_index=frame.frame_number,
+            pts_seconds=frame.timestamp_seconds,
+            timestamp_source=TimestampSource.CONTAINER,
+            is_repaired=True,
+            repair_reason="backward_pts",
+            original_pts_seconds=0.04,
+        )
+        det = Detection(
+            frame_id=frame.frame_id,
+            video_id=frame.video_id,
+            frame_number=frame.frame_number,
+            timestamp_seconds=frame.timestamp_seconds,
+            frame_timestamp=ts,
+            class_name="person",
+            class_id=0,
+            confidence=0.9,
+            bbox=make_bbox(),
+            provider="test",
+        )
+        assert det.frame_timestamp is ts
+        assert det.frame_timestamp.is_repaired is True
+        assert det.frame_timestamp.repair_reason == "backward_pts"
+        assert det.frame_timestamp.original_pts_seconds == 0.04
+        assert det.frame_timestamp.timestamp_source == TimestampSource.CONTAINER
+
+        # Roundtrip JSON
+        data = det.model_dump_json()
+        det2 = Detection.model_validate_json(data)
+        assert isinstance(det2.frame_timestamp, FrameTimestamp)
+        assert det2.frame_timestamp.is_repaired is True
+        assert det2.frame_timestamp.repair_reason == "backward_pts"
+        assert det2.frame_timestamp.original_pts_seconds == 0.04
+        assert det2.frame_timestamp.timestamp_source == TimestampSource.CONTAINER
 
 
 # ── Track ──────────────────────────────────────────────────────────────────
@@ -234,8 +277,37 @@ class TestTrajectoryPoint:
             bbox=make_bbox(),
             confidence=0.88,
         )
+        field_name = "frame_number"
         with pytest.raises((ValidationError, TypeError)):
-            pt.frame_number = 99  # type: ignore[misc]
+            setattr(pt, field_name, 99)
+
+    def test_trajectory_point_frame_timestamp_provenance(self) -> None:
+        ts = FrameTimestamp(
+            frame_index=5,
+            pts_seconds=0.2,
+            timestamp_source=TimestampSource.DERIVED,
+            is_repaired=True,
+            repair_reason="interpolated",
+        )
+        pt = TrajectoryPoint(
+            track_id=uuid4(),
+            frame_id=uuid4(),
+            frame_number=5,
+            timestamp_seconds=0.2,
+            frame_timestamp=ts,
+            bbox=make_bbox(),
+            confidence=0.88,
+        )
+        assert pt.frame_timestamp is ts
+        assert pt.frame_timestamp.is_repaired is True
+        assert pt.frame_timestamp.repair_reason == "interpolated"
+        assert pt.frame_timestamp.timestamp_source == TimestampSource.DERIVED
+
+        data = pt.model_dump_json()
+        pt2 = TrajectoryPoint.model_validate_json(data)
+        assert isinstance(pt2.frame_timestamp, FrameTimestamp)
+        assert pt2.frame_timestamp.is_repaired is True
+        assert pt2.frame_timestamp.repair_reason == "interpolated"
 
 
 # ── OCRObservation ─────────────────────────────────────────────────────────
@@ -315,7 +387,7 @@ class TestEvent:
 
 class TestEvidence:
     def make_evidence(self, **overrides: object) -> Evidence:
-        defaults: dict = {
+        defaults: dict[str, object] = {
             "evidence_type": EvidenceType.DETECTION,
             "source_module": "yolov8",
             "video_id": uuid4(),

@@ -28,12 +28,81 @@ Design notes:
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+# ── Temporal Provenance ───────────────────────────────────────────────────
+
+
+class TimestampSource(StrEnum):
+    """Source provenance for an individual frame presentation timestamp."""
+
+    CONTAINER = "container"  # Extracted directly from container/packet header
+    DERIVED = "derived"  # Computed mathematically or repaired via interpolation/extrapolation
+
+
+@dataclass(frozen=True)
+class FrameTimestamp:
+    """Detailed temporal provenance for an individual frame."""
+
+    frame_index: int
+    pts_seconds: float
+    timestamp_source: TimestampSource
+    is_repaired: bool = False
+    repair_reason: str | None = None
+    original_pts_seconds: float | None = None
+
+    @property
+    def source(self) -> TimestampSource:
+        """Alias for timestamp_source."""
+        return self.timestamp_source
+
+    def __float__(self) -> float:
+        return self.pts_seconds
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, (int, float)):
+            return self.pts_seconds == float(other)
+        if isinstance(other, FrameTimestamp):
+            return self.pts_seconds == other.pts_seconds and self.frame_index == other.frame_index
+        return False
+
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, (int, float, FrameTimestamp)):
+            return self.pts_seconds < float(other)
+        return NotImplemented
+
+    def __le__(self, other: object) -> bool:
+        if isinstance(other, (int, float, FrameTimestamp)):
+            return self.pts_seconds <= float(other)
+        return NotImplemented
+
+    def __gt__(self, other: object) -> bool:
+        if isinstance(other, (int, float, FrameTimestamp)):
+            return self.pts_seconds > float(other)
+        return NotImplemented
+
+    def __ge__(self, other: object) -> bool:
+        if isinstance(other, (int, float, FrameTimestamp)):
+            return self.pts_seconds >= float(other)
+        return NotImplemented
+
+    def __sub__(self, other: object) -> float:
+        return self.pts_seconds - float(other)  # type: ignore[arg-type]
+
+    def __rsub__(self, other: object) -> float:
+        return float(other) - self.pts_seconds  # type: ignore[arg-type]
+
+    def __add__(self, other: object) -> float:
+        return self.pts_seconds + float(other)  # type: ignore[arg-type]
+
+    def __radd__(self, other: object) -> float:
+        return float(other) + self.pts_seconds  # type: ignore[arg-type]
 
 # ── Coordinate system ──────────────────────────────────────────────────────
 
@@ -104,12 +173,18 @@ class Video(BaseModel):
 
     video_id: UUID = Field(default_factory=uuid4, description="Unique video identifier")
     source_path: str = Field(..., description="Original path or URL of the video file")
-    duration_seconds: float | None = Field(None, ge=0.0, description="Total duration in seconds")
-    fps: float | None = Field(None, gt=0.0, description="Frames per second of the source video")
-    width: int | None = Field(None, gt=0, description="Frame width in pixels")
-    height: int | None = Field(None, gt=0, description="Frame height in pixels")
-    codec: str | None = Field(None, description="Video codec identifier (e.g., 'h264')")
-    total_frames: int | None = Field(None, ge=0, description="Total frame count")
+    duration_seconds: float | None = Field(
+        default=None, ge=0.0, description="Total duration in seconds"
+    )
+    fps: float | None = Field(
+        default=None, gt=0.0, description="Frames per second of the source video"
+    )
+    width: int | None = Field(default=None, gt=0, description="Frame width in pixels")
+    height: int | None = Field(default=None, gt=0, description="Frame height in pixels")
+    video_codec: str | None = Field(
+        default=None, description="Video codec identifier (e.g., 'h264')"
+    )
+    total_frames: int | None = Field(default=None, ge=0, description="Total frame count")
     ingested_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),
         description="UTC timestamp when the video was registered",
@@ -162,13 +237,19 @@ class Frame(BaseModel):
 
     frame_id: UUID = Field(default_factory=uuid4)
     video_id: UUID = Field(..., description="Parent video")
-    scene_id: UUID | None = Field(None, description="Scene this frame belongs to (if detected)")
+    scene_id: UUID | None = Field(
+        default=None, description="Scene this frame belongs to (if detected)"
+    )
     frame_number: int = Field(..., ge=0, description="Zero-based frame index")
     timestamp_seconds: float = Field(..., ge=0.0, description="Frame position in the video")
+    frame_timestamp: FrameTimestamp | None = Field(
+        default=None,
+        description="Authoritative temporal provenance from DecodedFrame",
+    )
     width: int = Field(..., gt=0, description="Frame width in pixels")
     height: int = Field(..., gt=0, description="Frame height in pixels")
     frame_data_path: str | None = Field(
-        None,
+        default=None,
         description="Filesystem path to the stored frame image (optional)",
     )
 
@@ -186,22 +267,63 @@ class Detection(BaseModel):
     detection_id: UUID = Field(default_factory=uuid4)
     frame_id: UUID = Field(..., description="Frame this detection was made in")
     video_id: UUID = Field(..., description="Parent video")
+    frame_number: int = Field(default=0, ge=0, description="Sequential frame index")
     timestamp_seconds: float = Field(..., ge=0.0)
+    frame_timestamp: FrameTimestamp = Field(
+        default=None,  # type: ignore[assignment]
+        description="Authoritative temporal provenance from DecodedFrame",
+    )
     class_name: str = Field(..., description="Detected object class label")
     class_id: int = Field(..., ge=0, description="Integer class index from the model")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Detection confidence score")
     bbox: BoundingBox = Field(..., description="Bounding box of the detected object")
+    mask: list[list[float]] | None = Field(
+        default=None,
+        description="Optional polygon segmentation mask coordinates [[x1, y1], [x2, y2], ...]",
+    )
     provider: str = Field(
         ...,
-        description="Provider key that produced this detection (e.g., 'yolov8')",
+        description="Provider key that produced this detection (e.g., 'yolo26', 'mock_detector')",
     )
     attributes: dict[str, Any] = Field(
         default_factory=dict,
-        description="Optional provider-specific attributes (e.g., pose keypoints, mask)",
+        description="Optional provider-specific attributes (e.g. timestamp_source, is_repaired)",
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def _ensure_frame_timestamp(cls, data: object) -> object:
+        if isinstance(data, dict):
+            if data.get("frame_timestamp") is None:
+                frame_num = int(data.get("frame_number", 0))
+                ts_sec = float(data.get("timestamp_seconds", 0.0))
+                data["frame_timestamp"] = FrameTimestamp(
+                    frame_index=frame_num,
+                    pts_seconds=ts_sec,
+                    timestamp_source=TimestampSource.DERIVED,
+                )
+            elif (
+                "timestamp_seconds" not in data
+                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            ):
+                data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
+        return data
 
 
 # ── Track ──────────────────────────────────────────────────────────────────
+
+
+class TrackStatus(StrEnum):
+    """Lifecycle state of an object track."""
+
+    ACTIVE = "active"
+    """Object is actively tracked and detected in current window."""
+
+    LOST = "lost"
+    """Object is temporarily unobserved/occluded."""
+
+    TERMINATED = "terminated"
+    """Track is closed/completed (object permanently exited scene)."""
 
 
 class Track(BaseModel):
@@ -214,6 +336,7 @@ class Track(BaseModel):
     track_id: UUID = Field(default_factory=uuid4)
     video_id: UUID = Field(..., description="Parent video")
     class_name: str = Field(..., description="Object class (from associated detections)")
+    class_id: int = Field(default=0, ge=0, description="Integer class label index")
     first_seen_frame_number: int = Field(..., ge=0)
     last_seen_frame_number: int = Field(..., ge=0)
     first_seen_timestamp_seconds: float = Field(..., ge=0.0)
@@ -223,6 +346,28 @@ class Track(BaseModel):
         description="Ordered list of Detection IDs comprising this track",
     )
     provider: str = Field(..., description="Tracker backend that produced this track")
+    status: TrackStatus = Field(
+        default=TrackStatus.TERMINATED,
+        description="Current lifecycle status of the track",
+    )
+    confidence: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=1.0,
+        description="Overall track confidence or mean detection confidence",
+    )
+    start_bbox: BoundingBox | None = Field(
+        default=None,
+        description="Initial bounding box at appearance (first_seen)",
+    )
+    end_bbox: BoundingBox | None = Field(
+        default=None,
+        description="Terminal bounding box at disappearance (last_seen)",
+    )
+    attributes: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Provider-specific attributes or lifecycle metadata",
+    )
 
     @property
     def duration_seconds(self) -> float:
@@ -251,8 +396,31 @@ class TrajectoryPoint(BaseModel):
     frame_id: UUID = Field(..., description="Frame this point was observed in")
     frame_number: int = Field(..., ge=0)
     timestamp_seconds: float = Field(..., ge=0.0)
+    frame_timestamp: FrameTimestamp = Field(
+        default=None,  # type: ignore[assignment]
+        description="Authoritative temporal provenance from DecodedFrame",
+    )
     bbox: BoundingBox = Field(..., description="Object position at this point")
     confidence: float = Field(..., ge=0.0, le=1.0)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _ensure_frame_timestamp(cls, data: object) -> object:
+        if isinstance(data, dict):
+            if data.get("frame_timestamp") is None:
+                frame_num = int(data.get("frame_number", 0))
+                ts_sec = float(data.get("timestamp_seconds", 0.0))
+                data["frame_timestamp"] = FrameTimestamp(
+                    frame_index=frame_num,
+                    pts_seconds=ts_sec,
+                    timestamp_source=TimestampSource.DERIVED,
+                )
+            elif (
+                "timestamp_seconds" not in data
+                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            ):
+                data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
+        return data
 
 
 # ── OCR ────────────────────────────────────────────────────────────────────
@@ -270,12 +438,12 @@ class OCRObservation(BaseModel):
     timestamp_seconds: float = Field(..., ge=0.0)
     text: str = Field(..., description="Recognised text string")
     language: str | None = Field(
-        None,
+        default=None,
         description="Detected language ISO code (e.g., 'hi', 'en')",
     )
     confidence: float = Field(..., ge=0.0, le=1.0)
     bbox: BoundingBox | None = Field(
-        None,
+        default=None,
         description="Location of the text in the frame (if available)",
     )
     provider: str = Field(..., description="OCR backend that produced this result")
@@ -296,10 +464,10 @@ class AudioSegment(BaseModel):
     start_timestamp_seconds: float = Field(..., ge=0.0)
     end_timestamp_seconds: float = Field(..., ge=0.0)
     transcript: str = Field(..., description="Recognised speech text")
-    language: str | None = Field(None, description="Detected language ISO code")
+    language: str | None = Field(default=None, description="Detected language ISO code")
     confidence: float = Field(..., ge=0.0, le=1.0)
     speaker_id: str | None = Field(
-        None,
+        default=None,
         description="Speaker diarisation label (if available)",
     )
     provider: str = Field(..., description="ASR backend that produced this segment")
@@ -353,7 +521,7 @@ class Event(BaseModel):
     event_type: EventType = Field(..., description="Category of the event")
     start_timestamp_seconds: float = Field(..., ge=0.0, description="When the event began")
     end_timestamp_seconds: float | None = Field(
-        None,
+        default=None,
         description="When the event ended (None if instantaneous)",
     )
     confidence: float = Field(..., ge=0.0, le=1.0)
@@ -363,7 +531,7 @@ class Event(BaseModel):
     )
     description: str = Field(..., description="Human-readable description of the event")
     zone_name: str | None = Field(
-        None,
+        default=None,
         description="Named zone involved (if applicable)",
     )
     metadata: dict[str, Any] = Field(
@@ -499,3 +667,94 @@ class Evidence(BaseModel):
         default_factory=dict,
         description="Additional structured metadata (deployment-specific)",
     )
+
+
+# ── VideoManifest ──────────────────────────────────────────────────────────
+
+
+class VideoManifest(BaseModel):
+    """Structured manifest produced upon validating and ingesting a video file.
+
+    Encapsulates all verified technical metadata, frame timing information,
+    audio availability, and detected scene boundaries needed by downstream
+    perception and temporal intelligence engines.
+    """
+
+    video_id: UUID = Field(default_factory=uuid4, description="Unique video identifier")
+    source_path: str = Field(..., description="Canonical path or URI to the video source file")
+    filename: str = Field(..., description="Base filename of the video")
+    filesize_bytes: int = Field(..., ge=0, description="Size of the video file in bytes")
+    mime_type: str | None = Field(
+        default=None, description="MIME type if identifiable (e.g., 'video/mp4')"
+    )
+
+    # Technical metadata
+    duration_seconds: float = Field(..., ge=0.0, description="Accurate video duration in seconds")
+    fps: float = Field(..., gt=0.0, description="Nominal frame rate (frames per second)")
+    total_frames: int = Field(..., ge=0, description="Total number of video frames")
+    width: int = Field(..., gt=0, description="Frame width in pixels")
+    height: int = Field(..., gt=0, description="Frame height in pixels")
+    video_codec: str | None = Field(
+        default=None, description="Video stream codec identifier (e.g., 'h264')"
+    )
+    is_vfr: bool = Field(
+        default=False,
+        description="Whether the video has variable frame rate (VFR)",
+    )
+    timing_mode: str = Field(
+        default="exact",
+        description="Timing policy mode used during ingestion ('exact' or 'fast')",
+    )
+    is_vfr_hint: bool | None = Field(
+        default=None,
+        description="Preliminary container header hint regarding variable frame rate",
+    )
+
+    # Audio availability
+    has_audio: bool = Field(default=False, description="Whether the video contains an audio stream")
+    audio_codec: str | None = Field(
+        default=None, description="Audio stream codec identifier (e.g., 'aac')"
+    )
+
+    # Scene boundaries
+    scenes: list[Scene] = Field(
+        default_factory=list,
+        description="Contiguous scene segments detected in the video",
+    )
+
+    # Ingestion record
+    ingested_at: datetime = Field(
+        default_factory=lambda: datetime.now(UTC),
+        description="UTC timestamp when this manifest was created",
+    )
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional technical, container, or stream metadata",
+    )
+
+    def to_video(self) -> Video:
+        """Convert this manifest into a database-compatible Video entity."""
+        return Video(
+            video_id=self.video_id,
+            source_path=self.source_path,
+            duration_seconds=self.duration_seconds,
+            fps=self.fps,
+            width=self.width,
+            height=self.height,
+            video_codec=self.video_codec,
+            total_frames=self.total_frames,
+            ingested_at=self.ingested_at,
+            metadata={
+                **self.metadata,
+                "filename": self.filename,
+                "filesize_bytes": self.filesize_bytes,
+                "mime_type": self.mime_type,
+                "is_vfr": self.is_vfr,
+                "timing_mode": self.timing_mode,
+                "is_vfr_hint": self.is_vfr_hint,
+                "has_audio": self.has_audio,
+                "audio_codec": self.audio_codec,
+                "scene_count": len(self.scenes),
+            },
+        )
+
