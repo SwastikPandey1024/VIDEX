@@ -140,8 +140,7 @@ def main() -> int:
         total_latency_ms=15.0,
     )
     print(
-        f"  [PASS] OCR input: 2 fused TextObservations "
-        f"('{ocr_plate1.text}', '{ocr_plate2.text}')"
+        f"  [PASS] OCR input: 2 fused TextObservations ('{ocr_plate1.text}', '{ocr_plate2.text}')"
     )
 
     # Audio: Guard announcement
@@ -210,8 +209,10 @@ def main() -> int:
     assert EventType.OBJECT_STARTED_MOVING in event_types, "OBJECT_STARTED_MOVING missing"
     assert EventType.OBJECT_STOPPED_MOVING in event_types, "OBJECT_STOPPED_MOVING missing"
     assert EventType.OBJECT_CHANGED_DIRECTION in event_types, "OBJECT_CHANGED_DIRECTION missing"
-    print("  [PASS] Movement events: OBJECT_STARTED_MOVING, "
-          "OBJECT_STOPPED_MOVING, OBJECT_CHANGED_DIRECTION")
+    print(
+        "  [PASS] Movement events: OBJECT_STARTED_MOVING, "
+        "OBJECT_STOPPED_MOVING, OBJECT_CHANGED_DIRECTION"
+    )
 
     # 3. Spatial
     assert EventType.OBJECT_ENTERED_ZONE in event_types, "OBJECT_ENTERED_ZONE missing"
@@ -272,16 +273,18 @@ def main() -> int:
     explanation = timeline.explain_event(entry_ev.event_id)
 
     print("  Structured Audit Trail:")
-    print(f"    1. WHAT:                {explanation['what']['event_type']} - "
-          f"'{explanation['what']['description']}'")
+    print(
+        f"    1. WHAT:                {explanation['what']['event_type']} - "
+        f"'{explanation['what']['description']}'"
+    )
     print(f"    2. WHEN:                {explanation['when']['summary']}")
     print(f"    3. WHICH ENTITIES:      {explanation['which_entities']}")
     print(
         f"    4. WHAT EVIDENCE:       {len(explanation['supporting_evidence']['records'])} "
         f"linked evidence records (IDs: {explanation['supporting_evidence']['evidence_ids']})"
     )
-    frames_str = str(explanation['temporal_anchors']['supporting_frames'])
-    pts_val = explanation['temporal_anchors']['start_seconds']
+    frames_str = str(explanation["temporal_anchors"]["supporting_frames"])
+    pts_val = explanation["temporal_anchors"]["start_seconds"]
     print(f"    5. WHICH ANCHORS:       Frames: {frames_str} at PTS {pts_val:.2f}s")
     print(
         f"    6. WHICH SUBSYSTEM:     Module: '{explanation['source_subsystem']['source_module']}' "

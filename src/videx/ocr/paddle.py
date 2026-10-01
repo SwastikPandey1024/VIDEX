@@ -177,9 +177,7 @@ class PaddleOCRProvider:
                 if resolved.frame_timestamp.repair_reason:
                     attr["repair_reason"] = resolved.frame_timestamp.repair_reason
                 if resolved.frame_timestamp.original_pts_seconds is not None:
-                    attr["original_pts_seconds"] = (
-                        resolved.frame_timestamp.original_pts_seconds
-                    )
+                    attr["original_pts_seconds"] = resolved.frame_timestamp.original_pts_seconds
 
                 obs = OCRObservation(
                     observation_id=uuid4(),
@@ -241,9 +239,7 @@ class PaddleOCRProvider:
             if resolved.frame_timestamp.repair_reason:
                 attr["repair_reason"] = resolved.frame_timestamp.repair_reason
             if resolved.frame_timestamp.original_pts_seconds is not None:
-                attr["original_pts_seconds"] = (
-                    resolved.frame_timestamp.original_pts_seconds
-                )
+                attr["original_pts_seconds"] = resolved.frame_timestamp.original_pts_seconds
 
             obs = OCRObservation(
                 observation_id=uuid4(),

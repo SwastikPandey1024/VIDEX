@@ -73,9 +73,7 @@ class OCRScheduler:
             ts = 0.0 if timestamp_seconds is None else timestamp_seconds
             return self.should_process(frame_or_index, ts)
         elif isinstance(frame_or_index, DecodedFrame):
-            return self.should_process(
-                frame_or_index.frame_index, frame_or_index.timestamp_seconds
-            )
+            return self.should_process(frame_or_index.frame_index, frame_or_index.timestamp_seconds)
         else:
             return self.should_process(
                 frame_or_index.frame_number, frame_or_index.timestamp_seconds

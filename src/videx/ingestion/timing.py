@@ -350,9 +350,7 @@ class ExplicitTimestampIndex(TimestampIndex):
             self._fps = nominal_fps
         else:
             self._fps = (
-                self._total_frames / self._duration_seconds
-                if self._duration_seconds > 0
-                else 25.0
+                self._total_frames / self._duration_seconds if self._duration_seconds > 0 else 25.0
             )
 
     @property

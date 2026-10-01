@@ -104,6 +104,7 @@ class FrameTimestamp:
     def __radd__(self, other: object) -> float:
         return float(other) + self.pts_seconds  # type: ignore[arg-type]
 
+
 # ── Coordinate system ──────────────────────────────────────────────────────
 
 
@@ -302,9 +303,8 @@ class Detection(BaseModel):
                     pts_seconds=ts_sec,
                     timestamp_source=TimestampSource.DERIVED,
                 )
-            elif (
-                "timestamp_seconds" not in data
-                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            elif "timestamp_seconds" not in data and isinstance(
+                data["frame_timestamp"], FrameTimestamp
             ):
                 data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
         return data
@@ -415,9 +415,8 @@ class TrajectoryPoint(BaseModel):
                     pts_seconds=ts_sec,
                     timestamp_source=TimestampSource.DERIVED,
                 )
-            elif (
-                "timestamp_seconds" not in data
-                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            elif "timestamp_seconds" not in data and isinstance(
+                data["frame_timestamp"], FrameTimestamp
             ):
                 data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
         return data
@@ -503,9 +502,8 @@ class OCRObservation(BaseModel):
                     pts_seconds=ts_sec,
                     timestamp_source=TimestampSource.DERIVED,
                 )
-            elif (
-                "timestamp_seconds" not in data
-                and isinstance(data["frame_timestamp"], FrameTimestamp)
+            elif "timestamp_seconds" not in data and isinstance(
+                data["frame_timestamp"], FrameTimestamp
             ):
                 data["timestamp_seconds"] = data["frame_timestamp"].pts_seconds
             # Ensure normalized_text
@@ -559,9 +557,7 @@ class TextObservation(BaseModel):
         default_factory=list, description="Sequence of bounding boxes across supporting frames"
     )
     language: str | None = Field(default="en", description="Detected or configured language code")
-    script: str = Field(
-        default="Latin", description="Writing script (e.g. 'Latin', 'Devanagari')"
-    )
+    script: str = Field(default="Latin", description="Writing script (e.g. 'Latin', 'Devanagari')")
     provider: str = Field(..., description="Primary OCR backend that recognized this text")
     attributes: dict[str, Any] = Field(default_factory=dict, description="Extended attributes")
 
@@ -733,9 +729,7 @@ class TranscriptSegment(BaseModel):
 class SoundObservation(BaseModel):
     """Sound event observation produced by an acoustic event provider."""
 
-    observation_id: UUID = Field(
-        default_factory=uuid4, description="Unique sound observation ID"
-    )
+    observation_id: UUID = Field(default_factory=uuid4, description="Unique sound observation ID")
     video_id: UUID = Field(..., description="Parent video ID")
     start_timestamp_seconds: float = Field(..., ge=0.0, description="Start timestamp in seconds")
     end_timestamp_seconds: float = Field(..., ge=0.0, description="End timestamp in seconds")
@@ -1065,4 +1059,3 @@ class VideoManifest(BaseModel):
                 "scene_count": len(self.scenes),
             },
         )
-

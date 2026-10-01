@@ -21,7 +21,9 @@ from videx.events.types import EventSeverity, EventStatus, EventType
 
 
 class CrossModalRuleEngine:
-    """Evaluates declarative spatiotemporal co-occurrence rules to produce deterministic compound relations."""
+    """Evaluates declarative spatiotemporal co-occurrence rules to produce
+    deterministic compound relations.
+    """
 
     def __init__(self, temporal_tolerance_seconds: float = 2.0) -> None:
         self.temporal_tolerance_seconds = temporal_tolerance_seconds

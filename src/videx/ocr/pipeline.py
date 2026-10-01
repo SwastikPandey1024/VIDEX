@@ -65,13 +65,26 @@ class OCRPipeline:
         self._total_latency_ms = 0.0
         self._video_id: UUID | None = None
 
+    def reset(self) -> None:
+        """Reset internal accumulator state for evaluating a new video sequence."""
+        self._raw_observations.clear()
+        self._frames_evaluated = 0
+        self._frames_processed = 0
+        self._total_latency_ms = 0.0
+        self._video_id = None
+        cfg = getattr(self._fusion, "config", TemporalOCRFusionConfig())
+        self._fusion = TemporalOCRFusion(cfg)
+
     def process_frames(
         self,
         frames: Sequence[DecodedFrame | Frame],
         language: str | None = None,
         script: str | None = None,
+        reset: bool = True,
     ) -> tuple[list[OCRObservation], list[TextObservation], list[Evidence]]:
         """Process a sequence of frames and return (raw_obs, fused_obs, evidence_records)."""
+        if reset:
+            self.reset()
         for frame in frames:
             self.process_frame(frame, language=language, script=script)
         result = self.finalize()

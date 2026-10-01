@@ -75,6 +75,7 @@ class OCRRouter:
                 providers = self.config.providers
             else:
                 from videx.ocr.paddle import PaddleGeneralOCRProvider, PaddleIndicOCRProvider
+
                 providers = {
                     "general": PaddleGeneralOCRProvider(),
                     "indic": PaddleIndicOCRProvider(),

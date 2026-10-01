@@ -295,9 +295,35 @@ class CandidateSelector:
         return total_saliency, reasons
 
     STOP_WORDS = {
-        "a", "an", "the", "and", "or", "in", "on", "at", "to", "for", "with", "by", "from",
-        "of", "is", "was", "are", "were", "what", "which", "who", "whom", "this", "that",
-        "did", "does", "do", "happened", "occurred",
+        "a",
+        "an",
+        "the",
+        "and",
+        "or",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "with",
+        "by",
+        "from",
+        "of",
+        "is",
+        "was",
+        "are",
+        "were",
+        "what",
+        "which",
+        "who",
+        "whom",
+        "this",
+        "that",
+        "did",
+        "does",
+        "do",
+        "happened",
+        "occurred",
     }
 
     def _calculate_query_relevance(

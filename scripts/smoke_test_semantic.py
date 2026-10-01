@@ -129,9 +129,7 @@ def main() -> int:
 
     candidate_selector = CandidateSelector(CandidateSelectionConfig(min_saliency_threshold=0.35))
     user_query = "What happened when the vehicle entered the checkpoint perimeter?"
-    candidates = candidate_selector.select_candidates(
-        timeline, query=user_query, video_id=video_id
-    )
+    candidates = candidate_selector.select_candidates(timeline, query=user_query, video_id=video_id)
 
     print(f"  [QUERY] '{user_query}'")
     print(f"  [OK] Selected {len(candidates)} candidate semantic cluster(s):")

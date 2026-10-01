@@ -55,13 +55,15 @@ class MockOCRProvider:
                     if self.config.canned_confidence is not None
                     else self.config.default_confidence
                 )
-                canned_entries.append({
-                    "text": text,
-                    "bbox": box,
-                    "confidence": conf,
-                    "language": self.config.default_language,
-                    "script": self.config.default_script,
-                })
+                canned_entries.append(
+                    {
+                        "text": text,
+                        "bbox": box,
+                        "confidence": conf,
+                        "language": self.config.default_language,
+                        "script": self.config.default_script,
+                    }
+                )
 
         if canned_entries is None:
             return []

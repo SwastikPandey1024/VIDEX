@@ -83,8 +83,8 @@ def extract_audio_metadata(video_path: str | Path) -> AudioMetadata:
         codec_name = (
             stream.codec_context.name if stream.codec_context else (stream.name or "unknown")
         )
-        bit_rate = (
-            stream.bit_rate or (stream.codec_context.bit_rate if stream.codec_context else None)
+        bit_rate = stream.bit_rate or (
+            stream.codec_context.bit_rate if stream.codec_context else None
         )
         layout_name = stream.layout.name if stream.layout else None
 

@@ -252,11 +252,11 @@ Evidence(
     evidence_type=EvidenceType.AUDIO_TRANSCRIPT,
     source_module=f"asr_{seg.provider}",
     video_id=video_id,
-    frame_id=None,          # Audio evidence is not frame-anchored
+    frame_id=None,  # Audio evidence is not frame-anchored
     timestamp_seconds=seg.start_timestamp_seconds,
     confidence=seg.confidence,
     description=f"Audio transcript [{lang}]: {normalized_text}",
-    raw_payload={           # Full provenance payload
+    raw_payload={  # Full provenance payload
         "raw_text": ...,
         "normalized_text": ...,
         "start_timestamp_seconds": ...,

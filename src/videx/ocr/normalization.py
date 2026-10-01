@@ -12,7 +12,7 @@ import unicodedata
 # Unicode ranges for Indic scripts (Devanagari: 0900–097F)
 _DEVANAGARI_RANGE = (0x0900, 0x097F)
 _ZWNJ = "\u200c"  # Zero-width non-joiner
-_ZWJ = "\u200d"   # Zero-width joiner
+_ZWJ = "\u200d"  # Zero-width joiner
 
 
 def _is_devanagari_char(char: str) -> bool:

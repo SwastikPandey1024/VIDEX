@@ -122,6 +122,7 @@ class FasterWhisperASRProvider:
             audio_source = resolved.audio_path
         elif resolved.raw_bytes is not None:
             import io
+
             audio_source = io.BytesIO(resolved.raw_bytes)
         else:
             raise ValueError("No valid audio array, path, or bytes found in ResolvedAudioInput.")

@@ -77,6 +77,7 @@ def skip(label: str, reason: str = "") -> None:
 
 # ── Video / Audio fixture creation ────────────────────────────────────────────
 
+
 def create_silent_video(path: Path, fps: float = 25.0, duration: float = 2.0) -> None:
     """Create a synthetic MP4 with no audio track (for NoAudioStreamError tests)."""
     n_frames = int(fps * duration)
@@ -144,6 +145,7 @@ def create_video_with_audio(path: Path, fps: float = 25.0, duration: float = 3.0
 
 # ── Section 1: Audio metadata extraction ─────────────────────────────────────
 
+
 def test_audio_metadata(video_with_audio: Path, video_silent: Path) -> int:
     section("1. Audio Metadata Extraction")
     failures = 0
@@ -186,6 +188,7 @@ def test_audio_metadata(video_with_audio: Path, video_silent: Path) -> int:
 
 # ── Section 2: Audio stream extraction ────────────────────────────────────────
 
+
 def test_audio_stream(video_with_audio: Path) -> int:
     section("2. Audio Stream Extraction (float32 PCM)")
     failures = 0
@@ -221,6 +224,7 @@ def test_audio_stream(video_with_audio: Path) -> int:
 
 # ── Section 3: Transcript normalization ──────────────────────────────────────
 
+
 def test_normalization() -> int:
     section("3. Transcript Normalization")
     failures = 0
@@ -250,6 +254,7 @@ def test_normalization() -> int:
 
 
 # ── Section 4: MockASRProvider ────────────────────────────────────────────────
+
 
 def test_mock_provider(video_with_audio: Path) -> int:
     section("4. MockASRProvider — Deterministic Transcription")
@@ -327,6 +332,7 @@ def test_mock_provider(video_with_audio: Path) -> int:
 
 # ── Section 5: TemporalTranscriptFusion ───────────────────────────────────────
 
+
 def test_fusion() -> int:
     section("5. TemporalTranscriptFusion — Deduplication")
     failures = 0
@@ -388,6 +394,7 @@ def test_fusion() -> int:
 
 # ── Section 6: AudioPipeline end-to-end ──────────────────────────────────────
 
+
 def test_pipeline(video_with_audio: Path, video_silent: Path) -> int:
     section("6. AudioPipeline — End-to-End with MockASR")
     failures = 0
@@ -423,9 +430,7 @@ def test_pipeline(video_with_audio: Path, video_silent: Path) -> int:
     if not ok:
         failures += 1
 
-    ok = check(
-        "evidence records generated", len(result.evidence) > 0, f"{len(result.evidence)}"
-    )
+    ok = check("evidence records generated", len(result.evidence) > 0, f"{len(result.evidence)}")
     if not ok:
         failures += 1
 
@@ -475,6 +480,7 @@ def test_pipeline(video_with_audio: Path, video_silent: Path) -> int:
 
 
 # ── Section 7: FasterWhisper acceptance ───────────────────────────────────────
+
 
 def _get_smoke_whisper_model() -> str | None:
     local_dir = Path("models/faster-whisper-tiny")
@@ -591,13 +597,12 @@ def test_faster_whisper(video_with_audio: Path) -> int:
 
 # ── Section 8: Benchmarks ─────────────────────────────────────────────────────
 
+
 def run_benchmarks(video_with_audio: Path) -> None:
     section("8. Micro-Benchmarks & RTF Measurement")
 
     # 1. Mock pipeline micro-benchmark
-    pipeline = AudioPipeline.create_mock(
-        config=MockASRConfig(segment_duration_seconds=1.0)
-    )
+    pipeline = AudioPipeline.create_mock(config=MockASRConfig(segment_duration_seconds=1.0))
     pipeline.process_video(video_with_audio, language="en")
 
     times = []
@@ -618,6 +623,7 @@ def run_benchmarks(video_with_audio: Path) -> None:
     english_fixture = Path("tests/fixtures/audio/english_speech.wav")
     if model_ref is not None and english_fixture.is_file():
         import wave
+
         with wave.open(str(english_fixture), "rb") as w:
             audio_duration = w.getnframes() / float(w.getframerate())
 
@@ -655,6 +661,7 @@ def run_benchmarks(video_with_audio: Path) -> None:
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     print(f"\n{BOLD}VIDEX Phase 4.0 — Audio Intelligence Smoke Test{RESET}")

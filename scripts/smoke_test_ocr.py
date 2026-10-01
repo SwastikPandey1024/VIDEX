@@ -118,21 +118,25 @@ def run_smoke_test() -> None:
         for i in range(total_frames):
             frame_obs: list[dict[str, object]] = []
             if i < 15:
-                frame_obs.append({
-                    "text": "MH 12 AB 1234",
-                    "bbox": BoundingBox(x=100.0, y=100.0, width=220.0, height=50.0),
-                    "confidence": 0.95,
-                    "language": "en",
-                    "script": "Latin",
-                })
+                frame_obs.append(
+                    {
+                        "text": "MH 12 AB 1234",
+                        "bbox": BoundingBox(x=100.0, y=100.0, width=220.0, height=50.0),
+                        "confidence": 0.95,
+                        "language": "en",
+                        "script": "Latin",
+                    }
+                )
             else:
-                frame_obs.append({
-                    "text": "SPEED 40",
-                    "bbox": BoundingBox(x=350.0, y=200.0, width=170.0, height=50.0),
-                    "confidence": 0.92,
-                    "language": "en",
-                    "script": "Latin",
-                })
+                frame_obs.append(
+                    {
+                        "text": "SPEED 40",
+                        "bbox": BoundingBox(x=350.0, y=200.0, width=170.0, height=50.0),
+                        "confidence": 0.92,
+                        "language": "en",
+                        "script": "Latin",
+                    }
+                )
             canned_results_by_frame[i] = frame_obs
 
         print("\n[3/5] Configuring OCR Provider, Router, Scheduler, and Fusion...")

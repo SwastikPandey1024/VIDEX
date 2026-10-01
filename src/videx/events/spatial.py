@@ -171,11 +171,7 @@ class SpatialEventDetector:
 
                 for pt in points:
                     # Apply tolerance hysteresis: when already inside, tolerate small excursions
-                    tol = (
-                        self.config.spatial_boundary_tolerance_px
-                        if state.is_inside
-                        else 0.0
-                    )
+                    tol = self.config.spatial_boundary_tolerance_px if state.is_inside else 0.0
                     now_inside = zone.contains_point(
                         pt.bbox.center_x, pt.bbox.center_y, tolerance=tol
                     )

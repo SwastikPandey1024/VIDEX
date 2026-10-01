@@ -324,7 +324,6 @@ class SoundEventProvider(Protocol):
         ...
 
 
-
 # ── VLM / Semantic Reasoning ───────────────────────────────────────────────
 
 

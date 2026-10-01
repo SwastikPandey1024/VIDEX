@@ -166,18 +166,31 @@ class EvidenceBundleBuilder:
             frame_ts_meta: FrameTimestamp | None = None
 
             if video_reader is not None:
+                # Clamp timestamp to valid video duration
+                dur = getattr(video_reader, "duration_seconds", None)
+                clamped_ts = max(0.0, min(ts, (dur - 0.001) if dur and dur > 0 else ts))
+
                 # Query index from reader
-                ts_idx = getattr(video_reader, "timestamp_index", None)
+                ts_idx = getattr(video_reader, "timestamp_index", None) or getattr(
+                    video_reader, "_timing_index", None
+                )
                 if ts_idx is not None and hasattr(ts_idx, "get_frame_for_timestamp"):
-                    frame_idx = ts_idx.get_frame_for_timestamp(ts)
-                    if hasattr(ts_idx, "get_frame_timestamp"):
-                        frame_ts_meta = ts_idx.get_frame_timestamp(frame_idx)
+                    try:
+                        frame_idx = ts_idx.get_frame_for_timestamp(clamped_ts)
+                        if hasattr(ts_idx, "get_frame_timestamp"):
+                            frame_ts_meta = ts_idx.get_frame_timestamp(frame_idx)
+                    except Exception:
+                        frame_idx = 0
                 elif hasattr(video_reader, "read_frame_at_timestamp"):
-                    frame_tuple = video_reader.read_frame_at_timestamp(ts)
-                    if frame_tuple is not None:
-                        frame_obj, _ = frame_tuple
-                        frame_idx = frame_obj.frame_number
-                        frame_ts_meta = frame_obj.frame_timestamp
+                    try:
+                        frame_tuple = video_reader.read_frame_at_timestamp(clamped_ts)
+                        if frame_tuple is not None:
+                            frame_obj, _ = frame_tuple
+                            frame_idx = frame_obj.frame_number
+                            frame_ts_meta = frame_obj.frame_timestamp
+                    except Exception as exc:
+                        logger.debug("Could not read frame at timestamp %.3fs: %s", clamped_ts, exc)
+                        frame_idx = 0
             else:
                 # Fallback index calculation for testing without active video file
                 frame_idx = int(round(ts * 30.0))
