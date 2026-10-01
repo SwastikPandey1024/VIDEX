@@ -18,9 +18,8 @@ from videx.perception.pipeline import PerceptionResult
 from videx.semantic.cache import SemanticCache
 from videx.semantic.candidates import CandidateSelector
 from videx.semantic.evidence_bundle import EvidenceBundleBuilder
-from videx.semantic.mock import MockVLMProvider
 from videx.semantic.policy import RoutingPolicy
-from videx.semantic.providers import VLMProvider
+from videx.semantic.providers import VLMProvider, create_vlm_provider
 from videx.semantic.schemas import (
     CandidateEvent,
     EvidenceBundle,
@@ -52,7 +51,7 @@ class SemanticRouter:
         self.bundle_builder = bundle_builder or EvidenceBundleBuilder()
         self.policy = policy or RoutingPolicy()
         self.cache = cache or SemanticCache()
-        self.provider = provider or MockVLMProvider()
+        self.provider = provider if provider is not None else create_vlm_provider()
         self.validator = validator or EvidenceValidator()
 
     def route_timeline(

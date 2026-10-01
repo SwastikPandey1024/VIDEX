@@ -14,7 +14,7 @@ Usage::
 
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -154,19 +154,33 @@ class Settings(BaseSettings):
     # ── Semantic Intelligence & Router (Phase 6) ─────────────
     semantic_router_enabled: bool = Field(
         default=True,
+        validation_alias=AliasChoices("semantic_router_enabled", "videx_semantic_router_enabled"),
         description="Enable Layer 4 Semantic Router gating and candidate selection",
     )
     semantic_provider: str = Field(
         default="mock",
-        description="VLM provider key: 'mock', 'qwen3_vl', 'openai'",
+        validation_alias=AliasChoices("semantic_provider", "videx_semantic_provider"),
+        description="VLM provider key: 'mock', 'qwen', 'qwen3_vl', 'openai'",
     )
     semantic_model: str = Field(
         default="Qwen/Qwen2.5-VL-7B-Instruct",
+        validation_alias=AliasChoices("semantic_model", "videx_semantic_model"),
         description="Underlying VLM model checkpoint or deployment identifier",
     )
     semantic_execution_mode: str = Field(
         default="mock",
+        validation_alias=AliasChoices("semantic_execution_mode", "videx_semantic_execution_mode"),
         description="Qwen3-VL execution mode: 'disabled', 'mock', 'api', 'local_cpu', 'local_gpu'",
+    )
+    semantic_api_base_url: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("semantic_api_base_url", "videx_semantic_api_base_url"),
+        description="Base URL for remote OpenAI-compatible VLM inference server (e.g. vLLM/Ollama)",
+    )
+    semantic_api_key: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("semantic_api_key", "videx_semantic_api_key"),
+        description="API key for remote inference endpoint if required (never logged)",
     )
     semantic_saliency_threshold: float = Field(
         default=0.40,

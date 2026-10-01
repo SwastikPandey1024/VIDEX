@@ -134,12 +134,31 @@ Validates every `SemanticEventPayload` before canonical conversion:
 3. `validate_temporal_bounds`: Ensures semantic interval falls within bundle bounds (with 0.5s tolerance).
 4. `validate_confidence_and_status`: Checks valid float bounds `[0.0, 1.0]` and enforces status consistency.
 
+### 3.4 Phase 6.1: Pluggable VLM Runtime Configuration & Factory
+
+Phase 6.1 introduces a centralized provider factory `create_vlm_provider()` and formalizes environment variable mappings for multi-environment VLM execution without introducing hard runtime dependencies:
+
+- **Environment Configuration:**
+  - `VIDEX_SEMANTIC_PROVIDER` (or `VIDEX_VLM_PROVIDER`): `mock` (default), `qwen` / `qwen3_vl`.
+  - `VIDEX_SEMANTIC_EXECUTION_MODE` (or `VIDEX_VLM_EXECUTION_MODE`): `disabled`, `mock`, `api`, `local_cpu`, `local_gpu`.
+  - `VIDEX_SEMANTIC_MODEL` (or `VIDEX_VLM_MODEL`): `Qwen/Qwen2.5-VL-7B-Instruct` (default) or any compatible endpoint model.
+  - `VIDEX_SEMANTIC_API_BASE_URL` (or `VIDEX_VLM_API_BASE_URL`): OpenAI-compatible or vLLM server endpoint.
+  - `VIDEX_SEMANTIC_API_KEY` (or `VIDEX_VLM_API_KEY`): Bearer token for remote VLM API access (never committed to repository).
+
+- **Execution Mode Support:**
+  1. `mock`: Fully offline deterministic simulation with zero external dependencies.
+  2. `api`: Dispatches OpenAI/vLLM-compatible Chat Completions API requests over HTTP.
+  3. `local_cpu` / `local_gpu`: Leverages HuggingFace `transformers` and `torch` with automatic device placement when installed.
+  4. `disabled`: Provider reports `is_available() == False` and abstains gracefully.
+
 ---
 
 ## 4. Verification & Quality Gates
 
 - **Unit Tests:** 20 passing unit tests in `tests/unit/test_semantic.py`.
 - **Acceptance Tests:** 4 passing end-to-end integration tests in `tests/integration/test_semantic_acceptance.py`.
-- **Regression Suite:** 292 passing tests across the entire VIDEX repository.
+- **Corpus Evidence Integrity Tests:** 4 passing tests in `tests/integration/test_corpus_evidence_integrity.py`.
+- **Regression Suite:** 296 passed, 1 skipped across the entire VIDEX repository.
 - **Type Safety & Linting:** 100% clean `ruff check .` and `mypy src` (0 errors across 68 source files).
-- **Smoke Test:** `scripts/smoke_test_semantic.ps1` runs in ~12ms, demonstrating complete candidate selection, bundling, mock VLM inference, evidence validation, and abstention.
+- **Smoke Tests:** Validated all 4 subsystem smoke scripts (`semantic`, `events`, `ocr`, `audio`).
+- **Sample Corpus Validation:** Evaluated all 8 videos in `Sample_Videos/` via `scripts/evaluate_sample_corpus.py` with 100% evidence integrity pass rate.

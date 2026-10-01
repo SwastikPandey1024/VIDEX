@@ -10,7 +10,11 @@ from videx.semantic.crops import CropExtractionError, CropExtractor
 from videx.semantic.evidence_bundle import EvidenceBundleBuilder
 from videx.semantic.mock import MockVLMProvider
 from videx.semantic.policy import BudgetSnapshot, RoutingPolicy, RoutingPolicyConfig
-from videx.semantic.providers import VLMProvider, build_evidence_grounded_prompt
+from videx.semantic.providers import (
+    VLMProvider,
+    build_evidence_grounded_prompt,
+    create_vlm_provider,
+)
 from videx.semantic.qwen import Qwen3VLAdapter, Qwen3VLConfig
 from videx.semantic.router import SemanticRouter
 from videx.semantic.schemas import (
@@ -59,4 +63,5 @@ __all__ = [
     "VLMProvider",
     "ValidationResult",
     "build_evidence_grounded_prompt",
+    "create_vlm_provider",
 ]

@@ -149,3 +149,43 @@ class VLMProvider(Protocol):
             Validated SemanticEventPayload citing only provided evidence IDs.
         """
         ...
+
+
+def create_vlm_provider(
+    provider_name: str | None = None,
+    execution_mode: str | None = None,
+    model_name: str | None = None,
+    api_base_url: str | None = None,
+    api_key: str | None = None,
+) -> VLMProvider:
+    """Factory creating configured VLMProvider instances.
+
+    Decouples core semantic orchestration from specific backends and execution modes.
+    Safely respects VIDEX_SEMANTIC_PROVIDER and VIDEX_SEMANTIC_EXECUTION_MODE settings.
+    """
+    from videx.config import get_settings
+
+    settings = get_settings()
+    prov = (provider_name or settings.semantic_provider).strip().lower()
+    exec_mode = (execution_mode or settings.semantic_execution_mode).strip().lower()
+    model = model_name or settings.semantic_model
+    url = api_base_url or settings.semantic_api_base_url
+    key = api_key or settings.semantic_api_key
+
+    if prov in ("mock", ""):
+        from videx.semantic.mock import MockVLMProvider
+
+        return MockVLMProvider()
+
+    if prov in ("qwen", "qwen3_vl"):
+        from videx.semantic.qwen import Qwen3VLAdapter, Qwen3VLConfig
+
+        cfg = Qwen3VLConfig(
+            model_name=model,
+            execution_mode=exec_mode,
+            api_base_url=url,
+            api_key=key,
+        )
+        return Qwen3VLAdapter(config=cfg)
+
+    raise ValueError(f"Unsupported VLM provider '{prov}'. Supported: 'mock', 'qwen', 'qwen3_vl'.")
