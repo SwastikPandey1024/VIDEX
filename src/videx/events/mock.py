@@ -117,7 +117,7 @@ def create_mock_text_observation(
             timestamp_source=TimestampSource.CONTAINER,
         ),
         mean_confidence=0.94,
-        latest_bbox=box,
+        bbox_history=[box],
         supporting_frames=list(range(start_frame, end_frame + 1)),
         supporting_observation_ids=[uuid4() for _ in range(end_frame - start_frame + 1)],
         provider="mock_ocr",
