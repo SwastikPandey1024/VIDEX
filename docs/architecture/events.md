@@ -34,11 +34,29 @@ Phase 5.0 introduces the **Temporal Event Intelligence Engine** to VIDEX. The en
                      Downstream Evidence Graph & Audit
 ```
 
+### The 5-Layer Epistemological Hierarchy
+
+To prevent the rule engine from degenerating into a hard-coded heuristic reasoning system, VIDEX enforces a strict 5-layer epistemological boundary:
+
+```text
+RAW EVIDENCE
+     ↓  (Tracks, Detections, Trajectories, OCR Text, ASR Transcripts)
+DETERMINISTIC EVENTS
+     ↓  (Single-modality primitive state transitions: EnteredZone, SpeechStarted)
+DETERMINISTIC RELATIONSHIPS
+     ↓  (Interval algebra, Spatial containment, Multi-modal co-occurrence)
+CANDIDATE SEMANTIC EVENTS
+     ↓  (Saliency filtering, Query triage, Targeted visual crop packaging)
+VLM / REASONING (Qwen3-VL)
+        (Evidence-backed semantic interpretation & open-world reasoning)
+```
+
 ### Core Architecture Axioms
 1. **Traceable to Source Evidence**: Every event references concrete, immutable perception, OCR, or audio evidence identifiers (`evidence_ids` and `EventEvidence`). No ungrounded textual claims are permitted.
 2. **First-Class Temporal Provenance**: Events strictly inherit presentation timestamps (PTS) from `FrameTimestamp` and normalized audio seconds. No FPS-derived timestamps are introduced.
-3. **Deterministic Before Semantic**: Fast, deterministic CPU algorithms characterize state transitions before calling any expensive language or vision-language models.
-4. **Decoupled Architecture**: Detectors consume domain-level data structures (`Track`, `Trajectory`, `TextObservation`, `TranscriptSegment`) rather than specific hardware, framework, or vendor models (YOLO26, BoT-SORT, PaddleOCR, Faster-Whisper).
+3. **Deterministic Before Semantic**: Fast, deterministic CPU algorithms characterize state transitions and topological relationships before calling any expensive language or vision-language models.
+4. **Relational Co-occurrence vs Semantic Interpretation**: The `CrossModalRuleEngine` computes deterministic spatiotemporal relationships (Layer 3). It must **never** hardcode subjective semantic interpretations (e.g. human intent or sentiment), which strictly belong in Layer 5 (Phase 6 VLM / Reasoning).
+5. **Decoupled Architecture**: Detectors consume domain-level data structures (`Track`, `Trajectory`, `TextObservation`, `TranscriptSegment`) rather than specific hardware, framework, or vendor models (YOLO26, BoT-SORT, PaddleOCR, Faster-Whisper).
 
 ---
 
@@ -211,36 +229,57 @@ Benchmark results on representative test video streams:
 
 To maintain strict architectural discipline, **Qwen3-VL is NOT introduced in Phase 5.0**.
 
-The Event Intelligence Engine establishes the clean deterministic foundation for future VLM reasoning:
+The Event Intelligence Engine establishes the clean deterministic foundation for future VLM reasoning. As formalized in [ADR-005](../decisions/ADR-005-semantic-boundary-and-vlm-routing.md), VIDEX transitions from temporal events to semantic reasoning through a dedicated **Semantic Router**:
 
 ```text
-       ┌───────────────────────────────┐
-       │   Deterministic Events (P5)   │
-       │  (Lifecycle, Motion, Spatial) │
-       └───────────────┬───────────────┘
-                       │
-                       ▼
-       ┌───────────────────────────────┐
-       │   Candidate Event Selection   │
-       │    (Saliency & Query Focus)   │
-       └───────────────┬───────────────┘
-                       │
-                       ▼
-       ┌───────────────────────────────┐
-       │        Semantic Router        │
-       │  (Fast routing, cache check)  │
-       └───────────────┬───────────────┘
-                       │
-                       ▼
-       ┌───────────────────────────────┐
-       │      Qwen3-VL (Phase 6+)      │
-       │    (Visual Context Reasoner)  │
-       └───────────────┬───────────────┘
-                       │
-                       ▼
-       ┌───────────────────────────────┐
-       │ Evidence-backed Semantic Event│
-       └───────────────────────────────┘
+Video Stream
+ │
+ ├── Frames
+ │    ├── Detection (YOLO26)
+ │    ├── Tracking (BoT-SORT)
+ │    ├── Trajectory
+ │    └── OCR (PaddleOCR)
+ │
+ └── Audio
+      └── ASR (Faster-Whisper)
+          │
+          ▼
+     Canonical Evidence (Layer 1)
+          │
+          ▼
+   Temporal Event Engine (Phase 5 - Layer 2 & 3)
+          │
+          ├── Lifecycle
+          ├── Movement
+          ├── Spatial
+          ├── OCR
+          ├── Audio
+          └── Relations (TemporalRelationEngine & CrossModalRuleEngine)
+          │
+          ▼
+     Event Timeline
+          │
+          ▼
+   ┌──────────────────────────────────────────────┐
+   │ Phase 6: Semantic Router (Layer 4)           │
+   │  - Saliency Filtering & Query Triage         │
+   │  - Token Budget & Throttling Guardrails      │
+   │  - Spatial Bounding Crop Extractor (+Margin) │
+   │  - Synchronized Transcript/OCR Framing       │
+   └──────────────────────┬───────────────────────┘
+                          │
+                          ▼
+   ┌──────────────────────────────────────────────┐
+   │ Qwen3-VL (Layer 5)                           │
+   │  - Evidence-grounded visual-linguistic model │
+   │  - Targeted keyframe crops (no full video)   │
+   │  - Structured JSON semantic output           │
+   └──────────────────────┬───────────────────────┘
+                          │
+                          ▼
+             Evidence-backed Semantic Events
+          (Complete 6-Part Provenance Chain)
 ```
 
-By guaranteeing that all candidates arrive with frame indices, bounding boxes, and timestamp provenance, future VLM agents will receive targeted visual crops rather than processing redundant raw video frames.
+By guaranteeing that all candidates arrive with frame indices, bounding boxes, and timestamp provenance, future VLM agents will receive targeted visual crops rather than processing redundant raw video frames, reducing inference tokens and cloud costs by over 95%.
+

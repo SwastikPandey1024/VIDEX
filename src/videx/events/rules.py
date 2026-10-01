@@ -1,7 +1,13 @@
 """Deterministic compound event rules correlating cross-modal observations.
 
-Allows defining declarative rules that combine perception, OCR, and audio events
-(e.g., speech co-occurring with an object entering a zone) with strict evidence provenance.
+Architectural Boundary (ADR-005 - Layer 3):
+This engine evaluates deterministic spatiotemporal relationships (e.g. topological containment
+and temporal co-occurrence) across multiple modalities. It emits candidate correlation events
+with strict evidence provenance.
+
+IMPORTANT: This engine must NOT be used for high-level semantic interpretation, subjective
+intent classification, or heuristic narrative guessing (e.g. 'theft', 'altercation').
+Such semantic reasoning belongs strictly in Layer 5 (Phase 6 VLM / Semantic Router).
 """
 
 from __future__ import annotations
@@ -15,7 +21,7 @@ from videx.events.types import EventSeverity, EventStatus, EventType
 
 
 class CrossModalRuleEngine:
-    """Evaluates declarative rules over an EventTimeline to generate compound events."""
+    """Evaluates declarative spatiotemporal co-occurrence rules to produce deterministic compound relations."""
 
     def __init__(self, temporal_tolerance_seconds: float = 2.0) -> None:
         self.temporal_tolerance_seconds = temporal_tolerance_seconds
