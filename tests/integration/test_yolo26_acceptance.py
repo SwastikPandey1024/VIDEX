@@ -67,9 +67,7 @@ def _create_acceptance_video(video_path: Path, frame_count: int = 5, fps: float 
                 frame = np.full((height, width, 3), 40, dtype=np.uint8)
                 box_x = 20 + i * 8
                 box_y = 60 + i * 3
-                cv2.rectangle(
-                    frame, (box_x, box_y), (box_x + 50, box_y + 80), (220, 220, 220), -1
-                )
+                cv2.rectangle(frame, (box_x, box_y), (box_x + 50, box_y + 80), (220, 220, 220), -1)
                 out.write(frame)
         finally:
             out.release()
@@ -99,9 +97,7 @@ def test_yolo26_real_weights_acceptance(tmp_path: Path) -> None:
         )
 
     if importlib.util.find_spec("ultralytics") is None:
-        pytest.skip(
-            "ultralytics package not installed in environment; skipping real model test."
-        )
+        pytest.skip("ultralytics package not installed in environment; skipping real model test.")
 
     import ultralytics
 
@@ -157,9 +153,9 @@ def test_yolo26_real_weights_acceptance(tmp_path: Path) -> None:
                 assert bool(det.class_name), "class_name populated"
                 assert det.class_id >= 0, "class_id populated"
                 # Timestamp provenance assertions
-                assert (
-                    det.frame_timestamp.timestamp_source == expected_ts.timestamp_source
-                ), "timestamp provenance preserved"
+                assert det.frame_timestamp.timestamp_source == expected_ts.timestamp_source, (
+                    "timestamp provenance preserved"
+                )
                 assert det.frame_timestamp.is_repaired == expected_ts.is_repaired
 
             all_detections.extend(detections)

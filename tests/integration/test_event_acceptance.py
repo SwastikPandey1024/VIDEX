@@ -175,9 +175,7 @@ class TestEventPipelineIntegration:
             assert "event_id" in ev.raw_payload
             assert ev.confidence >= 0.0
 
-    def test_explainability_chain_complete(
-        self, sample_multimodal_data: dict[str, object]
-    ) -> None:
+    def test_explainability_chain_complete(self, sample_multimodal_data: dict[str, object]) -> None:
         vid_id = sample_multimodal_data["video_id"]
         engine = EventEngine(
             zones=[sample_multimodal_data["zone"]],  # type: ignore[list-item]

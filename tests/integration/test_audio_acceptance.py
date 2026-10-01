@@ -53,9 +53,7 @@ def _make_silent_mp4(path: Path, fps: float = 25.0, duration: float = 2.0) -> No
         out.release()
 
 
-def _make_video_with_audio(
-    path: Path, fps: float = 25.0, duration: float = 3.0
-) -> None:
+def _make_video_with_audio(path: Path, fps: float = 25.0, duration: float = 3.0) -> None:
     fps_frac = Fraction(fps).limit_denominator(1000)
     sample_rate = 16000
     n_frames = int(fps * duration)
@@ -272,18 +270,14 @@ class TestTranscriptNormalization:
 class TestMockASRProvider:
     """Validates deterministic MockASRProvider transcript generation."""
 
-    def test_returns_list_of_transcript_segments(
-        self, video_with_audio: Path
-    ) -> None:
+    def test_returns_list_of_transcript_segments(self, video_with_audio: Path) -> None:
         provider = MockASRProvider()
         arr, _ = extract_audio_stream(video_with_audio, target_sample_rate=16000)
         segments = provider.transcribe(audio_input=arr)
         assert isinstance(segments, list)
         assert len(segments) > 0
 
-    def test_canned_segments_returned_verbatim(
-        self, video_with_audio: Path
-    ) -> None:
+    def test_canned_segments_returned_verbatim(self, video_with_audio: Path) -> None:
         provider = MockASRProvider(
             MockASRConfig(
                 canned_segments=[
@@ -373,9 +367,7 @@ class TestTemporalTranscriptFusion:
         from uuid import uuid4
 
         vid = uuid4()
-        fusion = TemporalTranscriptFusion(
-            TemporalTranscriptFusionConfig(max_gap_seconds=0.5)
-        )
+        fusion = TemporalTranscriptFusion(TemporalTranscriptFusionConfig(max_gap_seconds=0.5))
         segs = [
             self._make_seg("VIDEX test", 0.0, 2.0, video_id=vid),
             self._make_seg("VIDEX test", 2.1, 4.0, video_id=vid),
@@ -400,9 +392,7 @@ class TestTemporalTranscriptFusion:
         from uuid import uuid4
 
         vid = uuid4()
-        fusion = TemporalTranscriptFusion(
-            TemporalTranscriptFusionConfig(max_gap_seconds=0.5)
-        )
+        fusion = TemporalTranscriptFusion(TemporalTranscriptFusionConfig(max_gap_seconds=0.5))
         segs = [
             self._make_seg("test text", 0.0, 2.0, video_id=vid),
             self._make_seg("test text", 2.1, 4.0, video_id=vid),
@@ -415,9 +405,7 @@ class TestTemporalTranscriptFusion:
         from uuid import uuid4
 
         vid = uuid4()
-        fusion = TemporalTranscriptFusion(
-            TemporalTranscriptFusionConfig(max_gap_seconds=0.5)
-        )
+        fusion = TemporalTranscriptFusion(TemporalTranscriptFusionConfig(max_gap_seconds=0.5))
         seg_1 = self._make_seg("speech recognition", 0.0, 2.5, video_id=vid)
         seg_2 = self._make_seg("speech recognition for video", 1.5, 3.8, video_id=vid)
 
@@ -603,9 +591,7 @@ class TestFasterWhisperAcceptance:
         assert "en" in provider.supported_languages
         assert "hi" in provider.supported_languages
 
-    def test_real_transcription_chain_and_evidence(
-        self, video_with_english_speech: Path
-    ) -> None:
+    def test_real_transcription_chain_and_evidence(self, video_with_english_speech: Path) -> None:
         """Verify full execution chain:
 
             test audio/video
@@ -776,9 +762,7 @@ class TestFasterWhisperAcceptance:
         model_ref = _get_faster_whisper_model()
         assert model_ref is not None
 
-        cfg = FasterWhisperConfig(
-            model_size_or_path=model_ref, device="cpu", compute_type="int8"
-        )
+        cfg = FasterWhisperConfig(model_size_or_path=model_ref, device="cpu", compute_type="int8")
         provider = FasterWhisperASRProvider(cfg)
         provider.warmup()
 
@@ -790,4 +774,3 @@ class TestFasterWhisperAcceptance:
             assert seg.raw_text
             assert seg.confidence is not None and 0.0 <= seg.confidence <= 1.0
             assert seg.start_timestamp_seconds < seg.end_timestamp_seconds
-

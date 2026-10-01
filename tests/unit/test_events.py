@@ -188,9 +188,7 @@ class TestMovementEventDetector:
     """Test movement transitions and direction changes in pixel space."""
 
     def test_started_and_stopped_moving(self) -> None:
-        detector = MovementEventDetector(
-            EventEngineConfig(movement_velocity_threshold_px_s=15.0)
-        )
+        detector = MovementEventDetector(EventEngineConfig(movement_velocity_threshold_px_s=15.0))
         trk = create_mock_track(start_time=0.0, end_time=2.0)
 
         # Build trajectory: stationary (0-0.5s), moving fast (0.5-1.0s), stationary (1.0-1.5s)
@@ -203,9 +201,7 @@ class TestMovementEventDetector:
                     trk.track_id, start_x=100.0, start_y=100.0, end_x=100.0, end_y=100.0, frames=1
                 )[0]
             )
-            pts[-1] = pts[-1].model_copy(
-                update={"frame_number": i, "timestamp_seconds": i / fps}
-            )
+            pts[-1] = pts[-1].model_copy(update={"frame_number": i, "timestamp_seconds": i / fps})
 
         # Phase 2: fast movement (100, 100) to (200, 100) over 5 frames (dx=20px = 200px/s)
         for i in range(5, 10):
@@ -215,9 +211,7 @@ class TestMovementEventDetector:
                     trk.track_id, start_x=x, start_y=100.0, end_x=x, end_y=100.0, frames=1
                 )[0]
             )
-            pts[-1] = pts[-1].model_copy(
-                update={"frame_number": i, "timestamp_seconds": i / fps}
-            )
+            pts[-1] = pts[-1].model_copy(update={"frame_number": i, "timestamp_seconds": i / fps})
 
         # Phase 3: stationary at (200, 100) for 5 frames
         for i in range(10, 15):
@@ -226,9 +220,7 @@ class TestMovementEventDetector:
                     trk.track_id, start_x=200.0, start_y=100.0, end_x=200.0, end_y=100.0, frames=1
                 )[0]
             )
-            pts[-1] = pts[-1].model_copy(
-                update={"frame_number": i, "timestamp_seconds": i / fps}
-            )
+            pts[-1] = pts[-1].model_copy(update={"frame_number": i, "timestamp_seconds": i / fps})
 
         events = detector.detect_events([trk], {trk.track_id: pts})
         types = [e.event_type for e in events]

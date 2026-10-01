@@ -298,7 +298,9 @@ class TestSemanticPipelineAcceptance:
         cache = SemanticCache()
 
         router = SemanticRouter(
-            candidate_selector=CandidateSelector(CandidateSelectionConfig(min_saliency_threshold=0.30)),
+            candidate_selector=CandidateSelector(
+                CandidateSelectionConfig(min_saliency_threshold=0.30)
+            ),
             policy=RoutingPolicy(RoutingPolicyConfig(min_saliency_threshold=0.30)),
             cache=cache,
             provider=MockVLMProvider(),
@@ -334,7 +336,9 @@ class TestSemanticPipelineAcceptance:
         )
 
         router = SemanticRouter(
-            candidate_selector=CandidateSelector(CandidateSelectionConfig(min_saliency_threshold=0.30)),
+            candidate_selector=CandidateSelector(
+                CandidateSelectionConfig(min_saliency_threshold=0.30)
+            ),
             policy=policy,
             provider=MockVLMProvider(),
         )

@@ -827,9 +827,9 @@ class TestTemporalTruthAndExactness:
         #    decoded_frame.pts is strictly monotonically increasing
         assert len(decoded_frame_pts) == 10
         for i in range(1, len(decoded_frame_pts)):
-            assert (
-                decoded_frame_pts[i] > decoded_frame_pts[i - 1]
-            ), "Decoded frames must have strictly increasing PTS"
+            assert decoded_frame_pts[i] > decoded_frame_pts[i - 1], (
+                "Decoded frames must have strictly increasing PTS"
+            )
 
         # d) The set of packet PTS values matches the set of decoded frame PTS values
         assert sorted(packet_pts) == decoded_frame_pts, (
@@ -966,5 +966,3 @@ class TestTemporalTruthAndExactness:
             assert decoded.frame_timestamp is not None
             assert decoded.frame_timestamp.source == TimestampSource.CONTAINER
             assert decoded.frame_timestamp.pts_seconds == pytest.approx(0.35, abs=0.01)
-
-

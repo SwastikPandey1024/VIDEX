@@ -153,10 +153,7 @@ def test_real_paddleocr_acceptance(tmp_path: Path) -> None:
     assert obs.script == "Latin"
     assert obs.frame_number == 0
     assert obs.frame_timestamp == decoded.frame_timestamp
-    assert (
-        obs.attributes["timestamp_source"]
-        == decoded.frame_timestamp.timestamp_source.value
-    )
+    assert obs.attributes["timestamp_source"] == decoded.frame_timestamp.timestamp_source.value
     assert obs.provider == "paddle_general"
 
 
@@ -208,10 +205,7 @@ def test_real_paddleocr_hindi_acceptance(tmp_path: Path) -> None:
     assert obs.polygon is not None and len(obs.polygon) == 4
     assert obs.frame_number == 0
     assert obs.frame_timestamp == decoded.frame_timestamp
-    assert (
-        obs.attributes["timestamp_source"]
-        == decoded.frame_timestamp.timestamp_source.value
-    )
+    assert obs.attributes["timestamp_source"] == decoded.frame_timestamp.timestamp_source.value
 
 
 # ── 3. Temporal OCR Acceptance Tests ───────────────────────────────────────────

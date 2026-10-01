@@ -969,6 +969,7 @@ def test_real_model_adapter_interface_with_mock_engine() -> None:
       - bbox valid
       - class information populated
     """
+
     class MockBoxes:
         def __init__(self) -> None:
             self.xyxy = [[120.0, 80.0, 240.0, 200.0]]
@@ -1031,5 +1032,3 @@ def test_real_model_adapter_interface_with_mock_engine() -> None:
     assert tracks[0].class_name == "car"
     assert tracks[0].class_id == 2
     assert tracks[0].frame_count == 3
-
-
