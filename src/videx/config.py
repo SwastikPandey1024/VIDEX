@@ -151,6 +151,57 @@ class Settings(BaseSettings):
         description="Maximum temporal interval (s) between events to be NEAR_IN_TIME",
     )
 
+    # ── Semantic Intelligence & Router (Phase 6) ─────────────
+    semantic_router_enabled: bool = Field(
+        default=True,
+        description="Enable Layer 4 Semantic Router gating and candidate selection",
+    )
+    semantic_provider: str = Field(
+        default="mock",
+        description="VLM provider key: 'mock', 'qwen3_vl', 'openai'",
+    )
+    semantic_model: str = Field(
+        default="Qwen/Qwen2.5-VL-7B-Instruct",
+        description="Underlying VLM model checkpoint or deployment identifier",
+    )
+    semantic_execution_mode: str = Field(
+        default="mock",
+        description="Qwen3-VL execution mode: 'disabled', 'mock', 'api', 'local_cpu', 'local_gpu'",
+    )
+    semantic_saliency_threshold: float = Field(
+        default=0.40,
+        ge=0.0,
+        le=1.0,
+        description="Minimum candidate saliency score to justify VLM invocation",
+    )
+    semantic_query_relevance_threshold: float = Field(
+        default=0.30,
+        ge=0.0,
+        le=1.0,
+        description="Minimum query relevance score required when a query is provided",
+    )
+    semantic_max_tokens_per_minute: int = Field(
+        default=100_000,
+        ge=1000,
+        description="Sliding-window token budget cap to prevent VLM cost overruns",
+    )
+    semantic_max_requests_per_minute: int = Field(
+        default=60,
+        ge=1,
+        description="Sliding-window maximum VLM requests permitted per minute",
+    )
+    semantic_crop_margin: float = Field(
+        default=0.15,
+        ge=0.0,
+        le=1.0,
+        description="Context margin fraction added to bounding boxes for visual crops",
+    )
+    semantic_cache_ttl_seconds: float = Field(
+        default=300.0,
+        ge=1.0,
+        description="Time-to-live in seconds for cached semantic inference results",
+    )
+
     @property
     def ocr_language_list(self) -> list[str]:
         """Return OCR languages as a list."""
