@@ -141,15 +141,20 @@ Phase 6.1 introduces a centralized provider factory `create_vlm_provider()` and 
 - **Environment Configuration:**
   - `VIDEX_SEMANTIC_PROVIDER` (or `VIDEX_VLM_PROVIDER`): `mock` (default), `qwen` / `qwen3_vl`.
   - `VIDEX_SEMANTIC_EXECUTION_MODE` (or `VIDEX_VLM_EXECUTION_MODE`): `disabled`, `mock`, `api`, `local_cpu`, `local_gpu`.
-  - `VIDEX_SEMANTIC_MODEL` (or `VIDEX_VLM_MODEL`): `Qwen/Qwen2.5-VL-7B-Instruct` (default) or any compatible endpoint model.
+  - `VIDEX_SEMANTIC_MODEL` (or `VIDEX_VLM_MODEL`): `Qwen/Qwen3-VL-8B-Instruct` (canonical default) or any compatible endpoint model.
   - `VIDEX_SEMANTIC_API_BASE_URL` (or `VIDEX_VLM_API_BASE_URL`): OpenAI-compatible or vLLM server endpoint.
   - `VIDEX_SEMANTIC_API_KEY` (or `VIDEX_VLM_API_KEY`): Bearer token for remote VLM API access (never committed to repository).
 
 - **Execution Mode Support:**
-  1. `mock`: Fully offline deterministic simulation with zero external dependencies.
-  2. `api`: Dispatches OpenAI/vLLM-compatible Chat Completions API requests over HTTP.
+  1. `mock`: Fully offline deterministic simulation with zero external dependencies (default for tests/CI).
+  2. `api`: Dispatches OpenAI/vLLM-compatible Chat Completions API requests over HTTP without local GPU requirements.
   3. `local_cpu` / `local_gpu`: Leverages HuggingFace `transformers` and `torch` with automatic device placement when installed.
   4. `disabled`: Provider reports `is_available() == False` and abstains gracefully.
+
+- **Canonical Architecture Target & Runtime Prerequisites:**
+  - Target Architecture: **Qwen3-VL** (as established in ADR-005).
+  - Runtime Decoupling: The provider abstraction remains completely model-agnostic; no hard dependency on local Qwen model weights or GPU drivers exists in the core repository.
+  - Prerequisites for Real Execution: Running local Qwen3-VL requires CUDA-capable PyTorch and `transformers >= 4.49.0` with model weights provisioned. For production deployments without local GPUs, `api` mode pointing to a remote vLLM or Ollama instance is recommended. In testing and CI environments, `mock` remains the mandatory default.
 
 ---
 

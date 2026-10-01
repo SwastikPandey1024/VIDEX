@@ -52,3 +52,20 @@ Or via direct python runner:
 ```bash
 uv run python scripts/evaluate_sample_corpus.py
 ```
+
+---
+
+## 5. Model Weights & Offline Reproducibility Semantics
+
+- **Zero Silent Downloads**: To prevent unexpected network requests, CI failures, or unbounded bandwidth usage, the evaluation pipeline **never** silently downloads model weights at runtime.
+- **Expected Local Model Cache**:
+  - Audio ASR Model: `models/faster-whisper-tiny` (files: `model.bin`, `config.json`, `tokenizer.json`, `vocabulary.json`).
+  - Model Identifier: `Systran/faster-whisper-tiny`.
+- **Manual Provisioning Instructions**:
+  ```bash
+  uv run huggingface-cli download Systran/faster-whisper-tiny --local-dir models/faster-whisper-tiny
+  ```
+- **Offline Behavior**:
+  - If the model cache exists locally or in the user's HuggingFace hub cache, real FasterWhisper speech recognition is executed.
+  - If the model cache is absent, the pipeline reports an explicit `[DEPENDENCY UNAVAILABLE]` status and falls back to deterministic `MockASRProvider`.
+- **Git Policy**: Model weights are strictly excluded from version control (`.gitignore` ignores `models/faster-whisper-*/`, `*.bin`, `*.pt`, `*.onnx`, `*.safetensors`). Do NOT commit binary weights.

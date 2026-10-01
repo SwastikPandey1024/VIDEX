@@ -163,7 +163,7 @@ class Settings(BaseSettings):
         description="VLM provider key: 'mock', 'qwen', 'qwen3_vl', 'openai'",
     )
     semantic_model: str = Field(
-        default="Qwen/Qwen2.5-VL-7B-Instruct",
+        default="Qwen/Qwen3-VL-8B-Instruct",
         validation_alias=AliasChoices("semantic_model", "videx_semantic_model"),
         description="Underlying VLM model checkpoint or deployment identifier",
     )

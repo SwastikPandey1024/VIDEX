@@ -107,3 +107,22 @@ A full evaluation run across the corpus is considered **successful** if and only
 3. **Evidence Grounding:** Every emitted Event references valid `evidence_ids` created during perception/OCR/audio.
 4. **Candidate Explainability:** Every candidate event produced has a non-empty, explainable reason string and a saliency score in $[0.0, 1.0]$.
 5. **No Hallucinated Persistence:** Unsupported or rejected candidate interpretations never enter the canonical event stream.
+
+---
+
+## 4. Model Cache & Offline Reproducibility Contract
+
+- **Deterministic Offline Gating**: CI environments and clean developer workstations must never trigger hidden, multi-gigabyte network downloads during video evaluation runs.
+- **Whisper ASR Model Resolution**:
+  - Preferred Local Cache: `models/faster-whisper-tiny` (`model.bin`, `config.json`).
+  - Hugging Face Model Identifier: `Systran/faster-whisper-tiny`.
+  - Offline Behavior: If the model cache is absent, the evaluation script logs an explicit `[DEPENDENCY UNAVAILABLE]` warning and falls back to deterministic `MockASRProvider`.
+  - Provisioning:
+    ```bash
+    uv run huggingface-cli download Systran/faster-whisper-tiny --local-dir models/faster-whisper-tiny
+    ```
+- **VLM Reasoning Runtime Boundary**:
+  - Canonical Architecture Target: `Qwen3-VL` (Layer 5).
+  - Default Model Identifier: `Qwen/Qwen3-VL-8B-Instruct` (configurable via `VIDEX_SEMANTIC_MODEL`).
+  - Safe Default Mode: `VIDEX_SEMANTIC_PROVIDER=mock` (or `execution_mode=disabled`).
+  - Real VLM execution requires explicitly setting `VIDEX_SEMANTIC_PROVIDER=qwen` and configuring either a remote `api` endpoint or installing `torch` / `transformers` for `local_gpu` / `local_cpu`. In this evaluation suite, `REAL VLM RUNTIME = NOT EXECUTED` is strictly reported.

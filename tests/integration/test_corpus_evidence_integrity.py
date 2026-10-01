@@ -120,26 +120,35 @@ def test_vlm_provider_configuration_and_factory() -> None:
     assert p_mock.provider_name == "mock_vlm"
     assert p_mock.is_available() is True
 
-    # 2. Qwen adapter with mock execution mode
+    # 2. Qwen adapter with default canonical model and mock execution mode
     p_qwen_mock = create_vlm_provider(provider_name="qwen", execution_mode="mock")
     assert p_qwen_mock.provider_name == "qwen3_vl"
     assert isinstance(p_qwen_mock, Qwen3VLAdapter)
+    assert p_qwen_mock.config.model_name == "Qwen/Qwen3-VL-8B-Instruct"
     assert p_qwen_mock.is_available() is True
 
-    # 3. Qwen adapter with API execution mode
+    # 3. Qwen adapter with API execution mode and custom model ID
     p_qwen_api = create_vlm_provider(
         provider_name="qwen3_vl",
         execution_mode="api",
+        model_name="Qwen/Qwen3-VL-8B-Instruct",
         api_base_url="http://localhost:8000/v1",
     )
     assert p_qwen_api.provider_name == "qwen3_vl"
+    assert p_qwen_api.config.model_name == "Qwen/Qwen3-VL-8B-Instruct"
     assert p_qwen_api.is_available() is True
 
     # 4. Qwen adapter with disabled mode
     p_qwen_disabled = create_vlm_provider(provider_name="qwen", execution_mode="disabled")
     assert p_qwen_disabled.is_available() is False
 
-    # 5. Unsupported provider raises ValueError
+    # 5. Confirm local_cpu and local_gpu modes are accepted configurations
+    for mode in ("local_cpu", "local_gpu"):
+        p_local = create_vlm_provider(provider_name="qwen", execution_mode=mode)
+        assert isinstance(p_local, Qwen3VLAdapter)
+        assert p_local.config.execution_mode == mode
+
+    # 6. Unsupported provider raises ValueError
     with pytest.raises(ValueError, match="Unsupported VLM provider"):
         create_vlm_provider(provider_name="nonexistent_vlm")
 

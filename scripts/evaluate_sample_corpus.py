@@ -103,6 +103,33 @@ def _find_yolo_weights() -> Path | None:
     return None
 
 
+def _resolve_whisper_model() -> tuple[str | None, str]:
+    """Resolve Whisper model cache without triggering unexpected network downloads.
+
+    Returns:
+        (model_path_or_identifier, status)
+        where status is 'cached_local', 'cached_hf_hub', or 'unavailable_offline'.
+    """
+    local_dir = Path("models/faster-whisper-tiny")
+    if (
+        local_dir.is_dir()
+        and (local_dir / "model.bin").is_file()
+        and (local_dir / "config.json").is_file()
+    ):
+        return str(local_dir), "cached_local"
+
+    try:
+        from huggingface_hub import try_to_load_from_cache
+
+        cached = try_to_load_from_cache("Systran/faster-whisper-tiny", "model.bin")
+        if cached is not None:
+            return "tiny", "cached_hf_hub"
+    except Exception:  # noqa: BLE001, S110
+        pass
+
+    return None, "unavailable_offline"
+
+
 def run_pipeline_for_video(
     video_path: Path,
     detector: Any,  # noqa: ANN401
@@ -523,20 +550,26 @@ def main() -> None:
         ),
     )
 
-    # Initialize Audio Pipeline (uses local model or falls back safely)
-    local_whisper = Path("models/faster-whisper-tiny")
-    if local_whisper.is_dir() and (local_whisper / "model.bin").is_file():
+    # Initialize Audio Pipeline (uses cached model or falls back with explicit status)
+    whisper_model, whisper_status = _resolve_whisper_model()
+    if whisper_model is not None:
         from videx.audio.base import FasterWhisperConfig
         from videx.audio.whisper import FasterWhisperASRProvider
 
         cfg = FasterWhisperConfig(
-            model_size_or_path=str(local_whisper),
+            model_size_or_path=whisper_model,
             device="cpu",
             compute_type="int8",
         )
         audio_pipe = AudioPipeline(asr_provider=FasterWhisperASRProvider(cfg))
+        logger.info("Using FasterWhisper ASR pipeline (%s: %s)", whisper_status, whisper_model)
     else:
-        logger.info("Using MockASR audio pipeline")
+        logger.warning(
+            "[DEPENDENCY UNAVAILABLE] Local Whisper model cache not found. "
+            "Real speech recognition is skipped to avoid unexpected network downloads. "
+            "To provision offline: huggingface-cli download Systran/faster-whisper-tiny "
+            "--local-dir models/faster-whisper-tiny. Falling back to MockASR."
+        )
         audio_pipe = AudioPipeline.create_mock()
 
     event_engine = EventEngine()

@@ -21,7 +21,7 @@ class Qwen3VLConfig(BaseModel):
     """Runtime configuration for Qwen3-VL reasoning adapter."""
 
     model_name: str = Field(
-        default="Qwen/Qwen2.5-VL-7B-Instruct",
+        default="Qwen/Qwen3-VL-8B-Instruct",
         description="Model checkpoint identifier or local directory path",
     )
     execution_mode: str = Field(
