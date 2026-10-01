@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0.0",
+  "corpus_name": "VIDEX Sample Videos Evaluation Corpus",
+  "videos": [
+    {
+      "filename": "bikes.mp4",
+      "file_size_bytes": 3139354,
+      "file_size_mb": 2.99,
+      "duration_seconds": 9.14,
+      "width": 1280,
+      "height": 720,
+      "fps": 50.0,
+      "frame_count": 458,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": true,
+      "audio": {
+        "codec": "aac",
+        "sample_rate": 48000,
+        "channels": 2,
+        "duration_seconds": 9.173
+      },
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        9.14
+      ]
+    },
+    {
+      "filename": "cars.mp4",
+      "file_size_bytes": 9507487,
+      "file_size_mb": 9.07,
+      "duration_seconds": 12.233,
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "frame_count": 368,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": true,
+      "audio": {
+        "codec": "aac",
+        "sample_rate": 48000,
+        "channels": 2,
+        "duration_seconds": 12.266
+      },
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        12.233
+      ]
+    },
+    {
+      "filename": "motorbikes.mp4",
+      "file_size_bytes": 8652151,
+      "file_size_mb": 8.25,
+      "duration_seconds": 27.4,
+      "width": 1366,
+      "height": 720,
+      "fps": 25.0,
+      "frame_count": 686,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": false,
+      "audio": null,
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        27.4
+      ]
+    },
+    {
+      "filename": "people.mp4",
+      "file_size_bytes": 11596620,
+      "file_size_mb": 11.06,
+      "duration_seconds": 21.033,
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "frame_count": 632,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": true,
+      "audio": {
+        "codec": "aac",
+        "sample_rate": 48000,
+        "channels": 2,
+        "duration_seconds": 21.098
+      },
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        21.033
+      ]
+    },
+    {
+      "filename": "ppe-1.mp4",
+      "file_size_bytes": 1517940,
+      "file_size_mb": 1.45,
+      "duration_seconds": 11.411,
+      "width": 1280,
+      "height": 720,
+      "fps": 29.97,
+      "frame_count": 343,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": false,
+      "audio": null,
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        11.411
+      ]
+    },
+    {
+      "filename": "ppe-2.mp4",
+      "file_size_bytes": 2651858,
+      "file_size_mb": 2.53,
+      "duration_seconds": 8.2,
+      "width": 1280,
+      "height": 720,
+      "fps": 25.0,
+      "frame_count": 206,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": false,
+      "audio": null,
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        8.2
+      ]
+    },
+    {
+      "filename": "ppe-3.mp4",
+      "file_size_bytes": 3361524,
+      "file_size_mb": 3.21,
+      "duration_seconds": 11.6,
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "frame_count": 349,
+      "video_codec": "h264",
+      "pix_fmt": "yuv420p",
+      "has_audio": true,
+      "audio": {
+        "codec": "aac",
+        "sample_rate": 48000,
+        "channels": 2,
+        "duration_seconds": 11.647
+      },
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        11.6
+      ]
+    },
+    {
+      "filename": "sample.mp4",
+      "file_size_bytes": 89098,
+      "file_size_mb": 0.08,
+      "duration_seconds": 2.96,
+      "width": 320,
+      "height": 240,
+      "fps": 25.0,
+      "frame_count": 75,
+      "video_codec": "mpeg4",
+      "pix_fmt": "yuv420p",
+      "has_audio": false,
+      "audio": null,
+      "container_format": "mov,mp4,m4a,3gp,3g2,mj2",
+      "is_vfr": false,
+      "timing_mode": "exact",
+      "pts_span_seconds": [
+        0.0,
+        2.96
+      ]
+    }
+  ]
+}
