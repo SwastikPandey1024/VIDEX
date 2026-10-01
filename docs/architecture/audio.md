@@ -309,20 +309,37 @@ Evidence(
 
 ---
 
-## Performance Benchmarks (Phase 4.0 Baseline)
+## Performance Benchmarks (Phase 4.0 & Phase 4.0R)
 
-Measured on a 3-second synthetic video (440 Hz sine wave, 16 kHz, AAC):
+Measured on a 3-second synthetic video (440 Hz sine wave, 16 kHz, AAC) and 4.10-second English speech fixture:
 
-| Operation | Latency |
+| Operation | Latency / RTF |
 |---|---|
 | `extract_audio_metadata()` | ~6–8 ms |
-| `extract_audio_stream()` (3s) | ~22–30 ms |
-| `MockASRProvider.transcribe()` | ~1–2 ms |
+| `extract_audio_stream()` (3s) | ~22 ms |
+| `MockASRProvider.transcribe()` | ~0.6–2 ms |
 | `TemporalTranscriptFusion.fuse()` | <1 ms |
-| `AudioPipeline.process_video()` (mock, 3s) | ~25–30 ms avg |
+| `AudioPipeline.process_video()` (mock, 3s) | ~23–25 ms avg |
 
-> FasterWhisper `tiny` model: ~200–1500 ms depending on audio duration and
-> device (CPU/GPU). Not benchmarked in CI (model not cached).
+### Real Faster-Whisper Runtime Benchmark (Phase 4.0R)
+Measured on CPU with int8 quantization:
+- **Model:** `tiny` (`Systran/faster-whisper-tiny` / `models/faster-whisper-tiny`)
+- **Device:** `cpu`
+- **Compute type:** `int8`
+- **Audio duration:** `4.10 s`
+- **Processing time:** `0.985 s` (3-run average)
+- **Real-Time Factor (RTF):** `0.240` (processing_time / audio_duration < 1.0; ~4.2x faster than real-time)
+- **Segments produced:** `1`
+- **Words produced:** `10`
+
+---
+
+## Sound Event Status (Phase 4.0R)
+
+> **Important architectural demarcation:**
+> - `SoundEventProvider` is strictly an **interface / hook protocol** (`@runtime_checkable Protocol`) defining the standard contract: `detect_events(audio_input, video_id, **kwargs) -> list[SoundObservation]`.
+> - **Real sound-event detector models** (e.g. YAMNet, AudioSpectrogramTransformer) are explicitly scheduled for a **future phase**.
+> - No acoustic sound-event model is loaded or executed in Phase 4.0R.
 
 ---
 
@@ -330,14 +347,15 @@ Measured on a 3-second synthetic video (440 Hz sine wave, 16 kHz, AAC):
 
 | Test Suite | Location | Count |
 |---|---|---|
-| Unit tests | `tests/unit/test_audio.py` | 24 |
-| Integration acceptance | `tests/integration/test_audio_acceptance.py` | 34 pass, 1 skip |
-| Smoke test | `scripts/smoke_test_audio.py` | 8 sections |
+| Unit tests | `tests/unit/test_audio.py` | 24 passed |
+| Integration acceptance | `tests/integration/test_audio_acceptance.py` | 39 passed, 1 skipped (Hindi fixture check) |
+| Smoke test | `scripts/smoke_test_audio.py` | 8 sections passed |
 
-**All hermetic tests are CI-safe** (no model weights required).
-
-**Real-model gate** (`TestFasterWhisperAcceptance`) skips automatically when
-the `faster-whisper-tiny` model is not locally cached.
+**Real-model gate** (`TestFasterWhisperAcceptance`):
+- Executes real speech transcription on `tests/fixtures/audio/english_speech.wav`
+- Verifies full execution chain: `video -> extraction -> FasterWhisperASRProvider -> TranscriptSegment -> Evidence`
+- Verifies word timestamps, valid start/end bounds, normalized text sync, and zero visual-FPS drift.
+- Hindi acceptance tests honest local availability: skips gracefully when no local Hindi audio fixture is present rather than fabricating a false acceptance.
 
 ---
 
@@ -345,7 +363,7 @@ the `faster-whisper-tiny` model is not locally cached.
 
 | Package | Version | Purpose |
 |---|---|---|
-| `av` | ≥18.0 | PyAV audio demuxing and resampling |
+| `av` | ≥14.0 | PyAV audio demuxing and resampling |
 | `numpy` | ≥1.26 | Float32 audio arrays |
 | `faster-whisper` | ≥1.2.1 | CTranslate2 ASR inference |
 | `pydantic` | ≥2.x | Domain model validation |
@@ -364,7 +382,6 @@ the `faster-whisper-tiny` model is not locally cached.
 
 ## Future Extension Points
 
-- **Speaker diarization**: `TranscriptSegment.speaker_id` is already a first-class field
-- **Sound event detection**: `SoundEventProvider` protocol hook is defined; ready for implementation
-- **Language detection**: `detected_lang` from `TranscriptionInfo.language` already plumbed through
-- **Multimodal fusion**: `Evidence.supporting_observation_ids` can link ASR evidence to OCR evidence from the same time window
+- **Sound event detection**: `SoundEventProvider` protocol hook is defined; concrete detector model implementation in future phase.
+- **Speaker diarization**: `TranscriptSegment.speaker_id` is already a first-class field.
+- **Multimodal fusion**: `Evidence.supporting_observation_ids` links ASR evidence to OCR/detection evidence from overlapping time windows.

@@ -74,7 +74,12 @@ def extract_audio_metadata(video_path: str | Path) -> AudioMetadata:
 
         stream = audio_streams[0]
         sample_rate = stream.sample_rate or stream.rate or 44100
-        channels = stream.channels or (stream.layout.channels if stream.layout else 2)
+        channels_raw = stream.channels or (stream.layout.channels if stream.layout else 2)
+        channel_count: int = (
+            channels_raw
+            if isinstance(channels_raw, int)
+            else (len(channels_raw) if isinstance(channels_raw, (tuple, list)) else 2)
+        )
         codec_name = (
             stream.codec_context.name if stream.codec_context else (stream.name or "unknown")
         )
@@ -92,7 +97,7 @@ def extract_audio_metadata(video_path: str | Path) -> AudioMetadata:
 
         return AudioMetadata(
             sample_rate=int(sample_rate),
-            channels=int(channels),
+            channels=channel_count,
             duration_seconds=max(0.0, float(duration_sec)),
             codec_name=str(codec_name) if codec_name else None,
             bit_rate=int(bit_rate) if bit_rate else None,

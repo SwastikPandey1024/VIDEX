@@ -46,6 +46,7 @@ Thumbs.db
 
 # Model weights — never commit weights to git
 models/weights/
+models/faster-whisper-*/
 *.pt
 *.pth
 *.onnx

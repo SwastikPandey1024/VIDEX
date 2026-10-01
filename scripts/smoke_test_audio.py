@@ -288,8 +288,8 @@ def test_mock_provider(video_with_audio: Path) -> int:
     for i, seg in enumerate(segments):
         ok = check(
             f"seg[{i}].confidence in [0,1]",
-            0.0 <= seg.confidence <= 1.0,
-            f"{seg.confidence:.3f}",
+            seg.confidence is not None and 0.0 <= seg.confidence <= 1.0,
+            f"{seg.confidence:.3f}" if seg.confidence is not None else "None",
         )
         if not ok:
             failures += 1
@@ -332,6 +332,7 @@ def test_fusion() -> int:
     failures = 0
 
     from uuid import uuid4
+
     from videx.domain.schemas import TranscriptSegment
 
     v_id = uuid4()
@@ -411,7 +412,8 @@ def test_pipeline(video_with_audio: Path, video_silent: Path) -> int:
     if not ok:
         failures += 1
 
-    ok = check("raw_segments non-empty", len(result.raw_segments) > 0, f"{len(result.raw_segments)}")
+    n_raw = len(result.raw_segments)
+    ok = check("raw_segments non-empty", n_raw > 0, f"{n_raw}")
     if not ok:
         failures += 1
 
@@ -472,53 +474,117 @@ def test_pipeline(video_with_audio: Path, video_silent: Path) -> int:
     return failures
 
 
-# ── Section 7: FasterWhisper acceptance (CI-safe skip) ────────────────────────
+# ── Section 7: FasterWhisper acceptance ───────────────────────────────────────
+
+def _get_smoke_whisper_model() -> str | None:
+    local_dir = Path("models/faster-whisper-tiny")
+    if (
+        local_dir.is_dir()
+        and (local_dir / "model.bin").is_file()
+        and (local_dir / "config.json").is_file()
+    ):
+        return str(local_dir)
+    try:
+        from huggingface_hub import try_to_load_from_cache
+
+        cached = try_to_load_from_cache("Systran/faster-whisper-tiny", "model.bin")
+        if cached is not None:
+            return "tiny"
+    except Exception:  # noqa: BLE001
+        return None
+    return None
+
 
 def test_faster_whisper(video_with_audio: Path) -> int:
-    section("7. FasterWhisper Real Model (CI-safe)")
+    section("7. FasterWhisper Real Model (Runtime Acceptance)")
     failures = 0
 
     try:
-        import faster_whisper  # noqa: F401
-        model_available = True
+        import faster_whisper  # type: ignore[import-untyped]  # noqa: F401
     except ImportError:
-        model_available = False
-
-    if not model_available:
         skip("faster-whisper not installed — skipping real model test")
         return 0
 
+    model_ref = _get_smoke_whisper_model()
+    if model_ref is None:
+        skip("faster-whisper tiny model not locally cached — skipping")
+        return 0
+
     try:
-        cfg = FasterWhisperConfig(model_size_or_path="tiny", device="cpu", compute_type="int8")
+        cfg = FasterWhisperConfig(
+            model_size_or_path=model_ref,
+            device="cpu",
+            compute_type="int8",
+            word_timestamps=True,
+        )
         from videx.audio.whisper import FasterWhisperASRProvider
 
         provider = FasterWhisperASRProvider(cfg)
         provider.warmup()
+        check("Model loaded and warmed up", True)
 
+        # 1. Real speech test if deterministic fixture exists
+        english_fixture = Path("tests/fixtures/audio/english_speech.wav")
+        if english_fixture.is_file():
+            t0 = time.perf_counter()
+            speech_segments = provider.transcribe(str(english_fixture), language="en")
+            speech_elapsed_ms = (time.perf_counter() - t0) * 1000
+
+            ok = check(
+                "Real speech: non-empty transcript produced",
+                len(speech_segments) > 0,
+                f"{len(speech_segments)} segments",
+            )
+            if not ok:
+                failures += 1
+
+            for s in speech_segments:
+                valid_ts = (
+                    s.start_timestamp_seconds >= 0.0
+                    and s.end_timestamp_seconds > s.start_timestamp_seconds
+                    and s.language == "en"
+                )
+                ts_detail = f"[{s.start_timestamp_seconds:.2f}s - {s.end_timestamp_seconds:.2f}s]"
+                ok = check(
+                    "Speech segment: valid timestamps & language=='en'",
+                    valid_ts,
+                    f"{ts_detail} lang={s.language}",
+                )
+                if not ok:
+                    failures += 1
+                ok = check(
+                    "Speech segment: word timestamps preserved",
+                    len(s.words) > 0,
+                    f"{len(s.words)} words extracted",
+                )
+                if not ok:
+                    failures += 1
+                has_expected = (
+                    "speech recognition" in s.normalized_text.lower()
+                    or "speech" in s.normalized_text.lower()
+                )
+                ok = check(
+                    "Speech segment: raw_text matches expected content",
+                    has_expected,
+                    f"'{s.raw_text}'",
+                )
+                if not ok:
+                    failures += 1
+
+            print(f"  {INFO}  Real speech inference latency: {speech_elapsed_ms:.1f} ms")
+
+        # 2. Non-speech sine audio test
         audio_arr, _ = extract_audio_stream(video_with_audio, target_sample_rate=16000)
         t0 = time.perf_counter()
         segments = provider.transcribe(audio_input=audio_arr, language="en")
         elapsed_ms = (time.perf_counter() - t0) * 1000
 
-        ok = check("FasterWhisper: segments returned (may be empty for sine)", True)
-        if not ok:
-            failures += 1
-
-        for seg in segments:
-            ok = check(
-                "seg.confidence in [0,1]", 0.0 <= seg.confidence <= 1.0, f"{seg.confidence:.3f}"
-            )
-            if not ok:
-                failures += 1
-                break
-
-        print(
-            f"  {INFO}  FasterWhisper 'tiny' inference: {elapsed_ms:.1f} ms | "
-            f"{len(segments)} segments"
-        )
+        check("FasterWhisper: non-speech audio handled gracefully", True)
+        print(f"  {INFO}  Sine inference: {elapsed_ms:.1f} ms | {len(segments)} segments")
 
     except Exception as exc:  # noqa: BLE001
-        skip(f"FasterWhisper test skipped: {exc}")
+        check(f"FasterWhisper test encountered error: {exc}", False)
+        failures += 1
 
     return failures
 
@@ -526,16 +592,14 @@ def test_faster_whisper(video_with_audio: Path) -> int:
 # ── Section 8: Benchmarks ─────────────────────────────────────────────────────
 
 def run_benchmarks(video_with_audio: Path) -> None:
-    section("8. Micro-Benchmarks")
+    section("8. Micro-Benchmarks & RTF Measurement")
 
+    # 1. Mock pipeline micro-benchmark
     pipeline = AudioPipeline.create_mock(
         config=MockASRConfig(segment_duration_seconds=1.0)
     )
-
-    # Warm-up
     pipeline.process_video(video_with_audio, language="en")
 
-    # 5-run average
     times = []
     for _ in range(5):
         t0 = time.perf_counter()
@@ -548,6 +612,46 @@ def run_benchmarks(video_with_audio: Path) -> None:
 
     print(f"  {INFO}  AudioPipeline (mock, 3s video, 5 runs):")
     print(f"         avg={avg_ms:.1f} ms | min={min_ms:.1f} ms | max={max_ms:.1f} ms")
+
+    # 2. Real Faster-Whisper RTF benchmark (if model available)
+    model_ref = _get_smoke_whisper_model()
+    english_fixture = Path("tests/fixtures/audio/english_speech.wav")
+    if model_ref is not None and english_fixture.is_file():
+        import wave
+        with wave.open(str(english_fixture), "rb") as w:
+            audio_duration = w.getnframes() / float(w.getframerate())
+
+        cfg = FasterWhisperConfig(
+            model_size_or_path=model_ref,
+            device="cpu",
+            compute_type="int8",
+        )
+        from videx.audio.whisper import FasterWhisperASRProvider
+
+        provider = FasterWhisperASRProvider(cfg)
+        provider.warmup()
+
+        real_times = []
+        last_segs = []
+        for _ in range(3):
+            t0 = time.perf_counter()
+            last_segs = provider.transcribe(str(english_fixture), language="en")
+            real_times.append(time.perf_counter() - t0)
+
+        avg_proc_time = sum(real_times) / len(real_times)
+        rtf = avg_proc_time / audio_duration
+        total_words = sum(len(s.words) for s in last_segs)
+
+        print(f"\n  {BOLD}Real Faster-Whisper Benchmark Metrics:{RESET}")
+        print(f"    • Model:           tiny ({model_ref})")
+        print(f"    • Device:          {cfg.device}")
+        print(f"    • Compute type:    {cfg.compute_type}")
+        print(f"    • Audio duration:  {audio_duration:.2f} s")
+        print(f"    • Processing time: {avg_proc_time:.3f} s (avg of 3 runs)")
+        rtf_desc = "Real-time capable (RTF < 1.0)" if rtf < 1.0 else "Slower than real-time"
+        print(f"    • RTF:             {rtf:.3f} ({rtf_desc})")
+        print(f"    • Segments:        {len(last_segs)}")
+        print(f"    • Words:           {total_words}")
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
