@@ -113,6 +113,44 @@ class Settings(BaseSettings):
     vlm_model: str = Field(default="gpt-4o", description="VLM model identifier")
     openai_api_key: str = Field(default="", description="OpenAI API key (not logged)")
 
+    # ── Temporal Event Intelligence (Phase 5) ────────────────
+    event_lifecycle_confirmation_threshold: int = Field(
+        default=2,
+        ge=1,
+        description="Minimum confirmed frames before confirming appearance (filters noise)",
+    )
+    event_disappearance_threshold_seconds: float = Field(
+        default=1.0,
+        ge=0.0,
+        description="Temporal absence (s) before confirming disappearance vs occlusion",
+    )
+    event_movement_velocity_threshold_px_s: float = Field(
+        default=10.0,
+        ge=0.0,
+        description="Pixel velocity threshold distinguishing stationary dwelling from motion",
+    )
+    event_direction_change_degrees_threshold: float = Field(
+        default=45.0,
+        ge=0.0,
+        le=180.0,
+        description="Angular deflection threshold in degrees required for direction change",
+    )
+    event_spatial_boundary_tolerance_px: float = Field(
+        default=5.0,
+        ge=0.0,
+        description="Pixel-space buffer around zone boundaries to absorb jitter",
+    )
+    event_spatial_debounce_interval_seconds: float = Field(
+        default=0.5,
+        ge=0.0,
+        description="Minimum temporal gap (s) before re-emitting enter/exit events",
+    )
+    event_temporal_near_interval_seconds: float = Field(
+        default=2.0,
+        ge=0.0,
+        description="Maximum temporal interval (s) between events to be NEAR_IN_TIME",
+    )
+
     @property
     def ocr_language_list(self) -> list[str]:
         """Return OCR languages as a list."""
