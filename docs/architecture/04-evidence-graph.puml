@@ -1,6 +1,6 @@
 @startuml VIDEX-Evidence-Graph
 
-title VIDEX — Evidence Graph & Domain Model
+title VIDEX — Evidence Graph & Spatiotemporal Memory Model
 
 skinparam backgroundColor #0D1117
 skinparam shadowing false
@@ -59,6 +59,12 @@ class TrajectoryPoint {
     +direction: str
 }
 
+class SpatialZone {
+    +zone_id: str
+    +zone_name: str
+    +polygon_points: list
+}
+
 class OCRObservation {
     +ocr_id: UUID
     +text: str
@@ -90,6 +96,16 @@ class Event {
     +status: str
 }
 
+class SemanticEvent {
+    +semantic_event_id: UUID
+    +event_type: str
+    +interpretation: str
+    +confidence: float
+    +start_time: float
+    +end_time: float
+    +routing_decision: str
+}
+
 class Evidence {
     +evidence_id: UUID
     +evidence_type: str
@@ -100,12 +116,6 @@ class Evidence {
     +track_id: UUID
 }
 
-class Attribute {
-    +name: str
-    +value: str
-    +confidence: float
-}
-
 class BBox {
     +x1: float
     +y1: float
@@ -113,35 +123,46 @@ class BBox {
     +y2: float
 }
 
-Video "1" --> "*" Scene : contains
-Video "1" --> "*" Frame : contains
+' Containment and Structural Hierarchy
+Video "1" --> "*" Scene : CONTAINS
+Video "1" --> "*" Frame : CONTAINS
+Video "1" --> "*" SpatialZone : CONTAINS
+Scene "1" --> "*" Frame : CONTAINS
 
-Scene "1" --> "*" Frame : contains
+' Perception & Spatial Layout
+Frame "1" --> "*" Detection : CONTAINS / PRODUCES
+Detection "*" --> "0..1" Track : BELONGS_TO
+Track "1" --> "*" TrajectoryPoint : FOLLOWS
+Track "*" --> "*" SpatialZone : OCCURS_IN
+Detection "*" --> "*" Detection : SPATIALLY_OVERLAPS
 
-Frame "1" --> "*" Detection : produces
-Detection "*" --> "0..1" Track : assigned to
+' Multimodal Perception
+Frame "1" --> "*" OCRObservation : CONTAINS
+OCRObservation "*" --> "*" Frame : SUPPORTED_BY
+AudioSegment "1" --> "*" TranscriptSegment : CONTAINS
+Frame "*" --> "*" AudioSegment : TEMPORALLY_ALIGNED
 
-Track "1" --> "*" TrajectoryPoint : follows
-Track "1" --> "*" Attribute : has
+' Deterministic Events (Layer 2 & 3)
+Track "*" --> "*" Event : PARTICIPATES_IN
+OCRObservation "*" --> "*" Event : SUPPORTS
+AudioSegment "*" --> "*" Event : SUPPORTS
+SpatialZone "*" --> "*" Event : OCCURS_IN
+Scene "*" --> "*" Event : CONTEXTUALIZES
 
-Frame "1" --> "*" OCRObservation : contains
-OCRObservation "*" --> "*" Frame : supported by
+' Spatiotemporal Event Topology
+Event "*" --> "*" Event : PRECEDES / FOLLOWS
+Event "*" --> "*" Event : TEMPORALLY_NEAR
 
-AudioSegment "1" --> "*" TranscriptSegment : contains
+' Layer 5 Semantic Reasoning & Provenance
+Event "1..*" --> "0..1" SemanticEvent : SUPPORTS_SEMANTIC_EVENT
+SemanticEvent "1" --> "1..*" Event : DERIVED_FROM
 
-Frame "*" --> "*" AudioSegment : temporally aligned
-
-Track "*" --> "*" Event : participates in
-OCRObservation "*" --> "*" Event : supports
-AudioSegment "*" --> "*" Event : supports
-Scene "*" --> "*" Event : contextualizes
-
-Event "1" --> "*" Evidence : supported by
-
-Evidence "*" --> "1" Frame : references
-Evidence "*" --> "0..1" Track : references
-Evidence "*" --> "0..1" OCRObservation : references
-Evidence "*" --> "0..1" AudioSegment : references
-Evidence "*" --> "0..1" Event : supports
+' Grounding to Evidence Store
+Event "1" --> "*" Evidence : SUPPORTED_BY
+SemanticEvent "1" --> "*" Evidence : SUPPORTED_BY
+Evidence "*" --> "1" Frame : REFERENCES
+Evidence "*" --> "0..1" Track : REFERENCES
+Evidence "*" --> "0..1" OCRObservation : REFERENCES
+Evidence "*" --> "0..1" AudioSegment : REFERENCES
 
 @enduml
