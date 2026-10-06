@@ -17,7 +17,9 @@ from videx.graph.nodes import (
     create_zone_node,
     make_node_id,
 )
+from videx.graph.projection import GraphProjection, GraphProjectionConfig
 from videx.graph.provenance import EdgeProvenance, NodeProvenance
+from videx.graph.query import GraphQueryService
 from videx.graph.schemas import (
     EdgeFilter,
     GraphIntegrityReport,
@@ -25,13 +27,16 @@ from videx.graph.schemas import (
     GraphQueryResult,
     NodeFilter,
 )
+from videx.graph.spatial import SpatialGraphEngine, compute_bbox_iou
 from videx.graph.store import GraphStore, InMemoryGraphStore
+from videx.graph.temporal import TemporalGraphEngine
 from videx.graph.types import (
     DerivationType,
     Direction,
     GraphEdgeType,
     GraphNodeType,
 )
+from videx.graph.validator import GraphIntegrityValidator
 
 __all__ = [
     "DerivationType",
@@ -41,14 +46,21 @@ __all__ = [
     "GraphEdge",
     "GraphEdgeType",
     "GraphIntegrityReport",
+    "GraphIntegrityValidator",
     "GraphNode",
     "GraphNodeType",
     "GraphPath",
+    "GraphProjection",
+    "GraphProjectionConfig",
     "GraphQueryResult",
+    "GraphQueryService",
     "GraphStore",
     "InMemoryGraphStore",
     "NodeFilter",
     "NodeProvenance",
+    "SpatialGraphEngine",
+    "TemporalGraphEngine",
+    "compute_bbox_iou",
     "create_detection_node",
     "create_edge",
     "create_event_node",
