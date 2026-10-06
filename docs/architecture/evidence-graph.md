@@ -123,16 +123,97 @@ class GraphStore(Protocol):
 
 ## 5. Downstream Integration Contracts
 
-### 5.1 Phase 8: Agentic Video Investigation
-The Phase 8 Agent interacts with the Evidence Graph via `videx.graph.query.GraphQueryService`:
-1. `events_between(video_id, start_sec, end_sec)`: Finds chronological events within an investigation time window.
-2. `events_involving_track(track_id)`: Traces all events where a specific tracked entity was a participant.
-3. `evidence_for_event(event_id)`: Fetches the immutable evidence chain (frames, crops, audio, OCR) supporting an event.
-4. `temporal_neighbors(event_id, window_sec)`: Retrieves upstream and downstream events for causal chain hypothesis testing.
-5. `find_path(source_node_id, target_node_id)`: Discovers multi-hop relational pathways between disparate entities (e.g., Track $A \to$ Event $E \to$ Zone $Z \leftarrow$ Track $B$).
+### 5.1 Phase 8: Agentic Video Investigation Contract
 
-### 5.2 Phase 9: Interactive UI
-The frontend renders:
-1. **Interactive Spatiotemporal Timeline:** Chronological tracks, audio waveforms, OCR appearances, and events projected from graph temporal nodes.
-2. **Evidence Inspector:** Clicking any node surfaces its complete provenance: source video, frame image URI, bounding box coordinates, and model confidence.
-3. **Sub-graph Visualizer:** Localized graph view centered on selected events showing participating tracks, zones, and supporting evidence.
+The Phase 8 Autonomous Investigation Agent interacts with the Evidence Graph as an interactive tool surface. The Agent never accesses raw model weights or unstructured video files directly; rather, it traverses the Evidence Graph via `GraphQueryService`:
+
+```python
+class AgentInvestigationInterface(Protocol):
+    """Core tool contracts consumed by Phase 8 Agent tools."""
+
+    def query_graph(self, filter: NodeFilter) -> list[GraphNode]:
+        """Global attribute and interval search across entities."""
+        ...
+
+    def get_event(self, event_id: str | UUID) -> GraphNode | None:
+        """Fetch targeted deterministic or semantic event node with complete provenance."""
+        ...
+
+    def get_track(self, track_id: str | UUID) -> GraphNode | None:
+        """Fetch persistent tracked object identity, duration, and kinematics."""
+        ...
+
+    def get_evidence(self, evidence_id: str | UUID) -> GraphNode | None:
+        """Retrieve grounded evidence record with bounding box and sensor timestamps."""
+        ...
+
+    def get_frames(self, frame_ids: Sequence[str | UUID]) -> list[GraphNode]:
+        """Fetch referenced frame metadata and storage URIs for VLM inspection."""
+        ...
+
+    def trace_evidence_chain(self, semantic_event_id: str | UUID) -> list[GraphNode]:
+        """Traverse the exact causal chain: SemanticEvent -> Events -> Evidence -> Frames."""
+        ...
+```
+
+#### Typical Agent Investigation Traversal Flow:
+1. **Hypothesis Initialization:** User prompts *"Did anyone access the loading dock during the delivery?"*
+2. **Zone & Time Discovery:** Agent calls `query_graph(node_types=[ZONE], label_contains="loading dock")` to obtain `zone:loading_dock`.
+3. **Temporal Scoping:** Agent calls `neighbors("zone:loading_dock", relationship=OCCURS_IN)` to discover participating tracks and events.
+4. **Co-occurrence Correlation:** Agent calls `temporal_neighbors(event_id, window_sec=5.0)` to uncover co-temporal audio utterances (`TRANSCRIPT_SEGMENT`) and recognized text (`OCR_OBSERVATION`).
+5. **Causal Audit:** Agent calls `trace_evidence_chain(semantic_event_id)` to verify visual evidence frames before emitting an explainable, audited answer to the user.
+
+---
+
+### 5.2 Phase 9: Interactive UI Contract
+
+The Phase 9 frontend (React/Vite or equivalent dashboard) consumes the Evidence Graph via high-performance REST/WebSocket streaming endpoints projected from the `GraphStore`:
+
+1. **Multi-Track Spatiotemporal Timeline:**
+   - **Video Track:** Master playback scrubber driven by exact container Presentation Timestamps (PTS).
+   - **Object Tracks Layer:** Horizontal span bars displaying active `TRACK` intervals labeled by object class and tracking ID.
+   - **Speech / ASR Layer:** Waveform regions aligned with `TRANSCRIPT_SEGMENT` intervals with speaker tags.
+   - **OCR Layer:** Discrete marker pills indicating when text or license plates appeared (`OCR_OBSERVATION`).
+   - **Deterministic Events Layer:** Colored markers for state transitions (`EVENT`: `OBJECT_ENTERED_ZONE`, etc.).
+   - **Semantic Events Layer:** Highlighted cards representing VLM-grounded interpretations (`SEMANTIC_EVENT`).
+
+2. **Sub-Graph Visualizer (D3 / Cytoscape):**
+   - Centered on a currently selected Event or Track.
+   - Renders directed links for `PARTICIPATES_IN`, `OCCURS_IN`, `SPATIALLY_OVERLAPS`, `PRECEDES`, and `SUPPORTED_BY`.
+   - Node click opens the **Evidence Inspector**, displaying the source JPEG frame crop, BBox coordinates, OCR transcript, and derivation confidence.
+
+3. **Data Payload Contract (JSON API):**
+```json
+{
+  "video_id": "fdd87ff9-c439-4d06-b78e-562b9b41a18d",
+  "timeline": {
+    "duration_seconds": 12.0,
+    "fps": 25.0
+  },
+  "nodes": [
+    {
+      "node_id": "event:e123",
+      "node_type": "event",
+      "label": "Event:OBJECT_ENTERED_ZONE [1.0s - 2.0s]",
+      "start_pts": 1.0,
+      "end_pts": 2.0,
+      "provenance": {
+        "source_id": "e123",
+        "source_type": "Event",
+        "evidence_ids": ["ev456"]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "PRECEDES:event:e123->event:e124",
+      "source": "event:e123",
+      "target": "event:e124",
+      "relationship": "PRECEDES",
+      "derivation": "deterministic",
+      "actual_gap_seconds": 1.32
+    }
+  ]
+}
+```
+
