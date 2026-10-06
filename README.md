@@ -8,50 +8,46 @@ VIDEX is a modular video intelligence pipeline designed for structured analysis 
 
 ## Status
 
-**Phase 0 — Scaffolding complete.**  
-Domain contracts, provider interfaces, and API shell are in place.  
-No ML model inference is implemented yet.
+**Phase 8 — Agentic Investigator complete.**  
+Evidence-grounded spatiotemporal query reasoning engine, 16 typed read-only tools, and claim validation.
 
 | Phase | Description | Status |
-|-------|-------------|--------|
-| 0 | Foundation, schemas, provider interfaces, API shell | ✅ Complete |
-| 1 | Video ingestion, frame extraction, object detection | 🔜 Planned |
-| 2 | Tracking, trajectory analysis | 🔜 Planned |
-| 3 | OCR (Hindi), ASR (Hindi) | 🔜 Planned |
-| 4 | Semantic reasoning / VLM | 🔜 Planned |
-| 5 | Event engine, evidence store, reporting UI | 🔜 Planned |
+| --- | --- | --- |
+| Phase 0 | Foundation | ✅ |
+| Phase 1 | Ingestion | ✅ |
+| Phase 2 | Perception | ✅ |
+| Phase 3 | OCR | ✅ |
+| Phase 4 | Audio / ASR | ✅ |
+| Phase 5 | Temporal Events | ✅ |
+| Phase 6 | Semantic Intelligence | ✅ |
+| Phase 7 | Evidence Graph | ✅ |
+| Phase 8 | Agentic Investigator | ✅ |
+| Phase 9 | Investigation UI | 🔜 |
 
 ---
 
 ## Architecture
 
-```
-Video Input
-    │
-    ▼
-Ingestion ──────► Frame Store
-    │
-    ▼
-Perception (DetectionProvider)
-    │
-    ▼
-Tracking (TrackingProvider)
-    │
-    ▼
-Temporal Analysis
-    │
-    ├──► OCR (OCRProvider)
-    ├──► ASR (ASRProvider)
-    └──► VLM (VideoReasoningProvider)
-    │
-    ▼
-Evidence Store
-    │
-    ▼
-Event Engine (EventDetector)
-    │
-    ▼
-Intelligence UI / Reports
+```text
+Video
+ ↓
+Ingestion
+ ↓
+Perception / Tracking / OCR / ASR
+ ↓
+Temporal Events
+ ↓
+Semantic Router / VLM
+ ↓
+Canonical Evidence
+ ↓
+Evidence Graph
+ ↓
+VIDEX Investigator
+ ↓
+FastAPI
+ ↓
+React Investigation Workstation
 ```
 
 See [`docs/architecture/system-design.md`](docs/architecture/system-design.md) for the full design.
@@ -140,11 +136,13 @@ VIDEX/
 ## Architecture Decision Records
 
 | ADR | Decision | Status |
-|-----|----------|--------|
-| [ADR-001](docs/decisions/ADR-001-detector.md) | Object detector selection | Proposed |
-| [ADR-002](docs/decisions/ADR-002-tracker.md) | Multi-object tracker selection | Proposed |
-| [ADR-003](docs/decisions/ADR-003-ocr.md) | Hindi OCR engine selection | Proposed |
-| [ADR-004](docs/decisions/ADR-004-asr.md) | Hindi ASR engine selection | Proposed |
+| --- | --- | --- |
+| [ADR-001](docs/decisions/ADR-001-detector.md) | Object detector selection | Accepted |
+| [ADR-002](docs/decisions/ADR-002-tracker.md) | Multi-object tracker selection | Accepted |
+| [ADR-003](docs/decisions/ADR-003-ocr.md) | Hindi OCR engine selection | Accepted |
+| [ADR-004](docs/decisions/ADR-004-asr.md) | Hindi ASR engine selection | Accepted |
+| [ADR-005](docs/decisions/ADR-005-semantic-boundary-and-vlm-routing.md) | Semantic boundary and VLM routing | Accepted |
+| [ADR-006](docs/decisions/ADR-006-evidence-graph-and-spatiotemporal-memory.md) | Evidence graph and spatiotemporal memory | Accepted |
 
 ---
 
