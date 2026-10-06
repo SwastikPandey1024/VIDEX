@@ -58,9 +58,13 @@ def create_sample_video(path: Path) -> None:
 
 
 def main() -> None:
-    sample_path = Path("sample.mp4")
-    print(f"Creating sample video: {sample_path.resolve()} ...")
-    create_sample_video(sample_path)
+    sample_path = Path("Sample_Videos/sample.mp4")
+    if not sample_path.exists():
+        print(f"Creating sample video: {sample_path.resolve()} ...")
+        sample_path.parent.mkdir(parents=True, exist_ok=True)
+        create_sample_video(sample_path)
+    else:
+        print(f"Using canonical sample video: {sample_path.resolve()} ...")
 
     print("\n--- Running VideoIngestionService ---")
     service = VideoIngestionService(detect_scenes=True)

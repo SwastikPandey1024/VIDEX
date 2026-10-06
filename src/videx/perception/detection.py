@@ -40,6 +40,17 @@ class YOLO26DetectorConfig:
     custom_class_names: dict[int, str] = field(default_factory=dict)
 
 
+def _resolve_model_path(path_str: str) -> str:
+    """Resolve model path, preferring existing path or searching models/ directory."""
+    p = Path(path_str)
+    if p.exists():
+        return str(p)
+    models_candidate = Path("models") / p
+    if models_candidate.exists():
+        return str(models_candidate)
+    return path_str
+
+
 class YOLO26Detector:
     """YOLO26 object detection provider implementing DetectionProvider protocol.
 
@@ -71,7 +82,8 @@ class YOLO26Detector:
 
             ultralytics_mod = importlib.import_module("ultralytics")
             yolo_cls = ultralytics_mod.YOLO
-            self._model = yolo_cls(self.config.model_path)
+            resolved_path = _resolve_model_path(self.config.model_path)
+            self._model = yolo_cls(resolved_path)
             # Dummy forward pass on 640x640 blank array
             dummy = np.zeros((640, 640, 3), dtype=np.uint8)
             self._model(
@@ -110,7 +122,8 @@ class YOLO26Detector:
 
                 ultralytics_mod = importlib.import_module("ultralytics")
                 yolo_cls = ultralytics_mod.YOLO
-                self._model = yolo_cls(self.config.model_path)
+                resolved_path = _resolve_model_path(self.config.model_path)
+                self._model = yolo_cls(resolved_path)
             except (ImportError, AttributeError) as err:
                 raise RuntimeError(
                     f"Ultralytics is required for YOLO26Detector '{self.provider_name}' "
