@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from typing import Any
 
 from videx.agent.claims import Claim
 from videx.agent.evidence_gate import EvidenceSufficiencyGate
@@ -14,7 +15,7 @@ from videx.agent.schemas import InvestigationPlan, InvestigationRequest, ToolCal
 from videx.agent.types import ClaimStatus, InvestigationStatus, QuestionCategory
 
 
-def test_planner_classification():
+def test_planner_classification() -> None:
     planner = InvestigationPlanner()
 
     assert (
@@ -39,7 +40,7 @@ def test_planner_classification():
     assert planner.classify_question("What happened in event ev-1?") == QuestionCategory.EVENT
 
 
-def test_planner_plan_and_tool_generation():
+def test_planner_plan_and_tool_generation() -> None:
     planner = InvestigationPlanner()
     req = InvestigationRequest.create(
         video_id="00000000-0000-0000-0000-000000000001",
@@ -56,7 +57,7 @@ def test_planner_plan_and_tool_generation():
     assert calls[0].parameters.get("time_end") == 5.0
 
 
-def test_executor_max_steps_limit():
+def test_executor_max_steps_limit() -> None:
     registry = ToolRegistry()
     registry.register(
         ToolDefinition(name="dummy_tool", description="Dummy test tool"),
@@ -83,10 +84,10 @@ def test_executor_max_steps_limit():
     assert status == InvestigationStatus.MAX_STEPS_EXCEEDED
 
 
-def test_executor_duplicate_call_prevention():
+def test_executor_duplicate_call_prevention() -> None:
     call_counts = {"count": 0}
 
-    def counting_handler(_: dict) -> ToolResult:
+    def counting_handler(_: dict[str, Any]) -> ToolResult:
         call_counts["count"] += 1
         return ToolResult(
             call_id="",
@@ -120,8 +121,8 @@ def test_executor_duplicate_call_prevention():
     assert "Duplicate call detected" in steps[1].thought
 
 
-def test_executor_timeout_limit():
-    def slow_handler(_: dict) -> ToolResult:
+def test_executor_timeout_limit() -> None:
+    def slow_handler(_: dict[str, Any]) -> ToolResult:
         time.sleep(0.05)
         return ToolResult(call_id="", tool_name="slow_tool", success=True, data={})
 
@@ -149,7 +150,7 @@ def test_executor_timeout_limit():
     assert len(steps) < 5
 
 
-def test_evidence_sufficiency_gate():
+def test_evidence_sufficiency_gate() -> None:
     ctx = create_mock_context()
     gate = EvidenceSufficiencyGate(ctx)
 

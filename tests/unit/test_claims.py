@@ -8,7 +8,7 @@ from videx.agent.claims import Claim, ClaimSet, ClaimValidator
 from videx.agent.types import ClaimStatus
 
 
-def test_claim_creation_and_with_status():
+def test_claim_creation_and_with_status() -> None:
     claim = Claim.create(
         video_id="vid-1",
         claim_text="Person entered scene at 1.0s",
@@ -30,7 +30,7 @@ def test_claim_creation_and_with_status():
     assert claim.status == ClaimStatus.SUPPORTED
 
 
-def test_claim_set_properties():
+def test_claim_set_properties() -> None:
     c1 = Claim.create(
         video_id="vid-1",
         claim_text="Observation 1",
@@ -64,7 +64,7 @@ def test_claim_set_properties():
     assert c_set_mixed.has_insufficient_evidence
 
 
-def test_claim_validator_valid_claim():
+def test_claim_validator_valid_claim() -> None:
     validator = ClaimValidator()
     claim = Claim.create(
         video_id="vid-1",
@@ -88,7 +88,7 @@ def test_claim_validator_valid_claim():
     assert len(report.rejected_claims) == 0
 
 
-def test_claim_validator_video_isolation_mismatch():
+def test_claim_validator_video_isolation_mismatch() -> None:
     validator = ClaimValidator()
     claim = Claim.create(
         video_id="vid-2",
@@ -106,7 +106,7 @@ def test_claim_validator_video_isolation_mismatch():
     assert "video_id" in report.errors[0]
 
 
-def test_claim_validator_supported_claim_missing_evidence():
+def test_claim_validator_supported_claim_missing_evidence() -> None:
     validator = ClaimValidator()
     claim = Claim.create(
         video_id="vid-1",
@@ -124,7 +124,7 @@ def test_claim_validator_supported_claim_missing_evidence():
     assert "cites no evidence_ids" in report.errors[0]
 
 
-def test_claim_validator_invalid_timestamps():
+def test_claim_validator_invalid_timestamps() -> None:
     validator = ClaimValidator()
     # Negative start
     c_neg = Claim.create(
@@ -151,7 +151,7 @@ def test_claim_validator_invalid_timestamps():
     assert not report_inv.is_valid
 
 
-def test_claim_validator_unknown_identifiers():
+def test_claim_validator_unknown_identifiers() -> None:
     validator = ClaimValidator()
     claim = Claim.create(
         video_id="vid-1",

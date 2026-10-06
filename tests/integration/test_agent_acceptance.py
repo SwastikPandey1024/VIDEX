@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
 from videx.agent.answer import render_answer
@@ -15,7 +17,7 @@ def investigator() -> MockInvestigator:
     return MockInvestigator()
 
 
-def test_investigation_temporal_query(investigator: MockInvestigator):
+def test_investigation_temporal_query(investigator: MockInvestigator) -> None:
     """1. Test question: What happened between 0 and 5 seconds?"""
     result = investigator.ask("What happened between 0 and 5 seconds?")
 
@@ -34,7 +36,7 @@ def test_investigation_temporal_query(investigator: MockInvestigator):
     assert "SUPPORTED" in rendered
 
 
-def test_investigation_track_query(investigator: MockInvestigator):
+def test_investigation_track_query(investigator: MockInvestigator) -> None:
     """2. Test question: What happened to Track 7?"""
     result = investigator.ask("What happened to Track 7?")
 
@@ -45,7 +47,7 @@ def test_investigation_track_query(investigator: MockInvestigator):
     assert "get_track" in result.tools_executed
 
 
-def test_investigation_ocr_query(investigator: MockInvestigator):
+def test_investigation_ocr_query(investigator: MockInvestigator) -> None:
     """3. Test question: What OCR text appeared?"""
     result = investigator.ask("What OCR text appeared on screen?")
 
@@ -55,7 +57,7 @@ def test_investigation_ocr_query(investigator: MockInvestigator):
     assert "get_ocr" in result.tools_executed
 
 
-def test_investigation_speech_query(investigator: MockInvestigator):
+def test_investigation_speech_query(investigator: MockInvestigator) -> None:
     """4. Test question: What speech was detected?"""
     result = investigator.ask("What speech was detected in audio?")
 
@@ -65,7 +67,7 @@ def test_investigation_speech_query(investigator: MockInvestigator):
     assert "get_transcript" in result.tools_executed
 
 
-def test_investigation_relational_neighbors_query(investigator: MockInvestigator):
+def test_investigation_relational_neighbors_query(investigator: MockInvestigator) -> None:
     """5. Test question: Which events were close in time?"""
     result = investigator.ask("Which events are related neighbors to event ev-1?")
 
@@ -75,7 +77,7 @@ def test_investigation_relational_neighbors_query(investigator: MockInvestigator
     assert len(result.trace.steps) >= 2
 
 
-def test_investigation_event_evidence_query(investigator: MockInvestigator):
+def test_investigation_event_evidence_query(investigator: MockInvestigator) -> None:
     """6. Test question: What evidence supports Event X?"""
     result = investigator.ask("What evidence supports event ev-1?")
 
@@ -86,7 +88,9 @@ def test_investigation_event_evidence_query(investigator: MockInvestigator):
     assert len(result.evidence_references) >= 1
 
 
-def test_investigation_semantic_interaction_supported(investigator: MockInvestigator):
+def test_investigation_semantic_interaction_supported(
+    investigator: MockInvestigator,
+) -> None:
     """7. Test question: Did Track A interact with Track B? (Supported case)"""
     result = investigator.ask("Did the person Track 7 interact with vehicle Track 12?")
 
@@ -97,16 +101,19 @@ def test_investigation_semantic_interaction_supported(investigator: MockInvestig
     assert result.trace.semantic_calls >= 1
 
 
-def test_investigation_semantic_abstention_insufficient_evidence():
+def test_investigation_semantic_abstention_insufficient_evidence() -> None:
     """Test question: Did the suspect draw a weapon? (Truthful abstention case)."""
     ctx = create_mock_context()
     # Mock runner returns inconclusive/insufficient evidence for weapon query
-    def weapon_runner(query: str, cand_event_id: str | None = None):
+    empty_eids: list[str] = []
+    empty_events: list[str] = []
+
+    def weapon_runner(query: str, cand_event_id: str | None = None) -> dict[str, Any]:
         return {
             "answer": "No visual or auditory evidence of weapon drawn.",
             "confidence": 0.15,
-            "evidence_ids": [],
-            "event_ids": [],
+            "evidence_ids": empty_eids,
+            "event_ids": empty_events,
         }
 
     ctx.semantic_runner = weapon_runner
@@ -135,7 +142,7 @@ def test_investigation_semantic_abstention_insufficient_evidence():
     )
 
 
-def test_cross_video_isolation_rejection(investigator: MockInvestigator):
+def test_cross_video_isolation_rejection(investigator: MockInvestigator) -> None:
     """Verifies queries scoping an alien video_id return INSUFFICIENT_EVIDENCE."""
     alien_req = InvestigationRequest.create(
         video_id="99999999-9999-9999-9999-999999999999",
@@ -151,7 +158,7 @@ def test_cross_video_isolation_rejection(investigator: MockInvestigator):
     assert "Insufficient" in result.answer
 
 
-def test_investigation_trace_auditing(investigator: MockInvestigator):
+def test_investigation_trace_auditing(investigator: MockInvestigator) -> None:
     """Verifies comprehensive execution trace generation for Phase 9 UI explainability."""
     result = investigator.ask("What text appeared on screen?")
 

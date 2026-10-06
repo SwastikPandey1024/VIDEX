@@ -8,7 +8,7 @@ from videx.agent.tools import register_investigation_tools
 from videx.agent.types import ToolName
 
 
-def test_tool_registry_registration_and_metadata():
+def test_tool_registry_registration_and_metadata() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -28,7 +28,7 @@ def test_tool_registry_registration_and_metadata():
         assert isinstance(tool_def.output_schema, dict)
 
 
-def test_search_events_tool():
+def test_search_events_tool() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -50,7 +50,7 @@ def test_search_events_tool():
         assert ev["time_start"] <= 4.0
 
 
-def test_get_event_tool():
+def test_get_event_tool() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -70,7 +70,7 @@ def test_get_event_tool():
     assert not res_missing.success
 
 
-def test_get_track_and_get_object_tools():
+def test_get_track_and_get_object_tools() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -93,7 +93,7 @@ def test_get_track_and_get_object_tools():
     assert len(res_obj.data["detections"]) >= 2
 
 
-def test_ocr_and_transcript_tools():
+def test_ocr_and_transcript_tools() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -111,7 +111,7 @@ def test_ocr_and_transcript_tools():
     assert "Driver waiting" in res_asr.data["transcript_segments"][0]["text"]
 
 
-def test_graph_and_neighborhood_tools():
+def test_graph_and_neighborhood_tools() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -133,7 +133,7 @@ def test_graph_and_neighborhood_tools():
     assert isinstance(res_temp.data["temporal_neighbors"], list)
 
 
-def test_seek_and_compare_frames_tools():
+def test_seek_and_compare_frames_tools() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -158,7 +158,7 @@ def test_seek_and_compare_frames_tools():
     assert "pts_gap_seconds" in res_comp.data
 
 
-def test_reason_semantic_tool():
+def test_reason_semantic_tool() -> None:
     ctx = create_mock_context()
     registry = ToolRegistry()
     register_investigation_tools(registry, ctx)
@@ -183,4 +183,5 @@ def test_reason_semantic_tool():
         {"query": "Did the person interact with the car?"},
     )
     assert not res_no.success
+    assert res_no.error is not None
     assert "unavailable" in res_no.error.lower()

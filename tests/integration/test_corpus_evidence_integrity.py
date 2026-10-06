@@ -89,6 +89,7 @@ def test_corpus_pipeline_and_evidence_integrity() -> None:
 
     # 2. Event Engine
     event_engine = EventEngine()
+    assert reader.video_id is not None
     timeline: EventTimeline = event_engine.process_multimodal(
         video_id=reader.video_id,
         perception_result=perc_res,
@@ -135,6 +136,7 @@ def test_vlm_provider_configuration_and_factory() -> None:
         api_base_url="http://localhost:8000/v1",
     )
     assert p_qwen_api.provider_name == "qwen3_vl"
+    assert isinstance(p_qwen_api, Qwen3VLAdapter)
     assert p_qwen_api.config.model_name == "Qwen/Qwen3-VL-8B-Instruct"
     assert p_qwen_api.is_available() is True
 

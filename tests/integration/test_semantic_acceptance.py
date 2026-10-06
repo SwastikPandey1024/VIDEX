@@ -25,7 +25,14 @@ from uuid import UUID, uuid4
 import numpy as np
 import pytest
 
-from videx.domain.schemas import BoundingBox, CoordinateType, Evidence, EvidenceType, FrameTimestamp
+from videx.domain.schemas import (
+    BoundingBox,
+    CoordinateType,
+    Evidence,
+    EvidenceType,
+    FrameTimestamp,
+    TimestampSource,
+)
 from videx.events.engine import EventTimeline
 from videx.events.schemas import Event, EventEvidence, EventParticipant
 from videx.events.types import EventSeverity, EventStatus, EventType
@@ -74,9 +81,9 @@ class MockVideoReader:
         class _MockFrame:
             frame_number = closest_idx
             frame_timestamp = FrameTimestamp(
-                pts=int(actual_ts * 1000),
-                time_base="1/1000",
-                seconds=actual_ts,
+                frame_index=closest_idx,
+                pts_seconds=actual_ts,
+                timestamp_source=TimestampSource.CONTAINER,
             )
 
         return _MockFrame(), b""

@@ -57,7 +57,7 @@ class EvidenceSufficiencyGate:
         for ev_id in claim.evidence_ids:
             canonical_ev = self._ctx.evidence_records.get(ev_id)
             if canonical_ev is not None:
-                if str(canonical_ev.video_id) != str(target_video_id):
+                if str(canonical_ev.video_id) != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,
@@ -70,7 +70,7 @@ class EvidenceSufficiencyGate:
 
             if ev_id in self._ctx.ocr_observations:
                 ocr_rec = self._ctx.ocr_observations[ev_id]
-                if str(ocr_rec.video_id) != str(target_video_id):
+                if str(ocr_rec.video_id) != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,
@@ -80,7 +80,7 @@ class EvidenceSufficiencyGate:
 
             if ev_id in self._ctx.transcript_segments:
                 tr_rec = self._ctx.transcript_segments[ev_id]
-                if str(tr_rec.video_id) != str(target_video_id):
+                if str(tr_rec.video_id) != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,
@@ -90,7 +90,7 @@ class EvidenceSufficiencyGate:
 
             if ev_id in self._ctx.frames:
                 fr_rec = self._ctx.frames[ev_id]
-                if str(fr_rec.video_id) != str(target_video_id):
+                if str(fr_rec.video_id) != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,
@@ -112,7 +112,7 @@ class EvidenceSufficiencyGate:
                     status=ClaimStatus.INSUFFICIENT_EVIDENCE,
                     reason=f"Referenced evidence ID '{ev_id}' does not exist in store",
                 )
-            if str(node.video_id) != str(target_video_id):
+            if node.video_id != target_video_id:
                 return SufficiencyCheckResult(
                     is_sufficient=False,
                     status=ClaimStatus.REJECTED,
@@ -133,14 +133,14 @@ class EvidenceSufficiencyGate:
                         status=ClaimStatus.INSUFFICIENT_EVIDENCE,
                         reason=f"Referenced event ID '{evnt_id}' does not exist in store",
                     )
-                if str(node.video_id) != str(target_video_id):
+                if node.video_id != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,
                         reason=f"Event '{evnt_id}' violates target video isolation",
                     )
             else:
-                if str(canonical_evnt.video_id) != str(target_video_id):
+                if str(canonical_evnt.video_id) != target_video_id:
                     return SufficiencyCheckResult(
                         is_sufficient=False,
                         status=ClaimStatus.REJECTED,

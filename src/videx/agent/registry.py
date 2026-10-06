@@ -56,13 +56,13 @@ class ToolRegistry:
 
     def get_definition(self, name: str | ToolDefinition) -> ToolDefinition | None:
         """Fetch specification for a tool by name or definition."""
-        k = name.name if isinstance(name, ToolDefinition) else str(name)
+        k = name.name if isinstance(name, ToolDefinition) else name
         pair = self._tools.get(k)
         return pair[0] if pair else None
 
     def has_tool(self, name: str | ToolDefinition) -> bool:
         """Check if tool is registered and authorized."""
-        k = name.name if isinstance(name, ToolDefinition) else str(name)
+        k = name.name if isinstance(name, ToolDefinition) else name
         pair = self._tools.get(k)
         return pair is not None and pair[0].allowed_in_agent
 

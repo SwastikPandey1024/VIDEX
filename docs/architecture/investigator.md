@@ -5,7 +5,8 @@
 The VIDEX Investigator is an evidence-grounded agentic query reasoning engine designed to answer complex user questions over processed video data. It is **not** a generic chatbot; it is a deterministic, auditable system that plans and executes typed read-only tools over canonical spatiotemporal evidence, events, tracks, OCR, transcripts, and the evidence graph.
 
 ### Core Investigation Loop
-```
+
+```text
 User Question
     ↓
 Intent Understanding & Classification (TEMPORAL, TRACK, OCR, AUDIO, SPATIAL, RELATIONAL, SEMANTIC, EVENT, OBJECT)
@@ -26,6 +27,7 @@ Auditable Answer & Structured Investigation Result
 ```
 
 ### Inviolable Grounding Guarantee
+
 **The agent must never produce an uncorroborated factual claim.** If canonical evidence or graph associations are insufficient to corroborate an answer, the system truthfully returns `INSUFFICIENT_EVIDENCE` and explains what was lacking.
 
 ---
@@ -33,6 +35,7 @@ Auditable Answer & Structured Investigation Result
 ## 2. Agent Boundary and Security Constraints
 
 ### Allowed Capabilities (Read-Only)
+
 - Query canonical `Evidence`, `Event`, `Track`, `Frame`, `Scene`, `OCRObservation`, and `TranscriptSegment` records.
 - Query and traverse `InMemoryGraphStore` via `GraphQueryService` (temporal neighbors, spatial neighbors, related events, evidence chains).
 - Seek video frames by time offset or frame index.
@@ -40,6 +43,7 @@ Auditable Answer & Structured Investigation Result
 - Selectively invoke semantic reasoning through the existing `VLMProvider` and `EvidenceBundle` boundary when deterministic evidence is incomplete.
 
 ### Forbidden Capabilities
+
 - **NO mutation:** The agent cannot write or mutate canonical Evidence, Events, or Graph nodes/edges.
 - **NO arbitrary SQL or shell commands:** The agent has no shell or raw SQL execution permissions.
 - **NO unrestricted network or filesystem access:** Only designated in-memory and video asset paths.
@@ -53,7 +57,7 @@ Auditable Answer & Structured Investigation Result
 The system preserves strict epistemic separation across all investigation phases. Claims and evidence results are tagged with one of four explicit epistemic statuses:
 
 | Epistemic Status | Description | Typical Source |
-|---|---|---|
+| --- | --- | --- |
 | `deterministically observed` | Ground truth derived directly from perception or detectors (tracks, timestamps, OCR, transcripts, canonical events). | ByteTrack, YOLO, PaddleOCR, Whisper, temporal event engine |
 | `heuristically associated` | Association inferred via spatial IoU overlap, proximity heuristics, or temporal co-occurrence windows. | Evidence Graph spatial/temporal neighbor traversals |
 | `VLM inferred` | Higher-level semantic interpretation produced by the vision-language model boundary. | VLMProvider / SemanticRouter |
@@ -85,6 +89,7 @@ The system exposes 15 typed read-only tools through a controlled `ToolRegistry`:
 16. **`reason_semantic`**: Invokes bounded VLM multimodal analysis over a targeted evidence query.
 
 Every tool returns a structured `ToolResult` containing:
+
 - `tool_name`: Name of executed tool
 - `success`: Boolean execution status
 - `data`: Typed payload dictionary
@@ -95,6 +100,7 @@ Every tool returns a structured `ToolResult` containing:
 ## 5. Execution Safeguards and Boundaries
 
 The `InvestigationExecutor` enforces strict operational limits to guarantee bounded execution:
+
 - **Maximum Steps Ceiling**: Defaults to 10 steps per investigation.
 - **Maximum Tool Calls Ceiling**: Defaults to 20 tool calls per investigation.
 - **Timeout Budget**: Default 10.0 seconds total per investigation.
@@ -108,7 +114,9 @@ The `InvestigationExecutor` enforces strict operational limits to guarantee boun
 Before an investigation completes, all formulated claims must pass two verification gates:
 
 ### EvidenceSufficiencyGate
+
 Verifies that:
+
 - Supporting evidence records exist in canonical stores or the Evidence Graph.
 - Video isolation is strictly enforced (`video_id` must match target video).
 - Timestamps are non-negative and valid (`t_start <= t_end`).
@@ -116,7 +124,9 @@ Verifies that:
 - Epistemic status is non-empty.
 
 ### ClaimValidator
+
 Audits candidate claims against retrieved evidence context:
+
 - Rejects any `SUPPORTED` claim that lacks cited `evidence_ids`.
 - Rejects any claim citing unknown or unretrieved evidence IDs.
 - Validates confidence bounds (`0.0 <= confidence <= 1.0`).
@@ -129,7 +139,9 @@ Audits candidate claims against retrieved evidence context:
 Phase 9 (Web / Desktop UI) will consume the following data structures emitted by the Investigator:
 
 ### 1. `InvestigationResult`
+
 The top-level response payload:
+
 ```typescript
 interface InvestigationResult {
   investigation_id: string;        // UUIDv4
@@ -156,7 +168,9 @@ interface InvestigationResult {
 ```
 
 ### 2. `Claim`
+
 Structured factual assertions for interactive verification widgets:
+
 ```typescript
 interface Claim {
   claim_id: string;                // UUID
@@ -173,7 +187,9 @@ interface Claim {
 ```
 
 ### 3. `EvidenceReference`
+
 Interactive evidence citation cards in the UI:
+
 ```typescript
 interface EvidenceReference {
   evidence_id: string;
@@ -188,7 +204,9 @@ interface EvidenceReference {
 ```
 
 ### 4. `InvestigationTrace`
+
 Explainability panel data structure:
+
 ```typescript
 interface InvestigationTrace {
   investigation_id: string;
@@ -216,7 +234,9 @@ interface InvestigationTrace {
 ```
 
 ### 5. `TimelineReference`
+
 For jumping the video player scrubber directly to relevant segments:
+
 ```typescript
 interface TimelineReference {
   event_id: string;
@@ -234,7 +254,7 @@ interface TimelineReference {
 Measured on the 8-video VIDEX corpus during the Phase 8 validation run:
 
 | Metric | Measured Value |
-|---|---|
+| --- | --- |
 | Average Planning Latency | ~0.10 ms |
 | Average Tool Execution Latency | ~0.15 ms |
 | Average Claim Validation Latency | ~0.18 ms |
