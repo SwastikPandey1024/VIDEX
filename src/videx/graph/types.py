@@ -53,11 +53,42 @@ class GraphEdgeType(StrEnum):
 class DerivationType(StrEnum):
     """Provenance and derivation method behind graph elements."""
 
+    CANONICAL = "canonical"
     DETERMINISTIC = "deterministic"
     STRUCTURAL = "structural"
+    HEURISTIC = "heuristic"
+    HEURISTIC_ASSOCIATION = "heuristic_association"
+    SEMANTIC_INFERENCE = "semantic_inference"
+    VLM_INFERENCE = "vlm_inference"
     INFERRED = "inferred"
     TRANSITIVE = "transitive"
     MANUAL = "manual"
+
+    @property
+    def is_deterministic(self) -> bool:
+        """True if derived deterministically or directly from canonical ground truth."""
+        return self in (
+            DerivationType.CANONICAL,
+            DerivationType.DETERMINISTIC,
+            DerivationType.STRUCTURAL,
+        )
+
+    @property
+    def is_heuristic(self) -> bool:
+        """True if derived via heuristic association or approximation."""
+        return self in (
+            DerivationType.HEURISTIC,
+            DerivationType.HEURISTIC_ASSOCIATION,
+        )
+
+    @property
+    def is_semantic_inference(self) -> bool:
+        """True if derived via VLM or semantic model inference."""
+        return self in (
+            DerivationType.SEMANTIC_INFERENCE,
+            DerivationType.VLM_INFERENCE,
+            DerivationType.INFERRED,
+        )
 
 
 class Direction(StrEnum):

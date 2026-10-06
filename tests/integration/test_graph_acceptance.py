@@ -253,9 +253,24 @@ def test_full_pipeline_graph_projection_and_query_acceptance() -> None:
         NodeFilter(video_id=vid, node_types=(GraphNodeType.SEMANTIC_EVENT,))
     )
     assert len(sem_nodes) == 1
+    assert sem_nodes[0].is_semantic_inference
+    assert sem_nodes[0].epistemic_status == "VLM inferred"
+
+    det_ev_nodes = store.query_nodes(
+        NodeFilter(video_id=vid, node_types=(GraphNodeType.EVENT,))
+    )
+    assert len(det_ev_nodes) >= 1
+    assert det_ev_nodes[0].is_deterministic
+    assert det_ev_nodes[0].epistemic_status == "deterministically observed"
+
     chain = query.trace_evidence_chain(sem_nodes[0].source_id)
     chain_types = [n.node_type for n in chain]
     assert GraphNodeType.SEMANTIC_EVENT in chain_types
     assert GraphNodeType.EVENT in chain_types
     assert GraphNodeType.EVIDENCE in chain_types
     assert GraphNodeType.FRAME in chain_types
+
+    # Composite query method
+    res = query.query(NodeFilter(video_id=vid))
+    assert len(res.nodes) >= 10
+    assert res.execution_time_ms >= 0.0

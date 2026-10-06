@@ -125,7 +125,40 @@ class GraphStore(Protocol):
 
 ### 5.1 Phase 8: Agentic Video Investigation Contract
 
-The Phase 8 Autonomous Investigation Agent interacts with the Evidence Graph as an interactive tool surface. The Agent never accesses raw model weights or unstructured video files directly; rather, it traverses the Evidence Graph via `GraphQueryService`:
+The Phase 8 Autonomous Investigation Agent interacts with the Evidence Graph as an interactive tool surface. The Agent never accesses raw model weights or unstructured video files directly; rather, it traverses the Evidence Graph via `GraphQueryService`.
+
+#### Disciplined Investigation Pipeline:
+```text
+User Question
+      ↓
+Intent / Query Classification
+      ↓
+Investigation Plan
+      ↓
+Typed Tool Calls
+      ↓
+Graph
+      ↓
+Canonical Evidence
+      ↓
+Optional semantic reasoning
+      ↓
+Evidence Validator
+      ↓
+Claim Set
+      ↓
+Answer
+```
+
+#### Answerable Claim Contract:
+Every claim produced by the Phase 8 investigation pipeline must be grounded and retain:
+- `claim_id`: Unique identifier for the assertion.
+- `claim_text`: Verifiable natural language statement.
+- `confidence`: Calibrated scalar in $[0.0, 1.0]$.
+- `epistemic_status`: `"deterministically observed"` | `"heuristically associated"` | `"VLM inferred"`.
+- `evidence_ids`: Backing canonical Evidence record identifiers.
+- `event_ids`: Backing canonical or semantic event identifiers.
+- `timestamps`: Authoritative PTS start and end intervals.
 
 ```python
 class AgentInvestigationInterface(Protocol):
@@ -216,4 +249,35 @@ The Phase 9 frontend (React/Vite or equivalent dashboard) consumes the Evidence 
   ]
 }
 ```
+
+---
+
+## 6. Empirical Benchmark Grounding & Execution Status
+
+### 6.1 Performance Claims & Benchmark Grounding
+
+Observed:
+- 72 nodes across the 8-video corpus
+- 104 edges
+- 10.44 ms total projection
+- <0.05 ms observed traversal for tested graph fixtures
+
+Not established:
+- Neo4j latency
+- PostgreSQL latency
+- AGE latency
+- Memgraph latency
+- 100k-node scalability
+- production heap/GC behavior
+
+### 6.2 Semantic Event Execution Status
+
+The graph architecture cleanly models both mock and real semantic paths:
+```text
+Deterministic Event → Mock Semantic Event
+vs.
+Deterministic Event → Qwen3-VL → Validated Semantic Event
+```
+
+For the Phase 7 corpus evaluation: **8 semantic-event nodes were generated through the deterministic/mock semantic path for graph contract validation. No real Qwen3-VL inference was executed.**
 

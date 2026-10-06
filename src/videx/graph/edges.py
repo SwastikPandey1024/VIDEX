@@ -38,6 +38,30 @@ class GraphEdge(BaseModel):
         description="Relationship attributes (weights, metrics, roles)",
     )
 
+    @property
+    def derivation(self) -> DerivationType:
+        return self.provenance.derivation
+
+    @property
+    def confidence(self) -> float:
+        return self.provenance.confidence
+
+    @property
+    def is_deterministic(self) -> bool:
+        return self.provenance.is_deterministic
+
+    @property
+    def is_heuristic(self) -> bool:
+        return self.provenance.is_heuristic
+
+    @property
+    def is_semantic_inference(self) -> bool:
+        return self.provenance.is_semantic_inference
+
+    @property
+    def epistemic_status(self) -> str:
+        return self.provenance.epistemic_status
+
 
 def create_edge(
     source_node_id: str,

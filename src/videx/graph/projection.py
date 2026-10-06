@@ -290,7 +290,7 @@ class GraphProjection:
                                 source_node_id=sem_node.node_id,
                                 target_node_id=ev_nid,
                                 relationship=GraphEdgeType.DERIVED_FROM,
-                                derivation=DerivationType.INFERRED,
+                                derivation=DerivationType.VLM_INFERENCE,
                                 reason=f"VLM reasoning claim: {sem.claim}",
                             )
                         )

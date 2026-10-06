@@ -57,7 +57,7 @@ We evaluated five candidate graph architectures against VIDEX's specific operati
 
 ---
 
-## 3. Comparative Matrix
+## 3. Comparative Matrix & Benchmark Discipline
 
 | Evaluation Dimension | Dedicated Graph DB (Neo4j / Memgraph) | Apache AGE (PostgreSQL Extension) | Relational + In-Memory Graph Projection (Selected) |
 |---|---|---|---|
@@ -68,6 +68,22 @@ We evaluated five candidate graph architectures against VIDEX's specific operati
 | **Cross-Video Isolation** | Manual graph partitioning | Tenant/label tagging | Native parameter scoping by `video_id` |
 | **Local / CI Execution** | Heavy (Docker / mock needed) | Heavy (custom Postgres) | Instantaneous (`InMemoryGraphStore`) |
 | **Determinism & Auditability** | Prone to sync skew | Good | Absolute (pure projection from Evidence) |
+
+### Performance Claims & Benchmark Grounding
+
+Observed:
+- 72 nodes across the 8-video corpus
+- 104 edges
+- 10.44 ms total projection
+- <0.05 ms observed traversal for tested graph fixtures
+
+Not established:
+- Neo4j latency
+- PostgreSQL latency
+- AGE latency
+- Memgraph latency
+- 100k-node scalability
+- production heap/GC behavior
 
 ---
 

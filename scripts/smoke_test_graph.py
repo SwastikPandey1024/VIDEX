@@ -216,6 +216,11 @@ def run_smoke_test() -> None:
     print(f"Total Execution Time:   {total_time_ms:.2f} ms")
     print(f"Mean Projection Time:   {total_time_ms / max(1, len(corpus_stats)):.2f} ms / video")
     print("Graph Integrity Audit:  100% PASSED (0 orphan nodes, 0 orphan edges)")
+    print(
+        "Semantic Event Status:  8 semantic-event nodes were generated through the "
+        "deterministic/mock semantic path for graph contract validation. "
+        "No real Qwen3-VL inference was executed."
+    )
     print("=" * 60)
 
 

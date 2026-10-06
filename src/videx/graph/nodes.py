@@ -20,7 +20,7 @@ from videx.domain.schemas import (
 from videx.events.schemas import Event
 from videx.events.spatial import SpatialZone
 from videx.graph.provenance import NodeProvenance
-from videx.graph.types import GraphNodeType
+from videx.graph.types import DerivationType, GraphNodeType
 from videx.semantic.schemas import SemanticEventPayload
 
 
@@ -52,12 +52,44 @@ class GraphNode(BaseModel):
         return self.provenance.source_id
 
     @property
+    def source_type(self) -> str:
+        return self.provenance.source_type
+
+    @property
     def timestamp_start(self) -> float | None:
         return self.provenance.timestamp_start
 
     @property
     def timestamp_end(self) -> float | None:
         return self.provenance.timestamp_end
+
+    @property
+    def derivation(self) -> DerivationType:
+        return self.provenance.derivation
+
+    @property
+    def confidence(self) -> float | None:
+        return self.provenance.confidence
+
+    @property
+    def evidence_ids(self) -> tuple[str, ...]:
+        return self.provenance.evidence_ids
+
+    @property
+    def is_deterministic(self) -> bool:
+        return self.provenance.is_deterministic
+
+    @property
+    def is_heuristic(self) -> bool:
+        return self.provenance.is_heuristic
+
+    @property
+    def is_semantic_inference(self) -> bool:
+        return self.provenance.is_semantic_inference
+
+    @property
+    def epistemic_status(self) -> str:
+        return self.provenance.epistemic_status
 
 
 # ── Canonical Node Factories ────────────────────────────────────────────────
@@ -160,6 +192,8 @@ def create_detection_node(detection: Detection, video_id: str | UUID) -> GraphNo
             video_id=video_id,
             timestamp_start=ts,
             timestamp_end=ts,
+            derivation=DerivationType.CANONICAL,
+            confidence=detection.confidence,
             metadata={
                 "frame_id": str(detection.frame_id),
                 "class_name": detection.class_name,
@@ -192,6 +226,8 @@ def create_track_node(track: Track, video_id: str | UUID) -> GraphNode:
             video_id=video_id,
             timestamp_start=t_start,
             timestamp_end=t_end,
+            derivation=DerivationType.DETERMINISTIC,
+            confidence=track.confidence,
             metadata={"class_name": track.class_name, "provider": track.provider},
         ),
         attributes={
@@ -221,6 +257,8 @@ def create_ocr_node(ocr: OCRObservation, video_id: str | UUID) -> GraphNode:
             video_id=video_id,
             timestamp_start=ocr.timestamp_seconds,
             timestamp_end=ocr.timestamp_seconds,
+            derivation=DerivationType.CANONICAL,
+            confidence=ocr.confidence,
             metadata={"text": ocr.text, "frame_id": str(ocr.frame_id)},
         ),
         attributes={
@@ -251,6 +289,8 @@ def create_transcript_node(seg: TranscriptSegment, video_id: str | UUID) -> Grap
             video_id=video_id,
             timestamp_start=t_start,
             timestamp_end=t_end,
+            derivation=DerivationType.CANONICAL,
+            confidence=seg.confidence,
             metadata={
                 "language": seg.language,
                 "speaker": seg.speaker_id,
@@ -282,6 +322,7 @@ def create_zone_node(zone: SpatialZone, video_id: str | UUID) -> GraphNode:
             source_id=source_id,
             source_type="SpatialZone",
             video_id=video_id,
+            derivation=DerivationType.CANONICAL,
             metadata={"zone_name": zone.zone_name},
         ),
         attributes={
@@ -308,6 +349,8 @@ def create_event_node(event: Event, video_id: str | UUID) -> GraphNode:
             video_id=video_id,
             timestamp_start=t_start,
             timestamp_end=t_end,
+            derivation=DerivationType.DETERMINISTIC,
+            confidence=event.confidence,
             evidence_ids=ev_ids,
             metadata={"event_type": event.event_type.value, "severity": event.severity.value},
         ),
@@ -346,6 +389,8 @@ def create_semantic_event_node(
             video_id=video_id,
             timestamp_start=t_start,
             timestamp_end=t_end,
+            derivation=DerivationType.SEMANTIC_INFERENCE,
+            confidence=sem.confidence,
             evidence_ids=ev_ids,
             metadata={
                 "claim": sem.claim,
@@ -380,6 +425,8 @@ def create_evidence_node(evidence: Evidence, video_id: str | UUID) -> GraphNode:
             video_id=video_id,
             timestamp_start=evidence.timestamp_seconds,
             timestamp_end=evidence.timestamp_seconds,
+            derivation=DerivationType.CANONICAL,
+            confidence=evidence.confidence,
             metadata={
                 "evidence_type": evidence.evidence_type.value,
                 "source_module": evidence.source_module,

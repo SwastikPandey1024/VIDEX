@@ -5,7 +5,7 @@ from __future__ import annotations
 from uuid import UUID
 
 from videx.graph.nodes import GraphNode, make_node_id
-from videx.graph.schemas import GraphPath, NodeFilter
+from videx.graph.schemas import EdgeFilter, GraphPath, GraphQueryResult, NodeFilter
 from videx.graph.store import GraphStore
 from videx.graph.types import Direction, GraphEdgeType, GraphNodeType
 
@@ -19,6 +19,27 @@ class GraphQueryService:
     @property
     def store(self) -> GraphStore:
         return self._store
+
+    def query(
+        self,
+        node_filter: NodeFilter | None = None,
+        edge_filter: EdgeFilter | None = None,
+    ) -> GraphQueryResult:
+        """Execute composite graph query returning matched nodes, edges, and execution metrics."""
+        import time
+
+        t0 = time.perf_counter()
+        nodes = self._store.query_nodes(node_filter or NodeFilter())
+        edges = self._store.query_edges(edge_filter or EdgeFilter())
+        elapsed_ms = (time.perf_counter() - t0) * 1000.0
+
+        return GraphQueryResult(
+            nodes=nodes,
+            edges=edges,
+            execution_time_ms=elapsed_ms,
+            total_nodes_scanned=self._store.count_nodes(),
+            total_edges_scanned=self._store.count_edges(),
+        )
 
     def get_node(self, node_id: str) -> GraphNode | None:
         """Fetch node by global ID."""

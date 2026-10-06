@@ -282,3 +282,36 @@ def test_validator_detects_orphan_edges_and_cross_video_leak() -> None:
     assert not report.is_valid
     assert any("Orphan edge" in err for err in report.errors)
     assert any("Cross-video isolation violation" in err for err in report.errors)
+
+
+def test_epistemic_status_and_provenance_distinction() -> None:
+    """Ensure provenance distinguishes canonical, deterministic, heuristic, and semantic."""
+    vid = uuid4()
+    video = Video(video_id=vid, source_path="test.mp4", duration_seconds=5.0)
+    video_node = create_video_node(video)
+    assert video_node.is_deterministic
+    assert not video_node.is_heuristic
+    assert not video_node.is_semantic_inference
+    assert video_node.epistemic_status == "deterministically observed"
+
+    # Heuristic edge
+    edge_heur = create_edge(
+        source_node_id=video_node.node_id,
+        target_node_id=video_node.node_id,
+        relationship=GraphEdgeType.REFERENCES,
+        derivation=DerivationType.HEURISTIC_ASSOCIATION,
+    )
+    assert not edge_heur.is_deterministic
+    assert edge_heur.is_heuristic
+    assert edge_heur.epistemic_status == "heuristically associated"
+
+    # Semantic inference edge
+    edge_vlm = create_edge(
+        source_node_id=video_node.node_id,
+        target_node_id=video_node.node_id,
+        relationship=GraphEdgeType.DERIVED_FROM,
+        derivation=DerivationType.VLM_INFERENCE,
+    )
+    assert not edge_vlm.is_deterministic
+    assert edge_vlm.is_semantic_inference
+    assert edge_vlm.epistemic_status == "VLM inferred"

@@ -29,6 +29,16 @@ class NodeProvenance(BaseModel):
         ge=0.0,
         description="Authoritative ending presentation timestamp (PTS in seconds)",
     )
+    derivation: DerivationType = Field(
+        default=DerivationType.CANONICAL,
+        description="Derivation method / epistemic status behind this node",
+    )
+    confidence: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Confidence score for this entity, if applicable",
+    )
     evidence_ids: tuple[str, ...] = Field(
         default_factory=tuple,
         description="Referenced canonical Evidence IDs grounding this entity",
@@ -38,6 +48,30 @@ class NodeProvenance(BaseModel):
         description="Additional domain metadata",
     )
 
+    @property
+    def is_deterministic(self) -> bool:
+        """True if derived deterministically or directly from canonical ground truth."""
+        return self.derivation.is_deterministic
+
+    @property
+    def is_heuristic(self) -> bool:
+        """True if derived via heuristic association or approximation."""
+        return self.derivation.is_heuristic
+
+    @property
+    def is_semantic_inference(self) -> bool:
+        """True if derived via VLM or semantic model inference."""
+        return self.derivation.is_semantic_inference
+
+    @property
+    def epistemic_status(self) -> str:
+        """Human-readable epistemic distinction for agent reasoning."""
+        if self.is_semantic_inference:
+            return "VLM inferred"
+        if self.is_heuristic:
+            return "heuristically associated"
+        return "deterministically observed"
+
     @classmethod
     def create(
         cls,
@@ -46,6 +80,8 @@ class NodeProvenance(BaseModel):
         video_id: str | UUID,
         timestamp_start: float | None = None,
         timestamp_end: float | None = None,
+        derivation: DerivationType = DerivationType.CANONICAL,
+        confidence: float | None = None,
         evidence_ids: Sequence[str | UUID] | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> NodeProvenance:
@@ -58,6 +94,8 @@ class NodeProvenance(BaseModel):
             video_id=str(video_id),
             timestamp_start=timestamp_start,
             timestamp_end=timestamp_end,
+            derivation=derivation,
+            confidence=confidence,
             evidence_ids=normalized_ev,
             metadata=dict(metadata or {}),
         )
@@ -94,3 +132,27 @@ class EdgeProvenance(BaseModel):
         default_factory=dict,
         description="Extra derivation context",
     )
+
+    @property
+    def is_deterministic(self) -> bool:
+        """True if derived deterministically or directly from canonical ground truth."""
+        return self.derivation.is_deterministic
+
+    @property
+    def is_heuristic(self) -> bool:
+        """True if derived via heuristic association or approximation."""
+        return self.derivation.is_heuristic
+
+    @property
+    def is_semantic_inference(self) -> bool:
+        """True if derived via VLM or semantic model inference."""
+        return self.derivation.is_semantic_inference
+
+    @property
+    def epistemic_status(self) -> str:
+        """Human-readable epistemic distinction for agent reasoning."""
+        if self.is_semantic_inference:
+            return "VLM inferred"
+        if self.is_heuristic:
+            return "heuristically associated"
+        return "deterministically observed"
