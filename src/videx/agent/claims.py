@@ -104,7 +104,7 @@ class ClaimSet(BaseModel):
 
 
 class ClaimValidationReport(NamedTuple):
-    """Result of an anti-hallucination claim audit."""
+    """Result of an evidence-grounding claim audit."""
 
     is_valid: bool
     errors: list[str]
@@ -113,7 +113,8 @@ class ClaimValidationReport(NamedTuple):
 
 
 class ClaimValidator:
-    """Validates claims against retrieved evidence context to prevent hallucinations.
+    """Validates claims against retrieved evidence context to enforce grounded citations
+    and video isolation.
 
     Enforces that:
     1. Every SUPPORTED claim cites at least one valid evidence ID.

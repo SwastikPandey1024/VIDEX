@@ -24,7 +24,7 @@ class SufficiencyCheckResult:
 class EvidenceSufficiencyGate:
     """Verifies evidence sufficiency and scoping before permitting factual claims.
 
-    Guarantees:
+    Enforces:
     - Supporting evidence exists in canonical records
     - Evidence belongs to the target video (isolation)
     - Timestamps are temporally valid

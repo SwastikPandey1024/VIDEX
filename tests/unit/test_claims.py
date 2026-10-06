@@ -1,4 +1,4 @@
-"""Unit tests for VIDEX Claim models and ClaimValidator anti-hallucination rules."""
+"""Unit tests for VIDEX Claim models and ClaimValidator evidence grounding rules."""
 
 from __future__ import annotations
 

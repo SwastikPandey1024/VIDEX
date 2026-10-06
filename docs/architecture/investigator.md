@@ -17,7 +17,7 @@ Typed Tool Calls (read-only, provenance-preserving)
     ↓
 Evidence Retrieval & Graph Traversal
     ↓
-Evidence Sufficiency Gate (anti-hallucination check)
+Evidence Sufficiency Gate (evidence grounding and verification check)
     ↓
 Optional Bounded Semantic Reasoning (via VLMProvider boundary)
     ↓
@@ -26,9 +26,9 @@ Claim Validation (epistemic tagging & video namespace isolation)
 Auditable Answer & Structured Investigation Result
 ```
 
-### Inviolable Grounding Guarantee
+### Grounding Design Principle
 
-**The agent must never produce an uncorroborated factual claim.** If canonical evidence or graph associations are insufficient to corroborate an answer, the system truthfully returns `INSUFFICIENT_EVIDENCE` and explains what was lacking.
+**All emitted claims must cite supporting evidence IDs verified within the target video namespace.** If canonical evidence or graph associations are insufficient to corroborate an answer, the system enters an abstention state, returns `INSUFFICIENT_EVIDENCE`, and specifies what evidence was lacking.
 
 ---
 
@@ -69,7 +69,7 @@ Responses and UI components must never flatten these into equivalent facts.
 
 ## 4. Tool Registry and Contracts
 
-The system exposes 15 typed read-only tools through a controlled `ToolRegistry`:
+The system exposes 16 typed read-only tools through a controlled `ToolRegistry`:
 
 1. **`search_events`**: Queries temporal events within an optional time window or involving specific tracks.
 2. **`get_event`**: Retrieves canonical Event details by ID with participants and supporting evidence.
@@ -109,7 +109,7 @@ The `InvestigationExecutor` enforces strict operational limits to guarantee boun
 
 ---
 
-## 6. Anti-Hallucination and Claim Auditing Gates
+## 6. Evidence Grounding and Claim Auditing Gates
 
 Before an investigation completes, all formulated claims must pass two verification gates:
 
