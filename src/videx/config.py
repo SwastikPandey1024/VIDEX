@@ -216,6 +216,32 @@ class Settings(BaseSettings):
         description="Time-to-live in seconds for cached semantic inference results",
     )
 
+    # ── YouTube Learning Companion (Phase 9.2) ─────────────────
+    youtube_api_key: str = Field(
+        default="",
+        validation_alias=AliasChoices("youtube_api_key", "videx_youtube_api_key"),
+        description="Google/YouTube Data API v3 key (optional; local/public mode used when empty)",
+    )
+    youtube_api_base_url: str = Field(
+        default="https://www.googleapis.com/youtube/v3",
+        description="YouTube Data API v3 base endpoint URL",
+    )
+    youtube_request_timeout_seconds: float = Field(
+        default=15.0,
+        ge=1.0,
+        description="Timeout in seconds for YouTube HTTP requests",
+    )
+    youtube_max_results_per_page: int = Field(
+        default=50,
+        ge=1,
+        le=50,
+        description="Maximum items per page for YouTube playlist discovery",
+    )
+    notes_export_dir: str = Field(
+        default="data/notes",
+        description="Default directory for exported study notes and manifests",
+    )
+
     @property
     def ocr_language_list(self) -> list[str]:
         """Return OCR languages as a list."""
