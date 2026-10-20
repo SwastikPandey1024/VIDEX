@@ -14,17 +14,38 @@ from __future__ import annotations
 import math
 import unicodedata
 from collections.abc import Sequence
-from dataclasses import dataclass
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from videx.domain.schemas import BoundingBox
 from videx.evaluation.schemas import (
+    DetectionPrediction,
+    EventPrediction,
     GroundTruthDetection,
     GroundTruthEvent,
     GroundTruthQA,
     MetricResult,
     MetricStatus,
+    QAPrediction,
 )
+
+__all__ = [
+    "DetectionPrediction",
+    "EventPrediction",
+    "QAPrediction",
+    "compute_cer",
+    "compute_iou",
+    "compute_temporal_iou",
+    "compute_wer",
+    "evaluate_detections",
+    "evaluate_evidence_reference_integrity",
+    "evaluate_qa_abstention",
+    "evaluate_temporal_events",
+    "levenshtein_edit_counts",
+    "maximum_weight_bipartite_matching",
+    "min_cost_assignment",
+    "normalize_text",
+    "wilson_score_interval",
+]
 
 T = TypeVar("T")
 
@@ -211,21 +232,141 @@ def compute_wer(
     )
 
 
+# ── Bipartite Matching Algorithms ───────────────────────────────────────────
+
+
+def min_cost_assignment(cost_matrix: list[list[float]]) -> list[tuple[int, int]]:
+    """Kuhn-Munkres (Hungarian) algorithm for n x m cost matrix.
+
+    Finds a complete assignment of rows to columns minimizing total cost.
+    Optimized O(n^2 * m) implementation in pure Python.
+    """
+    if not cost_matrix or not cost_matrix[0]:
+        return []
+
+    n = len(cost_matrix)
+    m = len(cost_matrix[0])
+    transposed = False
+
+    if n > m:
+        cost_matrix = [[cost_matrix[i][j] for i in range(n)] for j in range(m)]
+        n, m = m, n
+        transposed = True
+
+    u = [0.0] * (n + 1)
+    v = [0.0] * (m + 1)
+    p = [0] * (m + 1)
+    way = [0] * (m + 1)
+
+    for i in range(1, n + 1):
+        p[0] = i
+        j0 = 0
+        minv = [float("inf")] * (m + 1)
+        used = [False] * (m + 1)
+
+        while True:
+            used[j0] = True
+            i0 = p[j0]
+            delta = float("inf")
+            j1 = 0
+
+            for j in range(1, m + 1):
+                if not used[j]:
+                    cur = cost_matrix[i0 - 1][j - 1] - u[i0] - v[j]
+                    if cur < minv[j]:
+                        minv[j] = cur
+                        way[j] = j0
+                    if minv[j] < delta:
+                        delta = minv[j]
+                        j1 = j
+
+            for j in range(0, m + 1):
+                if used[j]:
+                    u[p[j]] += delta
+                    v[j] -= delta
+                else:
+                    minv[j] -= delta
+
+            j0 = j1
+            if p[j0] == 0:
+                break
+
+        while True:
+            j1 = way[j0]
+            p[j0] = p[j1]
+            j0 = j1
+            if j0 == 0:
+                break
+
+    assignment: list[tuple[int, int]] = []
+    for j in range(1, m + 1):
+        if p[j] > 0:
+            row = p[j] - 1
+            col = j - 1
+            if transposed:
+                assignment.append((col, row))
+            else:
+                assignment.append((row, col))
+
+    assignment.sort(key=lambda x: x[0])
+    return assignment
+
+
+def maximum_weight_bipartite_matching(
+    num_gt: int,
+    num_pred: int,
+    candidates: list[tuple[float, int, int]],
+) -> list[tuple[int, int, float]]:
+    """Finds maximum-cardinality, then maximum-weight bipartite matching.
+
+    candidates: list of (weight, gt_idx, pred_idx) where weight is positive (e.g. IoU >= threshold).
+    Returns list of matched (gt_idx, pred_idx, weight).
+
+    To guarantee maximum cardinality first and sum of weights second, each valid edge receives
+    weight = 100.0 + edge_weight (since edge_weight <= 1.0). Any additional match yields >= 100.0,
+    strictly dominating any fractional weight trade-offs.
+    """
+    if num_gt == 0 or num_pred == 0 or not candidates:
+        return []
+
+    edge_map: dict[tuple[int, int], float] = {}
+    for w, g, p in candidates:
+        edge_map[(g, p)] = max(edge_map.get((g, p), 0.0), w)
+
+    big_val = 1000.0
+    cost_matrix: list[list[float]] = []
+    for g in range(num_gt):
+        row: list[float] = []
+        for p in range(num_pred):
+            if (g, p) in edge_map:
+                w = edge_map[(g, p)]
+                row.append(big_val - (100.0 + w))
+            else:
+                row.append(big_val)
+        cost_matrix.append(row)
+
+    assignment = min_cost_assignment(cost_matrix)
+    matches: list[tuple[int, int, float]] = []
+    for g, p in assignment:
+        if (g, p) in edge_map:
+            matches.append((g, p, edge_map[(g, p)]))
+
+    return matches
+
+
 # ── Bounding Box Detection Evaluation ───────────────────────────────────────
 
 
-@dataclass(frozen=True)
-class DetectionPrediction:
-    """Prediction format consumed by the detection evaluator."""
-
-    timestamp_pts: float
-    class_label: str
-    bbox: BoundingBox
-    confidence: float = 1.0
-
-
 def compute_iou(box1: BoundingBox, box2: BoundingBox) -> float:
-    """Computes Intersection over Union (IoU) between two bounding boxes."""
+    """Computes Intersection over Union (IoU) between two bounding boxes.
+
+    Coordinates are specified in pixel or normalized space with origin (0, 0)
+    at the top-left corner. Boxes with zero or negative width/height are clipped
+    to zero area.
+    """
+    if box1.width <= 0.0 or box1.height <= 0.0 or box2.width <= 0.0 or box2.height <= 0.0:
+        return 0.0
+
     x1 = max(box1.x, box2.x)
     y1 = max(box1.y, box2.y)
     x2 = min(box1.x + box1.width, box2.x + box2.width)
@@ -246,15 +387,24 @@ def evaluate_detections(
     predictions: Sequence[DetectionPrediction],
     iou_threshold: float = 0.5,
     temporal_tolerance_seconds: float = 0.1,
+    matching_strategy: str = "optimal",
 ) -> dict[str, MetricResult]:
-    """Evaluates object detection using one-to-one greedy bipartite matching.
+    """Evaluates object detection using one-to-one bipartite matching.
+
+    Coordinate conventions:
+    - Bounding boxes use top-left origin (x, y) with non-negative width and height.
+    - Non-positive width or height is clipped to 0 area.
 
     Matching criteria:
-    1. Exact class_label match.
+    1. Exact class_label match (case-insensitive).
     2. Temporal proximity within temporal_tolerance_seconds.
-    3. Spatial IoU >= iou_threshold.
-    4. One-to-one greedy assignment (highest IoU first). Unmatched predictions are False Positives.
-       Unmatched ground truths are False Negatives.
+    3. Spatial overlap: IoU >= iou_threshold.
+    4. One-to-one constraint: Each GT and prediction can be matched at most once.
+       Duplicate predictions for the same object are strictly penalized as False Positives.
+    5. Matching strategy:
+       - 'optimal' (default): Maximum-cardinality, maximum-weight bipartite matching
+         via the Kuhn-Munkres algorithm.
+       - 'greedy': Greedy assignment sorted descending by IoU.
     """
     total_gt = len(ground_truth)
     total_pred = len(predictions)
@@ -278,7 +428,7 @@ def evaluate_detections(
             ),
         }
 
-    # Generate candidate pairs
+    # Generate candidate matches satisfying class, time, and IoU thresholds
     candidates: list[tuple[float, int, int]] = []
     for g_idx, gt in enumerate(ground_truth):
         for p_idx, pred in enumerate(predictions):
@@ -290,28 +440,68 @@ def evaluate_detections(
             if iou >= iou_threshold:
                 candidates.append((iou, g_idx, p_idx))
 
-    # Sort descending by IoU for greedy assignment
-    candidates.sort(key=lambda x: x[0], reverse=True)
-
-    matched_gt: set[int] = set()
-    matched_pred: set[int] = set()
-    tp = 0
-
-    for _, g_idx, p_idx in candidates:
-        if g_idx not in matched_gt and p_idx not in matched_pred:
-            matched_gt.add(g_idx)
-            matched_pred.add(p_idx)
-            tp += 1
+    if matching_strategy == "greedy":
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        matched_gt: set[int] = set()
+        matched_pred: set[int] = set()
+        tp = 0
+        for _, g_idx, p_idx in candidates:
+            if g_idx not in matched_gt and p_idx not in matched_pred:
+                matched_gt.add(g_idx)
+                matched_pred.add(p_idx)
+                tp += 1
+    else:
+        # Default: optimal maximum-weight bipartite matching
+        optimal_matches = maximum_weight_bipartite_matching(total_gt, total_pred, candidates)
+        tp = len(optimal_matches)
 
     fp = total_pred - tp
     fn = total_gt - tp
 
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    zero_pred_denom = (tp + fp) == 0
+    zero_gt_denom = (tp + fn) == 0
+
+    precision = (tp / (tp + fp)) if not zero_pred_denom else 0.0
+    recall = (tp / (tp + fn)) if not zero_gt_denom else 0.0
     f1 = (2.0 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
 
-    p_ci = wilson_score_interval(tp, tp + fp)
-    r_ci = wilson_score_interval(tp, total_gt)
+    p_ci = wilson_score_interval(tp, tp + fp) if not zero_pred_denom else None
+    r_ci = wilson_score_interval(tp, total_gt) if not zero_gt_denom else None
+
+    p_meta: dict[str, Any] = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "iou_threshold": iou_threshold,
+        "temporal_tolerance_seconds": temporal_tolerance_seconds,
+        "matching_strategy": matching_strategy,
+    }
+    if zero_pred_denom:
+        p_meta["zero_denominator"] = True
+        p_meta["undefined_reason"] = (
+            "Zero positive predictions made (TP + FP = 0); precision is formally undefined"
+        )
+
+    r_meta: dict[str, Any] = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "total_ground_truth": total_gt,
+        "matching_strategy": matching_strategy,
+    }
+    if zero_gt_denom:
+        r_meta["zero_denominator"] = True
+        r_meta["undefined_reason"] = (
+            "Zero ground truth detections annotated (TP + FN = 0); recall is formally undefined"
+        )
+
+    f1_meta: dict[str, Any] = {
+        "precision": precision,
+        "recall": recall,
+        "matching_strategy": matching_strategy,
+    }
+    if zero_pred_denom or zero_gt_denom:
+        f1_meta["zero_denominator"] = True
 
     return {
         "detection_precision": MetricResult(
@@ -320,8 +510,8 @@ def evaluate_detections(
             value=round(precision, 4),
             sample_size=tp + fp,
             confidence_interval=p_ci,
-            ci_method="wilson_score",
-            metadata={"tp": tp, "fp": fp, "fn": fn, "iou_threshold": iou_threshold},
+            ci_method="wilson_score" if p_ci else None,
+            metadata=p_meta,
         ),
         "detection_recall": MetricResult(
             name="detection_recall",
@@ -329,15 +519,15 @@ def evaluate_detections(
             value=round(recall, 4),
             sample_size=total_gt,
             confidence_interval=r_ci,
-            ci_method="wilson_score",
-            metadata={"tp": tp, "fp": fp, "fn": fn, "total_ground_truth": total_gt},
+            ci_method="wilson_score" if r_ci else None,
+            metadata=r_meta,
         ),
         "detection_f1": MetricResult(
             name="detection_f1",
             status=MetricStatus.AVAILABLE,
             value=round(f1, 4),
             sample_size=total_gt,
-            metadata={"precision": precision, "recall": recall},
+            metadata=f1_meta,
         ),
     }
 
@@ -345,22 +535,16 @@ def evaluate_detections(
 # ── Temporal Event Matching ─────────────────────────────────────────────────
 
 
-@dataclass(frozen=True)
-class EventPrediction:
-    """Prediction format consumed by the temporal event evaluator."""
-
-    event_type: str
-    start_seconds: float
-    end_seconds: float
-    participants: list[str] = ()  # type: ignore[assignment]
-    confidence: float = 1.0
-
-
 def compute_temporal_iou(
     interval_1: tuple[float, float],
     interval_2: tuple[float, float],
 ) -> float:
-    """Computes temporal Intersection over Union (tIoU) between two time intervals."""
+    """Computes temporal Intersection over Union (tIoU) between two time intervals.
+
+    Intervals are specified as (start_seconds, end_seconds).
+    For non-zero duration intervals: tIoU = intersection_duration / union_duration.
+    For point events (zero duration) at identical timestamps: tIoU = 1.0.
+    """
     s1, e1 = interval_1
     s2, e2 = interval_2
 
@@ -373,7 +557,7 @@ def compute_temporal_iou(
     union_dur = max(0.0, union_end - union_start)
 
     if union_dur <= 0.0:
-        return 0.0
+        return 1.0 if s1 == s2 else 0.0
     return inter_dur / union_dur
 
 
@@ -381,8 +565,9 @@ def evaluate_temporal_events(
     ground_truth: Sequence[GroundTruthEvent],
     predictions: Sequence[EventPrediction],
     tiou_threshold: float = 0.5,
+    matching_strategy: str = "optimal",
 ) -> dict[str, MetricResult]:
-    """Evaluates temporal events using one-to-one greedy assignment over tIoU."""
+    """Evaluates temporal events using one-to-one bipartite matching over tIoU."""
     total_gt = len(ground_truth)
     total_pred = len(predictions)
 
@@ -417,17 +602,28 @@ def evaluate_temporal_events(
             if tiou >= tiou_threshold:
                 candidates.append((tiou, g_idx, p_idx))
 
-    candidates.sort(key=lambda x: x[0], reverse=True)
-    matched_gt: set[int] = set()
-    matched_pred: set[int] = set()
-    tp = 0
     boundary_errors: list[float] = []
 
-    for _, g_idx, p_idx in candidates:
-        if g_idx not in matched_gt and p_idx not in matched_pred:
-            matched_gt.add(g_idx)
-            matched_pred.add(p_idx)
-            tp += 1
+    if matching_strategy == "greedy":
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        matched_gt: set[int] = set()
+        matched_pred: set[int] = set()
+        tp = 0
+        for _, g_idx, p_idx in candidates:
+            if g_idx not in matched_gt and p_idx not in matched_pred:
+                matched_gt.add(g_idx)
+                matched_pred.add(p_idx)
+                tp += 1
+                gt = ground_truth[g_idx]
+                pr = predictions[p_idx]
+                err = (
+                    abs(gt.start_seconds - pr.start_seconds) + abs(gt.end_seconds - pr.end_seconds)
+                ) / 2.0
+                boundary_errors.append(err)
+    else:
+        optimal_matches = maximum_weight_bipartite_matching(total_gt, total_pred, candidates)
+        tp = len(optimal_matches)
+        for g_idx, p_idx, _ in optimal_matches:
             gt = ground_truth[g_idx]
             pr = predictions[p_idx]
             err = (
@@ -438,10 +634,42 @@ def evaluate_temporal_events(
     fp = total_pred - tp
     fn = total_gt - tp
 
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    zero_pred_denom = (tp + fp) == 0
+    zero_gt_denom = (tp + fn) == 0
+
+    precision = (tp / (tp + fp)) if not zero_pred_denom else 0.0
+    recall = (tp / (tp + fn)) if not zero_gt_denom else 0.0
     f1 = (2.0 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
     mean_boundary_err = sum(boundary_errors) / len(boundary_errors) if boundary_errors else 0.0
+
+    p_ci = wilson_score_interval(tp, tp + fp) if not zero_pred_denom else None
+    r_ci = wilson_score_interval(tp, total_gt) if not zero_gt_denom else None
+
+    p_meta: dict[str, Any] = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "tiou_threshold": tiou_threshold,
+        "matching_strategy": matching_strategy,
+    }
+    if zero_pred_denom:
+        p_meta["zero_denominator"] = True
+        p_meta["undefined_reason"] = (
+            "Zero positive event predictions (TP + FP = 0); precision is formally undefined"
+        )
+
+    r_meta: dict[str, Any] = {
+        "tp": tp,
+        "fp": fp,
+        "fn": fn,
+        "total_ground_truth": total_gt,
+        "matching_strategy": matching_strategy,
+    }
+    if zero_gt_denom:
+        r_meta["zero_denominator"] = True
+        r_meta["undefined_reason"] = (
+            "Zero ground truth events annotated (TP + FN = 0); recall is formally undefined"
+        )
 
     return {
         "event_precision": MetricResult(
@@ -449,40 +677,35 @@ def evaluate_temporal_events(
             status=MetricStatus.AVAILABLE,
             value=round(precision, 4),
             sample_size=tp + fp,
-            confidence_interval=wilson_score_interval(tp, tp + fp),
-            ci_method="wilson_score",
-            metadata={"tp": tp, "fp": fp, "fn": fn, "tiou_threshold": tiou_threshold},
+            confidence_interval=p_ci,
+            ci_method="wilson_score" if p_ci else None,
+            metadata=p_meta,
         ),
         "event_recall": MetricResult(
             name="event_recall",
             status=MetricStatus.AVAILABLE,
             value=round(recall, 4),
             sample_size=total_gt,
-            confidence_interval=wilson_score_interval(tp, total_gt),
-            ci_method="wilson_score",
-            metadata={"tp": tp, "fp": fp, "fn": fn, "total_ground_truth": total_gt},
+            confidence_interval=r_ci,
+            ci_method="wilson_score" if r_ci else None,
+            metadata=r_meta,
         ),
         "event_f1": MetricResult(
             name="event_f1",
             status=MetricStatus.AVAILABLE,
             value=round(f1, 4),
             sample_size=total_gt,
-            metadata={"mean_temporal_boundary_error_sec": round(mean_boundary_err, 4)},
+            metadata={
+                "precision": precision,
+                "recall": recall,
+                "mean_temporal_boundary_error_sec": round(mean_boundary_err, 4),
+                "matching_strategy": matching_strategy,
+            },
         ),
     }
 
 
 # ── QA Answerability & Abstention Evaluation ────────────────────────────────
-
-
-@dataclass(frozen=True)
-class QAPrediction:
-    """Prediction format consumed by the QA answerability evaluator."""
-
-    qa_id: str
-    predicted_answer: str | None
-    did_abstain: bool  # True if the model said "insufficient evidence" / abstained
-    confidence: float = 1.0
 
 
 def evaluate_qa_abstention(
@@ -491,8 +714,16 @@ def evaluate_qa_abstention(
 ) -> dict[str, MetricResult]:
     """Evaluates question answerability and abstention classification.
 
-    Explicitly scores the system's ability to say 'insufficient evidence'
-    when a question is unanswerable (is_answerable=False).
+    Explicitly models and scores:
+    1. tp_abstain: Unanswerable question (is_answerable=False) where model explicitly
+       reported insufficient evidence (did_abstain=True).
+    2. tn_answer: Answerable question (is_answerable=True) where model attempted an answer
+       (did_abstain=False).
+    3. fp_refusal: Answerable question where model incorrectly refused to answer (did_abstain=True).
+    4. fn_hallucination: Unanswerable question where model attempted an answer instead of abstaining
+       (did_abstain=False).
+    5. missing_predictions: Question annotated in ground truth for which no prediction was supplied.
+       Missing predictions are NEVER scored as correct abstentions.
     """
     if not ground_truth:
         return {
@@ -505,34 +736,40 @@ def evaluate_qa_abstention(
 
     pred_map = {str(p.qa_id): p for p in predictions}
 
-    correct_decisions = 0
-    total_evaluated = 0
+    tp_abstain = 0
+    tn_answer = 0
+    fp_refusal = 0
+    fn_hallucination = 0
+    missing_predictions = 0
+
     unanswerable_total = 0
-    correct_abstentions = 0
-    hallucinated_answers = 0  # Answered an unanswerable question
-    refused_answerable = 0  # Abstained on an answerable question
+    answerable_total = 0
 
     for gt in ground_truth:
+        if not gt.is_answerable:
+            unanswerable_total += 1
+        else:
+            answerable_total += 1
+
         pred = pred_map.get(str(gt.qa_id))
         if pred is None:
+            missing_predictions += 1
             continue
 
-        total_evaluated += 1
-        expected_unanswerable = not gt.is_answerable
-
-        if expected_unanswerable:
-            unanswerable_total += 1
+        if not gt.is_answerable:
+            # Expected abstention
             if pred.did_abstain:
-                correct_abstentions += 1
-                correct_decisions += 1
+                tp_abstain += 1
             else:
-                hallucinated_answers += 1
+                fn_hallucination += 1
         else:
-            # Expected answerable
+            # Expected answer
             if not pred.did_abstain:
-                correct_decisions += 1
+                tn_answer += 1
             else:
-                refused_answerable += 1
+                fp_refusal += 1
+
+    total_evaluated = tp_abstain + tn_answer + fp_refusal + fn_hallucination
 
     if total_evaluated == 0:
         return {
@@ -540,11 +777,55 @@ def evaluate_qa_abstention(
                 name="qa_abstention_accuracy",
                 status=MetricStatus.UNAVAILABLE,
                 reason_if_unavailable="No matching predictions found for annotated QA items",
+                metadata={"missing_predictions": missing_predictions},
             )
         }
 
+    correct_decisions = tp_abstain + tn_answer
     accuracy = correct_decisions / total_evaluated
-    abstention_recall = correct_abstentions / unanswerable_total if unanswerable_total > 0 else 0.0
+
+    # Abstention precision = tp / (tp + fp)
+    total_abstained = tp_abstain + fp_refusal
+    zero_abstain_denom = total_abstained == 0
+    abstention_precision = (tp_abstain / total_abstained) if not zero_abstain_denom else 0.0
+
+    # Abstention recall = tp / (tp + fn)
+    unanswerable_evaluated = tp_abstain + fn_hallucination
+    zero_unans_denom = unanswerable_evaluated == 0
+    abstention_recall = (tp_abstain / unanswerable_evaluated) if not zero_unans_denom else 0.0
+
+    # Abstention F1
+    if (abstention_precision + abstention_recall) > 0.0:
+        abstention_f1 = (
+            2.0
+            * abstention_precision
+            * abstention_recall
+            / (abstention_precision + abstention_recall)
+        )
+    else:
+        abstention_f1 = 0.0
+
+    confusion_meta: dict[str, Any] = {
+        "total_ground_truth": len(ground_truth),
+        "total_evaluated": total_evaluated,
+        "missing_predictions": missing_predictions,
+        "answerable_total": answerable_total,
+        "unanswerable_total": unanswerable_total,
+        "tp_abstain": tp_abstain,
+        "tn_answer": tn_answer,
+        "fp_refusal": fp_refusal,
+        "fn_hallucination": fn_hallucination,
+        # Backward-compatible aliases
+        "correct_abstentions": tp_abstain,
+        "hallucinated_answers": fn_hallucination,
+        "refused_answerable": fp_refusal,
+    }
+
+    acc_ci = wilson_score_interval(correct_decisions, total_evaluated)
+    prec_ci = wilson_score_interval(tp_abstain, total_abstained) if not zero_abstain_denom else None
+    rec_ci = (
+        wilson_score_interval(tp_abstain, unanswerable_evaluated) if not zero_unans_denom else None
+    )
 
     return {
         "qa_abstention_accuracy": MetricResult(
@@ -552,35 +833,47 @@ def evaluate_qa_abstention(
             status=MetricStatus.AVAILABLE,
             value=round(accuracy, 4),
             sample_size=total_evaluated,
-            confidence_interval=wilson_score_interval(correct_decisions, total_evaluated),
-            ci_method="wilson_score",
+            confidence_interval=acc_ci,
+            ci_method="wilson_score" if acc_ci else None,
+            metadata={**confusion_meta, "correct_decisions": correct_decisions},
+        ),
+        "qa_abstention_precision": MetricResult(
+            name="qa_abstention_precision",
+            status=MetricStatus.AVAILABLE,
+            value=round(abstention_precision, 4),
+            sample_size=total_abstained,
+            confidence_interval=prec_ci,
+            ci_method="wilson_score" if prec_ci else None,
             metadata={
-                "total_evaluated": total_evaluated,
-                "correct_decisions": correct_decisions,
-                "unanswerable_total": unanswerable_total,
-                "correct_abstentions": correct_abstentions,
-                "hallucinated_answers": hallucinated_answers,
-                "refused_answerable": refused_answerable,
+                **confusion_meta,
+                "zero_denominator": zero_abstain_denom,
+                "undefined_reason": (
+                    "No questions were abstained on" if zero_abstain_denom else None
+                ),
             },
         ),
         "qa_abstention_recall": MetricResult(
             name="qa_abstention_recall",
-            status=MetricStatus.AVAILABLE
-            if unanswerable_total > 0
-            else MetricStatus.NOT_APPLICABLE,
-            value=round(abstention_recall, 4) if unanswerable_total > 0 else None,
-            sample_size=unanswerable_total,
-            confidence_interval=wilson_score_interval(correct_abstentions, unanswerable_total)
-            if unanswerable_total > 0
-            else None,
-            ci_method="wilson_score",
+            status=MetricStatus.AVAILABLE if not zero_unans_denom else MetricStatus.NOT_APPLICABLE,
+            value=round(abstention_recall, 4) if not zero_unans_denom else None,
+            sample_size=unanswerable_evaluated,
+            confidence_interval=rec_ci,
+            ci_method="wilson_score" if rec_ci else None,
+            metadata=confusion_meta,
+            reason_if_unavailable=(
+                "No unanswerable questions evaluated" if zero_unans_denom else None
+            ),
+        ),
+        "qa_abstention_f1": MetricResult(
+            name="qa_abstention_f1",
+            status=MetricStatus.AVAILABLE,
+            value=round(abstention_f1, 4),
+            sample_size=total_evaluated,
             metadata={
-                "correct_abstentions": correct_abstentions,
-                "unanswerable_total": unanswerable_total,
+                "precision": abstention_precision,
+                "recall": abstention_recall,
+                "confusion_matrix": confusion_meta,
             },
-            reason_if_unavailable="No unanswerable questions present in sample"
-            if unanswerable_total == 0
-            else None,
         ),
     }
 

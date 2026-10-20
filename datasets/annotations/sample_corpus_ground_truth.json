@@ -1,16 +1,16 @@
 {
   "schema_version": "1.0.0",
   "dataset_id": "videx_regression_corpus_pilot_v1",
-  "provenance": "VIDEX Ground Truth Engineering Team (Verified Manual Annotation)",
+  "provenance": "VIDEX Ground Truth Engineering Team (Phase 9.1 Audited Manual Annotation)",
   "annotation_guidelines": "docs/evaluation/annotation-guidelines.md",
   "videos": [
     {
       "video_id": "video_sample_001",
       "source_identifier": "sample.mp4",
       "duration_seconds": 2.96,
-      "overall_status": "annotated",
+      "overall_status": "annotation_incomplete",
       "detections": {
-        "status": "annotated",
+        "status": "annotation_incomplete",
         "items": [
           {
             "detection_id": "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
@@ -41,10 +41,10 @@
             "object_identity": "car_1"
           }
         ],
-        "rationale": "Keyframe vehicle detection bounding boxes"
+        "rationale": "PROVISIONAL / AUDIT CORRECTION: sample.mp4 is a synthetic scene-transition clip with solid green/red backgrounds; no vehicle is physically visible in the source video. Retained strictly as a historical regression fixture with status annotation_incomplete."
       },
       "tracks": {
-        "status": "annotated",
+        "status": "annotation_incomplete",
         "items": [
           {
             "track_id": "track_car_1",
@@ -82,20 +82,63 @@
             ]
           }
         ],
-        "rationale": "Single vehicle trajectory across 2.96s duration"
+        "rationale": "Provisional vehicle track retained for synthetic fixture backwards compatibility."
       },
       "ocr": {
-        "status": "not_applicable",
-        "items": [],
-        "rationale": "No legible on-screen text, signage, or license plates in 320x240 clip"
+        "status": "annotated",
+        "items": [
+          {
+            "ocr_id": "f1a2b3c4-d5e6-4a1b-8c2d-3e4f5a6b7c8d",
+            "timestamp_pts": 0.0,
+            "expected_text": "Scene 1 - Frame 0",
+            "bbox": {
+              "x": 20.0,
+              "y": 104.0,
+              "width": 225.0,
+              "height": 18.0,
+              "coordinate_type": "pixel"
+            },
+            "language": "en",
+            "case_sensitive": false
+          },
+          {
+            "ocr_id": "f2a3b4c5-d6e7-4b2c-9d3e-4f5a6b7c8d9e",
+            "timestamp_pts": 1.0,
+            "expected_text": "Scene 1 - Frame 25",
+            "bbox": {
+              "x": 20.0,
+              "y": 104.0,
+              "width": 239.0,
+              "height": 18.0,
+              "coordinate_type": "pixel"
+            },
+            "language": "en",
+            "case_sensitive": false
+          },
+          {
+            "ocr_id": "f3a4b5c6-d7e8-4c3d-ae4f-5a6b7c8d9e0f",
+            "timestamp_pts": 2.0,
+            "expected_text": "Scene 2 - Frame 50",
+            "bbox": {
+              "x": 20.0,
+              "y": 104.0,
+              "width": 239.0,
+              "height": 18.0,
+              "coordinate_type": "pixel"
+            },
+            "language": "en",
+            "case_sensitive": false
+          }
+        ],
+        "rationale": "Audited ground truth verified against decoded frames: OpenCV putText scene labels rendered on green and red frames."
       },
       "transcripts": {
         "status": "not_applicable",
         "items": [],
-        "rationale": "Silent container format (no audio track present)"
+        "rationale": "Silent container format (no audio track present in sample.mp4)"
       },
       "events": {
-        "status": "annotated",
+        "status": "annotation_incomplete",
         "items": [
           {
             "event_id": "c3d4e5f6-a1b2-4c3d-ae4f-5a6b7c8d9e0f",
@@ -104,10 +147,10 @@
             "end_seconds": 0.2,
             "participants": ["car_1"],
             "supporting_evidence_ids": ["a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d"],
-            "evidence_description": "Vehicle enters observation area"
+            "evidence_description": "Provisional vehicle appearance event"
           }
         ],
-        "rationale": "Vehicle appearance at beginning of clip"
+        "rationale": "Provisional event record tied to legacy vehicle fixture; status annotation_incomplete."
       },
       "qa": {
         "status": "annotated",
@@ -116,10 +159,10 @@
             "qa_id": "d4e5f6a1-b2c3-4d4e-bf5a-6b7c8d9e0f1a",
             "question": "Is there a vehicle visible in the clip?",
             "is_answerable": true,
-            "reference_answer": "Yes, a car is visible moving across the frame.",
-            "acceptable_answers": ["yes", "a car is present", "car visible"],
-            "supporting_evidence_ids": ["a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d"],
-            "annotation_rationale": "Car clearly observable in all decoded frames"
+            "reference_answer": "No, there is no vehicle visible in sample.mp4; the video contains synthetic text on solid color backgrounds.",
+            "acceptable_answers": ["no", "no vehicle", "none", "there is no vehicle visible"],
+            "supporting_evidence_ids": [],
+            "annotation_rationale": "AUDIT CORRECTION: Physical video verification confirms complete absence of vehicles in sample.mp4."
           },
           {
             "qa_id": "e5f6a1b2-c3d4-4e5f-c06b-7c8d9e0f1a2b",
@@ -131,7 +174,7 @@
             "annotation_rationale": "Clip is silent with no audio stream; question is unanswerable"
           }
         ],
-        "rationale": "Ground truth evaluating both factual answer and correct abstention"
+        "rationale": "Audited ground truth evaluating factual negative finding and correct abstention on silent clip."
       }
     },
     {
@@ -171,7 +214,7 @@
             "object_identity": "worker_1"
           }
         ],
-        "rationale": "Keyframe worker bounding box observations"
+        "rationale": "Keyframe worker bounding box observations in 1280x720 video; verified against decoded frames 0 and 90."
       },
       "tracks": {
         "status": "annotated",
@@ -212,17 +255,17 @@
             ]
           }
         ],
-        "rationale": "Single worker trajectory through workplace scene"
+        "rationale": "Single worker trajectory through workplace scene across 11.4s duration."
       },
       "ocr": {
         "status": "not_applicable",
         "items": [],
-        "rationale": "No signage or text placards present in workplace background"
+        "rationale": "No signage, placard, or legible text present in workplace background."
       },
       "transcripts": {
         "status": "not_applicable",
         "items": [],
-        "rationale": "Silent clip (no audio track)"
+        "rationale": "Silent clip (no audio track in ppe-1.mp4 container)."
       },
       "events": {
         "status": "annotated",
@@ -237,7 +280,7 @@
             "evidence_description": "Worker operates in work zone"
           }
         ],
-        "rationale": "Continuous workplace presence event"
+        "rationale": "Continuous workplace presence event spanning 0.0s to 11.0s."
       },
       "qa": {
         "status": "annotated",
@@ -258,10 +301,10 @@
             "reference_answer": null,
             "acceptable_answers": [],
             "supporting_evidence_ids": [],
-            "annotation_rationale": "No badge or employee number is visible in the scene; must abstain"
+            "annotation_rationale": "No badge or employee number is visible in the scene; model must abstain"
           }
         ],
-        "rationale": "Evaluates factual presence and correct abstention on unobservable identity"
+        "rationale": "Evaluates factual presence and correct abstention on unobservable identity. Industrial surveillance domain only; educational baseline remains blocked."
       }
     }
   ]

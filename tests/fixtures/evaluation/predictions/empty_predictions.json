@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "pred_empty_predictions",
+  "model_info": {"model_name": "videx_test", "scenario": "empty_predictions"},
+  "videos": [
+    {
+      "video_id": "video_sample_001",
+      "detections": [],
+      "events": [],
+      "qa": [],
+      "ocr": [],
+      "transcripts": []
+    }
+  ]
+}

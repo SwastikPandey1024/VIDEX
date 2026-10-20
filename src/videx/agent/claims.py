@@ -125,12 +125,14 @@ class ClaimValidator:
     6. Confidence scores are valid probabilities in [0.0, 1.0].
     """
 
-    ALLOWED_EPISTEMIC_STATUSES: frozenset[str] = frozenset({
-        "deterministically observed",
-        "heuristically associated",
-        "VLM inferred",
-        "insufficient evidence",
-    })
+    ALLOWED_EPISTEMIC_STATUSES: frozenset[str] = frozenset(
+        {
+            "deterministically observed",
+            "heuristically associated",
+            "VLM inferred",
+            "insufficient evidence",
+        }
+    )
 
     def validate(
         self,
@@ -196,9 +198,7 @@ class ClaimValidator:
             if known_event_ids is not None and c.event_ids:
                 missing_events = set(c.event_ids) - known_event_ids
                 if missing_events:
-                    claim_errors.append(
-                        f"Claim cites unknown event_ids: {sorted(missing_events)}"
-                    )
+                    claim_errors.append(f"Claim cites unknown event_ids: {sorted(missing_events)}")
 
             # 7. Participant verification if known participants provided
             if known_participant_ids is not None and c.participant_ids:

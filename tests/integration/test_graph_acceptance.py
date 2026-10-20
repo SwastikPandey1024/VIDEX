@@ -256,9 +256,7 @@ def test_full_pipeline_graph_projection_and_query_acceptance() -> None:
     assert sem_nodes[0].is_semantic_inference
     assert sem_nodes[0].epistemic_status == "VLM inferred"
 
-    det_ev_nodes = store.query_nodes(
-        NodeFilter(video_id=vid, node_types=(GraphNodeType.EVENT,))
-    )
+    det_ev_nodes = store.query_nodes(NodeFilter(video_id=vid, node_types=(GraphNodeType.EVENT,)))
     assert len(det_ev_nodes) >= 1
     assert det_ev_nodes[0].is_deterministic
     assert det_ev_nodes[0].epistemic_status == "deterministically observed"

@@ -1,13 +1,10 @@
 """VIDEX Evaluation Package.
 
 Provides ground-truth domain schemas, verified metrics, statistical uncertainty estimation,
-and a reproducible evaluation harness.
+typed prediction ingestion contract, and a reproducible evaluation harness.
 """
 
 from videx.evaluation.metrics import (
-    DetectionPrediction,
-    EventPrediction,
-    QAPrediction,
     compute_cer,
     compute_iou,
     compute_temporal_iou,
@@ -16,12 +13,18 @@ from videx.evaluation.metrics import (
     evaluate_evidence_reference_integrity,
     evaluate_qa_abstention,
     evaluate_temporal_events,
+    levenshtein_edit_counts,
+    maximum_weight_bipartite_matching,
+    min_cost_assignment,
+    normalize_text,
     wilson_score_interval,
 )
 from videx.evaluation.schemas import (
     AnnotationDataset,
     AnnotationStatus,
+    DetectionPrediction,
     EvaluationResult,
+    EventPrediction,
     GroundTruthDetection,
     GroundTruthEvent,
     GroundTruthOCR,
@@ -31,8 +34,13 @@ from videx.evaluation.schemas import (
     MetricResult,
     MetricStatus,
     ModalityAnnotation,
+    OCRPrediction,
+    PredictionDataset,
+    QAPrediction,
+    TranscriptPrediction,
     VideoAnnotation,
     VideoEvaluationSummary,
+    VideoPredictions,
 )
 
 __all__ = [
@@ -50,9 +58,13 @@ __all__ = [
     "MetricResult",
     "MetricStatus",
     "ModalityAnnotation",
+    "OCRPrediction",
+    "PredictionDataset",
     "QAPrediction",
+    "TranscriptPrediction",
     "VideoAnnotation",
     "VideoEvaluationSummary",
+    "VideoPredictions",
     "compute_cer",
     "compute_iou",
     "compute_temporal_iou",
@@ -61,5 +73,9 @@ __all__ = [
     "evaluate_evidence_reference_integrity",
     "evaluate_qa_abstention",
     "evaluate_temporal_events",
+    "levenshtein_edit_counts",
+    "maximum_weight_bipartite_matching",
+    "min_cost_assignment",
+    "normalize_text",
     "wilson_score_interval",
 ]

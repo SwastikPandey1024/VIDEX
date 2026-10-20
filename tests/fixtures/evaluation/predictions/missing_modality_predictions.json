@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "pred_missing_modality",
+  "model_info": {"model_name": "videx_test", "scenario": "missing_modality"},
+  "videos": [
+    {
+      "video_id": "video_sample_001",
+      "detections": null,
+      "events": null,
+      "qa": null,
+      "ocr": null,
+      "transcripts": null
+    }
+  ]
+}

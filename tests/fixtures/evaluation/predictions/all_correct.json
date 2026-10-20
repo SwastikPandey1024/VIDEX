@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "pred_all_correct",
+  "model_info": {"model_name": "videx_oracle", "checkpoint": "gold_perfect"},
+  "videos": [
+    {
+      "video_id": "video_sample_001",
+      "detections": [
+        {
+          "timestamp_pts": 0.0,
+          "class_label": "car",
+          "bbox": {"x": 20.0, "y": 50.0, "width": 100.0, "height": 80.0, "coordinate_type": "pixel"},
+          "confidence": 1.0
+        },
+        {
+          "timestamp_pts": 1.0,
+          "class_label": "car",
+          "bbox": {"x": 60.0, "y": 50.0, "width": 100.0, "height": 80.0, "coordinate_type": "pixel"},
+          "confidence": 1.0
+        }
+      ],
+      "events": [
+        {
+          "event_type": "object_appeared",
+          "start_seconds": 0.0,
+          "end_seconds": 0.2,
+          "participants": ["car_1"],
+          "confidence": 1.0
+        }
+      ],
+      "qa": [
+        {
+          "qa_id": "d4e5f6a1-b2c3-4d4e-bf5a-6b7c8d9e0f1a",
+          "predicted_answer": "Yes, a car is visible moving across the frame.",
+          "did_abstain": false,
+          "confidence": 1.0
+        },
+        {
+          "qa_id": "e5f6a1b2-c3d4-4e5f-c06b-7c8d9e0f1a2b",
+          "predicted_answer": null,
+          "did_abstain": true,
+          "confidence": 1.0
+        }
+      ]
+    }
+  ]
+}

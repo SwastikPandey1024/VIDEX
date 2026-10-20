@@ -105,11 +105,7 @@ class Investigator:
             | {n.source_id for n in all_graph_nodes if n.node_type == GraphNodeType.EVIDENCE}
             | {eid for n in all_graph_nodes for eid in n.evidence_ids}
             | set(self.context.ocr_observations.keys())
-            | {
-                n.source_id
-                for n in all_graph_nodes
-                if n.node_type == GraphNodeType.OCR_OBSERVATION
-            }
+            | {n.source_id for n in all_graph_nodes if n.node_type == GraphNodeType.OCR_OBSERVATION}
             | set(self.context.transcript_segments.keys())
             | {
                 n.source_id
@@ -306,7 +302,7 @@ class Investigator:
                     claims.append(
                         Claim.create(
                             video_id=request.video_id,
-                            claim_text=f"Detected on-screen text: \"{ocr.get('text')}\"",
+                            claim_text=f'Detected on-screen text: "{ocr.get("text")}"',
                             confidence=ocr.get("confidence", 0.9),
                             epistemic_status="deterministically observed",
                             evidence_ids=eids,
@@ -327,7 +323,7 @@ class Investigator:
                     claims.append(
                         Claim.create(
                             video_id=request.video_id,
-                            claim_text=f"Spoken text detected{spk_str}: \"{seg.get('text')}\"",
+                            claim_text=f'Spoken text detected{spk_str}: "{seg.get("text")}"',
                             confidence=seg.get("confidence", 0.9),
                             epistemic_status="deterministically observed",
                             evidence_ids=eids,
@@ -349,9 +345,7 @@ class Investigator:
                 )
                 for item in items:
                     target_id = (
-                        item.get("event_id")
-                        or item.get("neighbor_id")
-                        or item.get("source_id")
+                        item.get("event_id") or item.get("neighbor_id") or item.get("source_id")
                     )
                     ev_used = str(target_id)
                     events_used.add(ev_used)

@@ -445,6 +445,141 @@ class AnnotationDataset(BaseModel):
         return self
 
 
+# ── Prediction Input Contract Schemas ─────────────────────────────────────
+
+
+class DetectionPrediction(BaseModel):
+    """Predicted bounding box observation at a specific timestamp."""
+
+    model_config = ConfigDict(frozen=True)
+
+    timestamp_pts: float = Field(..., ge=0.0, description="Presentation timestamp in seconds")
+    class_label: str = Field(..., min_length=1, description="Predicted object class label")
+    bbox: BoundingBox = Field(..., description="Predicted bounding box coordinates")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Detection confidence score")
+
+
+class EventPrediction(BaseModel):
+    """Predicted temporal event interval."""
+
+    model_config = ConfigDict(frozen=True)
+
+    event_type: str = Field(..., min_length=1, description="Predicted event type")
+    start_seconds: float = Field(..., ge=0.0, description="Predicted event start time in seconds")
+    end_seconds: float = Field(..., ge=0.0, description="Predicted event end time in seconds")
+    participants: list[str] = Field(
+        default_factory=list, description="Predicted participating entities"
+    )
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Event confidence score")
+
+    @model_validator(mode="after")
+    def validate_interval(self) -> EventPrediction:
+        if self.end_seconds < self.start_seconds:
+            raise ValueError(
+                f"EventPrediction end_seconds ({self.end_seconds}s) cannot precede "
+                f"start_seconds ({self.start_seconds}s)"
+            )
+        return self
+
+
+class QAPrediction(BaseModel):
+    """Predicted answer or explicit abstention for a question."""
+
+    model_config = ConfigDict(frozen=True)
+
+    qa_id: str = Field(..., min_length=1, description="Question ID being answered")
+    predicted_answer: str | None = Field(
+        default=None,
+        description="Generated answer string; None if the model explicitly abstained",
+    )
+    did_abstain: bool = Field(
+        ...,
+        description="True if model reported 'insufficient evidence'; False if answered",
+    )
+    confidence: float = Field(
+        default=1.0, ge=0.0, le=1.0, description="Prediction confidence score"
+    )
+
+
+class OCRPrediction(BaseModel):
+    """Predicted text observation extracted via OCR."""
+
+    model_config = ConfigDict(frozen=True)
+
+    timestamp_pts: float = Field(
+        default=0.0, ge=0.0, description="Observation timestamp in seconds"
+    )
+    text: str = Field(..., description="Recognized text string")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="OCR confidence score")
+
+
+class TranscriptPrediction(BaseModel):
+    """Predicted spoken utterance transcribed via ASR."""
+
+    model_config = ConfigDict(frozen=True)
+
+    start_seconds: float = Field(default=0.0, ge=0.0, description="Utterance start timestamp")
+    end_seconds: float = Field(default=0.0, ge=0.0, description="Utterance end timestamp")
+    text: str = Field(..., description="Transcribed utterance text")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="ASR confidence score")
+
+
+class VideoPredictions(BaseModel):
+    """Container for modality-specific model predictions for a single video.
+
+    A field set to None indicates that the model did not predict that modality (missing output).
+    An explicitly empty list [] indicates that the model predicted zero instances.
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    video_id: str = Field(..., min_length=1, description="Target video identifier")
+    detections: list[DetectionPrediction] | None = Field(
+        default=None,
+        description="Object detections; None if not predicted, [] if zero objects predicted",
+    )
+    events: list[EventPrediction] | None = Field(
+        default=None,
+        description="Temporal events; None if not predicted, [] if zero events predicted",
+    )
+    qa: list[QAPrediction] | None = Field(
+        default=None,
+        description="QA answers; None if not predicted, [] if zero answers predicted",
+    )
+    ocr: list[str] | None = Field(
+        default=None,
+        description="OCR text strings; None if not predicted, [] if zero text predicted",
+    )
+    transcripts: list[str] | None = Field(
+        default=None,
+        description="ASR transcripts; None if not predicted, [] if zero speech predicted",
+    )
+
+
+class PredictionDataset(BaseModel):
+    """Strict prediction dataset container representing a tested model run."""
+
+    model_config = ConfigDict(frozen=True)
+
+    schema_version: str = Field(default="1.0.0", description="Prediction schema version")
+    dataset_id: str = Field(default="predictions_run", description="Prediction batch identifier")
+    model_info: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Metadata describing the model or pipeline that generated predictions",
+    )
+    videos: list[VideoPredictions] = Field(
+        default_factory=list,
+        description="Predictions grouped by video_id",
+    )
+
+    def get_video_predictions(self, video_id: str) -> VideoPredictions | None:
+        """Finds predictions for a specific video_id, if present."""
+        for v in self.videos:
+            if v.video_id == video_id:
+                return v
+        return None
+
+
 # ── Metric & Evaluation Output Models ─────────────────────────────────────
 
 

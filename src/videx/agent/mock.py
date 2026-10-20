@@ -228,8 +228,7 @@ def create_mock_context(
         description="Audio transcript evidence",
     )
     evidence_dict = {
-        str(ev.evidence_id): ev
-        for ev in [ev_det1, ev_trk7, ev_trk12, ev_ocr1, ev_asr1]
+        str(ev.evidence_id): ev for ev in [ev_det1, ev_trk7, ev_trk12, ev_ocr1, ev_asr1]
     }
 
     # 6. OCR Observation
