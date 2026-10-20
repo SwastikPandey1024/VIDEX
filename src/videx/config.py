@@ -242,6 +242,42 @@ class Settings(BaseSettings):
         description="Default directory for exported study notes and manifests",
     )
 
+    # ── Companion LLM Synthesis (Phase 9.3) ───────────────────
+    llm_provider: str = Field(
+        default="openai",
+        validation_alias=AliasChoices(
+            "llm_provider", "vlm_provider", "videx_llm_provider", "VLM_PROVIDER"
+        ),
+        description="LLM provider for companion note synthesis: 'openai', 'ollama', 'mock'",
+    )
+    llm_model: str = Field(
+        default="gpt-4o",
+        validation_alias=AliasChoices("llm_model", "vlm_model", "videx_llm_model", "VLM_MODEL"),
+        description="Model checkpoint or deployment identifier for study note synthesis",
+    )
+    llm_api_key: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices(
+            "llm_api_key", "openai_api_key", "videx_llm_api_key", "OPENAI_API_KEY"
+        ),
+        description="API key for LLM provider (never logged)",
+    )
+    llm_api_base_url: str = Field(
+        default="https://api.openai.com/v1",
+        validation_alias=AliasChoices("llm_api_base_url", "videx_llm_api_base_url"),
+        description="Base URL for OpenAI-compatible chat completions endpoint",
+    )
+    llm_timeout_seconds: float = Field(
+        default=45.0,
+        ge=5.0,
+        description="Timeout in seconds for LLM synthesis calls",
+    )
+    llm_max_retries: int = Field(
+        default=2,
+        ge=0,
+        description="Maximum retry attempts on transient network or rate-limit errors",
+    )
+
     @property
     def ocr_language_list(self) -> list[str]:
         """Return OCR languages as a list."""

@@ -11,11 +11,20 @@ Implements:
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from typing import Any
 from uuid import uuid4
 
+from videx.companion.llm import (
+    BaseLLMClient,
+    LLMMalformedResponseError,
+)
+from videx.companion.prompts import (
+    build_consolidation_prompt,
+    build_section_synthesis_prompt,
+)
 from videx.companion.schemas import (
     DefinitionItem,
     EvidenceReference,
@@ -83,10 +92,14 @@ class StudyNoteSynthesizer:
         style: str = "comprehensive",
         detail_level: str = "detailed",
         chunk_window_seconds: float = 240.0,
+        llm_client: BaseLLMClient | None = None,
+        fallback_to_deterministic: bool = True,
     ) -> None:
         self.style = style
         self.detail_level = detail_level
         self.chunk_window_seconds = chunk_window_seconds
+        self.llm_client = llm_client
+        self.fallback_to_deterministic = fallback_to_deterministic
 
     def synthesize(
         self,
@@ -99,10 +112,48 @@ class StudyNoteSynthesizer:
         if transcript_doc is None or not transcript_doc.segments:
             return self._build_empty_transcript_note(video_meta)
 
-        # 2. Segment and partition transcript into bounded thematic windows
+        # 2. If an LLM client is configured, execute LLM synthesis
+        if self.llm_client is not None:
+            try:
+                return self._synthesize_with_llm(video_meta, transcript_doc, visual_evidence)
+            except Exception as e:
+                if not self.fallback_to_deterministic:
+                    logger.error("LLM synthesis failed and fallback is disabled: %s", e)
+                    raise
+                logger.warning(
+                    "LLM synthesis failed (%s: %s). Falling back to deterministic extraction.",
+                    type(e).__name__,
+                    e,
+                )
+                note = self._synthesize_deterministic(video_meta, transcript_doc, visual_evidence)
+                meta = dict(note.generation_metadata)
+                meta["synthesizer_mode"] = "fallback_deterministic"
+                meta["llm_error"] = str(e)
+                meta["llm_error_type"] = type(e).__name__
+                warnings = list(note.validation.warnings if note.validation else ())
+                warnings.append(
+                    f"LLM synthesis failed ({type(e).__name__}: {e}). "
+                    "Generated via deterministic fallback."
+                )
+                val = (
+                    note.validation.model_copy(update={"warnings": tuple(warnings)})
+                    if note.validation
+                    else None
+                )
+                return note.model_copy(update={"generation_metadata": meta, "validation": val})
+
+        # 3. Otherwise execute deterministic extraction
+        return self._synthesize_deterministic(video_meta, transcript_doc, visual_evidence)
+
+    def _synthesize_deterministic(
+        self,
+        video_meta: YouTubeVideoMetadata,
+        transcript_doc: TranscriptDocument,
+        visual_evidence: list[dict[str, Any]] | None = None,
+    ) -> StudyNote:
+        """Deterministic rule-based note extraction."""
         windows = self._partition_into_windows(transcript_doc.segments)
 
-        # 3. Process each window to extract sections and technical items
         sections: list[StudyNoteSection] = []
         all_definitions: list[DefinitionItem] = []
         all_theorems: list[TheoremItem] = []
@@ -125,22 +176,17 @@ class StudyNoteSynthesizer:
             all_examples.extend(sec.worked_examples)
             all_traps.extend(sec.exam_traps)
 
-        # 4. Check for noisy or ambiguous transcript intervals
         uncertainties.extend(self._audit_uncertainties(transcript_doc))
-
-        # 5. Extract global learning objectives, executive summary, takeaways, practice questions
         objectives = self._extract_objectives(video_meta, sections)
         summary = self._extract_executive_summary(video_meta, sections)
         takeaways = self._extract_takeaways(video_meta, sections, all_definitions, all_theorems)
         practice_questions = self._extract_practice_questions(video_meta, sections, all_examples)
 
-        # 6. Compute coverage percentage
         duration = video_meta.duration_seconds or transcript_doc.total_duration_seconds
         transcript_duration = transcript_doc.total_duration_seconds
         coverage_pct = (
             min(100.0, (transcript_duration / duration) * 100.0) if duration > 0 else 100.0
         )
-
         status = (
             NoteGenerationStatus.COMPLETE
             if coverage_pct >= 90.0
@@ -164,16 +210,367 @@ class StudyNoteSynthesizer:
             uncertainties=tuple(uncertainties),
             status=status,
             generation_metadata={
-                "synthesizer_version": "1.0.0",
+                "synthesizer_version": "2.0.0",
+                "synthesizer_mode": "deterministic",
                 "style": self.style,
                 "detail_level": self.detail_level,
                 "acquisition_method": transcript_doc.acquisition_method,
             },
         )
-
-        # 7. Audit validation and grounding
         validation = self.validate_note(note)
         return note.model_copy(update={"validation": validation})
+
+    def _synthesize_with_llm(
+        self,
+        video_meta: YouTubeVideoMetadata,
+        transcript_doc: TranscriptDocument,
+        visual_evidence: list[dict[str, Any]] | None = None,
+    ) -> StudyNote:
+        """Execute evidence-grounded synthesis using the configured LLM client."""
+        assert self.llm_client is not None
+
+        windows = self._partition_into_windows(transcript_doc.segments)
+        sections: list[StudyNoteSection] = []
+        all_definitions: list[DefinitionItem] = []
+        all_theorems: list[TheoremItem] = []
+        all_formulas: list[FormulaItem] = []
+        all_examples: list[WorkedExample] = []
+        all_traps: list[ExamTrapItem] = []
+        uncertainties: list[UncertaintyItem] = []
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
+
+        # Step 1: Synthesize each bounded transcript window
+        for window_idx, window_segments in enumerate(windows):
+            prompt = build_section_synthesis_prompt(
+                video_meta=video_meta,
+                segments=window_segments,
+                window_idx=window_idx,
+                total_windows=len(windows),
+            )
+            resp = self.llm_client.generate(
+                messages=prompt,
+                response_format={"type": "json_object"},
+            )
+            total_prompt_tokens += resp.prompt_tokens
+            total_completion_tokens += resp.completion_tokens
+
+            sec_data = self._parse_json_payload(resp.content)
+            sec, sec_uncertainties = self._build_section_from_llm(
+                video_meta=video_meta,
+                window_idx=window_idx,
+                segments=window_segments,
+                data=sec_data,
+                visual_evidence=visual_evidence,
+            )
+            sections.append(sec)
+            all_definitions.extend(sec.definitions)
+            all_theorems.extend(sec.theorems)
+            all_formulas.extend(sec.formulas)
+            all_examples.extend(sec.worked_examples)
+            all_traps.extend(sec.exam_traps)
+            uncertainties.extend(sec_uncertainties)
+
+        uncertainties.extend(self._audit_uncertainties(transcript_doc))
+
+        # Step 2: Global consolidation call
+        section_summaries = [
+            {
+                "title": s.title,
+                "overview": s.overview,
+                "definitions": [d.term for d in s.definitions],
+                "formulas": [f.name for f in s.formulas],
+                "traps": [t.trap_description for t in s.exam_traps],
+            }
+            for s in sections
+        ]
+        cons_prompt = build_consolidation_prompt(video_meta, section_summaries)
+        cons_resp = self.llm_client.generate(
+            messages=cons_prompt,
+            response_format={"type": "json_object"},
+        )
+        total_prompt_tokens += cons_resp.prompt_tokens
+        total_completion_tokens += cons_resp.completion_tokens
+        cons_data = self._parse_json_payload(cons_resp.content)
+
+        objectives = cons_data.get("learning_objectives", [])
+        if not objectives:
+            objectives = self._extract_objectives(video_meta, sections)
+        summary = cons_data.get("executive_summary", "")
+        if not summary:
+            summary = self._extract_executive_summary(video_meta, sections)
+
+        practice_questions: list[PracticeQuestionItem] = []
+        for pq in cons_data.get("practice_questions", []):
+            if isinstance(pq, dict) and "question" in pq:
+                practice_questions.append(
+                    PracticeQuestionItem(
+                        question=str(pq["question"]),
+                        answer_or_hint=str(
+                            pq.get("hint") or pq.get("answer_or_hint") or pq.get("solution", "")
+                        ),
+                        question_type=str(pq.get("question_type", "conceptual")),
+                    )
+                )
+        if not practice_questions:
+            practice_questions = self._extract_practice_questions(
+                video_meta, sections, all_examples
+            )
+
+        takeaways: list[TakeawayItem] = []
+        for tk in cons_data.get("key_takeaways", []):
+            if isinstance(tk, dict) and ("point" in tk or "takeaway" in tk):
+                st = float(tk.get("start_seconds", 0.0))
+                et = float(tk.get("end_seconds", video_meta.duration_seconds or 1331.0))
+                pt = str(tk.get("point") or tk.get("takeaway", ""))
+                takeaways.append(
+                    TakeawayItem(
+                        takeaway=pt,
+                        importance="high",
+                        evidence_refs=(
+                            EvidenceReference(
+                                reference_id=str(uuid4()),
+                                video_id=video_meta.video_id,
+                                start_seconds=st,
+                                end_seconds=et,
+                                source_type=EvidenceSourceType.TRANSCRIPT,
+                                snippet=pt[:120],
+                            ),
+                        ),
+                    )
+                )
+        if not takeaways:
+            takeaways = self._extract_takeaways(video_meta, sections, all_definitions, all_theorems)
+
+        duration = video_meta.duration_seconds or transcript_doc.total_duration_seconds
+        transcript_duration = transcript_doc.total_duration_seconds
+        coverage_pct = (
+            min(100.0, (transcript_duration / duration) * 100.0) if duration > 0 else 100.0
+        )
+        status = (
+            NoteGenerationStatus.COMPLETE
+            if coverage_pct >= 90.0
+            else NoteGenerationStatus.PARTIAL_SUCCESS
+        )
+
+        note = StudyNote(
+            note_id=str(uuid4()),
+            video_id=video_meta.video_id,
+            video_title=video_meta.title,
+            source_url=video_meta.source_url,
+            channel_title=video_meta.channel_title,
+            duration_seconds=duration,
+            coverage_percentage=round(coverage_pct, 1),
+            learning_objectives=tuple(objectives),
+            executive_summary=summary,
+            sections=tuple(sections),
+            key_takeaways=tuple(takeaways),
+            exam_traps=tuple(all_traps),
+            practice_questions=tuple(practice_questions),
+            uncertainties=tuple(uncertainties),
+            status=status,
+            generation_metadata={
+                "synthesizer_version": "2.0.0",
+                "synthesizer_mode": "llm",
+                "llm_provider": self.llm_client.provider_name,
+                "llm_model": getattr(self.llm_client, "model", "unknown"),
+                "total_prompt_tokens": total_prompt_tokens,
+                "total_completion_tokens": total_completion_tokens,
+                "total_tokens": total_prompt_tokens + total_completion_tokens,
+                "style": self.style,
+                "detail_level": self.detail_level,
+                "acquisition_method": transcript_doc.acquisition_method,
+            },
+        )
+        validation = self.validate_note(note)
+        return note.model_copy(update={"validation": validation})
+
+    def _parse_json_payload(self, text: str) -> dict[str, Any]:
+        """Safely parse JSON from LLM output, stripping markdown blocks if present."""
+        clean = text.strip()
+        if clean.startswith("```json"):
+            clean = clean[7:]
+        elif clean.startswith("```"):
+            clean = clean[3:]
+        if clean.endswith("```"):
+            clean = clean[:-3]
+        clean = clean.strip()
+        try:
+            res: Any = json.loads(clean)
+            if isinstance(res, dict):
+                return res
+            return {}
+        except json.JSONDecodeError as err:
+            m = re.search(r"(\{.*\})", clean, re.DOTALL)
+            if m:
+                try:
+                    res = json.loads(m.group(1))
+                    if isinstance(res, dict):
+                        return res
+                except json.JSONDecodeError:
+                    pass
+            raise LLMMalformedResponseError(
+                f"Could not parse valid JSON from LLM response. Content snippet: {text[:200]}"
+            ) from err
+
+    def _build_section_from_llm(
+        self,
+        video_meta: YouTubeVideoMetadata,
+        window_idx: int,
+        segments: list[TranscriptSegment],
+        data: dict[str, Any],
+        visual_evidence: list[dict[str, Any]] | None,
+    ) -> tuple[StudyNoteSection, list[UncertaintyItem]]:
+        """Map LLM JSON output to validated StudyNoteSection with explicit evidence references."""
+        win_start = segments[0].start_seconds
+        win_end = segments[-1].end_seconds
+
+        title = str(data.get("title") or f"Section {window_idx + 1}")
+        overview = str(data.get("overview") or "")
+
+        def make_ev_ref(st: float, et: float, snippet: str) -> EvidenceReference:
+            # Clamping within window boundaries
+            clamped_st = max(0.0, st)
+            clamped_et = max(clamped_st, et)
+            return EvidenceReference(
+                reference_id=str(uuid4()),
+                video_id=video_meta.video_id,
+                start_seconds=round(clamped_st, 2),
+                end_seconds=round(clamped_et, 2),
+                source_type=EvidenceSourceType.TRANSCRIPT,
+                snippet=snippet[:150],
+            )
+
+        definitions: list[DefinitionItem] = []
+        for d in data.get("definitions", []):
+            if isinstance(d, dict) and "term" in d:
+                st = float(d.get("start_seconds", win_start))
+                et = float(d.get("end_seconds", win_end))
+                snip = str(d.get("evidence_snippet") or d.get("formal_definition", ""))
+                definitions.append(
+                    DefinitionItem(
+                        term=str(d["term"]),
+                        definition=str(d.get("formal_definition") or d.get("definition", "")),
+                        notation=d.get("notation"),
+                        evidence_refs=(make_ev_ref(st, et, snip),),
+                    )
+                )
+
+        theorems: list[TheoremItem] = []
+        for t in data.get("theorems", []):
+            if isinstance(t, dict) and "name" in t:
+                st = float(t.get("start_seconds", win_start))
+                et = float(t.get("end_seconds", win_end))
+                stmt = str(t.get("statement", ""))
+                theorems.append(
+                    TheoremItem(
+                        name=str(t["name"]),
+                        statement=stmt,
+                        conclusion=str(t.get("conclusion") or t.get("statement", "")),
+                        assumptions=tuple(str(a) for a in t.get("assumptions", [])),
+                        intuition_or_proof=t.get("significance"),
+                        evidence_refs=(make_ev_ref(st, et, stmt),),
+                    )
+                )
+
+        formulas: list[FormulaItem] = []
+        uncertainties: list[UncertaintyItem] = []
+
+        for f in data.get("formulas", []):
+            if isinstance(f, dict) and "name" in f:
+                st = float(f.get("start_seconds", win_start))
+                et = float(f.get("end_seconds", win_end))
+                expr = str(f.get("latex_expression", ""))
+                # Validate LaTeX equation balance
+                if not validate_latex_balance(expr):
+                    uncertainties.append(
+                        UncertaintyItem(
+                            uncertainty_type=UncertaintyType.CORRUPTED_FORMULA,
+                            description=(
+                                f"Unbalanced LaTeX generated for formula '{f['name']}': {expr}"
+                            ),
+                            affected_concept_or_timestamp=f"{st:.1f}s - {et:.1f}s",
+                            suggested_resolution=(
+                                "Verify equation in visual lecture frame or consult syllabus."
+                            ),
+                        )
+                    )
+                formulas.append(
+                    FormulaItem(
+                        name=str(f["name"]),
+                        latex_expression=expr,
+                        variables={str(k): str(v) for k, v in f.get("variables", {}).items()},
+                        evidence_refs=(make_ev_ref(st, et, expr),),
+                    )
+                )
+
+        examples: list[WorkedExample] = []
+        for ex in data.get("worked_examples", []):
+            if isinstance(ex, dict) and "title" in ex:
+                st = float(ex.get("start_seconds", win_start))
+                et = float(ex.get("end_seconds", win_end))
+                prob = str(ex.get("problem_statement", ""))
+                examples.append(
+                    WorkedExample(
+                        problem_statement=prob,
+                        step_by_step_solution=tuple(
+                            str(s) for s in ex.get("step_by_step_solution", [])
+                        ),
+                        final_result=str(ex.get("final_answer") or ex.get("final_result", "")),
+                        evidence_refs=(make_ev_ref(st, et, prob),),
+                    )
+                )
+
+        traps: list[ExamTrapItem] = []
+        for tr in data.get("exam_traps", []):
+            if isinstance(tr, dict) and "trap_description" in tr:
+                st = float(tr.get("start_seconds", win_start))
+                et = float(tr.get("end_seconds", win_end))
+                desc = str(tr["trap_description"])
+                traps.append(
+                    ExamTrapItem(
+                        trap_description=desc,
+                        correct_understanding=str(
+                            tr.get("correct_concept") or tr.get("correct_understanding", "")
+                        ),
+                        why_it_matters_in_gate=str(
+                            tr.get("why_tempting")
+                            or tr.get("why_it_matters_in_gate", "Tested heavily in GATE")
+                        ),
+                        evidence_refs=(make_ev_ref(st, et, desc),),
+                    )
+                )
+
+        for un in data.get("uncertainties", []):
+            if isinstance(un, dict) and "description" in un:
+                utype_str = str(un.get("uncertainty_type", "ambiguous_speech")).lower()
+                utype = (
+                    UncertaintyType.CORRUPTED_FORMULA
+                    if "corrupted" in utype_str or "formula" in utype_str
+                    else UncertaintyType.AMBIGUOUS_SPEECH
+                )
+                uncertainties.append(
+                    UncertaintyItem(
+                        uncertainty_type=utype,
+                        description=str(un["description"]),
+                        affected_concept_or_timestamp=f"{win_start:.1f}s - {win_end:.1f}s",
+                        suggested_resolution="Cross-verify against slide visual evidence.",
+                    )
+                )
+
+        sec = StudyNoteSection(
+            section_id=str(uuid4()),
+            title=title,
+            start_seconds=win_start,
+            end_seconds=win_end,
+            overview=overview,
+            definitions=tuple(definitions),
+            theorems=tuple(theorems),
+            formulas=tuple(formulas),
+            worked_examples=tuple(examples),
+            exam_traps=tuple(traps),
+        )
+        return sec, uncertainties
 
     def _build_empty_transcript_note(self, video_meta: YouTubeVideoMetadata) -> StudyNote:
         """Produce honest ungrounded note when transcript is missing without inventing text."""

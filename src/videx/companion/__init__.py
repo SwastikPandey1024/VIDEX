@@ -15,8 +15,25 @@ from videx.companion.evaluation import (
     CompanionEvaluationResult,
     evaluate_study_note,
 )
+from videx.companion.llm import (
+    BaseLLMClient,
+    LLMAuthenticationError,
+    LLMError,
+    LLMMalformedResponseError,
+    LLMQuotaExhaustedError,
+    LLMResponse,
+    LLMTimeoutError,
+    MockLLMClient,
+    OpenAILLMClient,
+    create_llm_client,
+)
 from videx.companion.markdown import MarkdownExporter
 from videx.companion.orchestrator import PlaylistJobOrchestrator
+from videx.companion.prompts import (
+    SYSTEM_SYNTHESIS_PROMPT,
+    build_consolidation_prompt,
+    build_section_synthesis_prompt,
+)
 from videx.companion.schemas import (
     DefinitionItem,
     EvidenceReference,
@@ -44,7 +61,7 @@ from videx.companion.schemas import (
     YouTubePlaylistMetadata,
     YouTubeVideoMetadata,
 )
-from videx.companion.synthesizer import StudyNoteSynthesizer
+from videx.companion.synthesizer import StudyNoteSynthesizer, validate_latex_balance
 from videx.companion.transcript import (
     BaseTranscriptProvider,
     CompositeTranscriptProvider,
@@ -52,8 +69,13 @@ from videx.companion.transcript import (
     VIDEXASRTranscriptProvider,
     YouTubeCaptionProvider,
 )
+from videx.companion.transcript_audit import (
+    TranscriptAuditReport,
+    audit_transcript,
+)
 
 __all__ = [
+    "BaseLLMClient",
     "BaseTranscriptProvider",
     "CompanionEvaluationResult",
     "CompositeTranscriptProvider",
@@ -63,20 +85,30 @@ __all__ = [
     "ExamTrapItem",
     "FileTranscriptProvider",
     "FormulaItem",
+    "LLMAuthenticationError",
+    "LLMError",
+    "LLMMalformedResponseError",
+    "LLMQuotaExhaustedError",
+    "LLMResponse",
+    "LLMTimeoutError",
     "MarkdownExporter",
+    "MockLLMClient",
     "NoteGenerationStatus",
     "NoteItemType",
     "NoteValidationResult",
+    "OpenAILLMClient",
     "PlaylistAccessStatus",
     "PlaylistJobOrchestrator",
     "PlaylistProcessingManifest",
     "PracticeQuestionItem",
+    "SYSTEM_SYNTHESIS_PROMPT",
     "StudyNote",
     "StudyNoteSection",
     "StudyNoteSynthesizer",
     "TakeawayItem",
     "TheoremItem",
     "TranscriptAcquisitionMethod",
+    "TranscriptAuditReport",
     "TranscriptDocument",
     "TranscriptSegment",
     "UncertaintyItem",
@@ -93,5 +125,10 @@ __all__ = [
     "YouTubeRateLimitError",
     "YouTubeURLParser",
     "YouTubeVideoMetadata",
+    "audit_transcript",
+    "build_consolidation_prompt",
+    "build_section_synthesis_prompt",
+    "create_llm_client",
     "evaluate_study_note",
+    "validate_latex_balance",
 ]
