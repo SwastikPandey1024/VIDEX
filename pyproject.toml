@@ -89,6 +89,8 @@ pythonpath = ["src"]
 asyncio_mode = "auto"
 addopts = ["-v", "--tb=short"]
 filterwarnings = [
-    "ignore:.*Using `httpx` with `starlette.testclient` is deprecated.*:UserWarning",
-    "ignore:.*No ccache found.*:UserWarning",
+    # Upstream paddle warning on Windows when optional ccache is not installed
+    "ignore:.*No ccache found.*:UserWarning:paddle.utils.cpp_extension.extension_utils",
+    # Starlette testclient httpx deprecation warning from upstream framework
+    "ignore:.*Using `httpx` with `starlette.testclient` is deprecated.*:UserWarning:starlette.testclient",
 ]

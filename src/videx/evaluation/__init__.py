@@ -1,0 +1,65 @@
+"""VIDEX Evaluation Package.
+
+Provides ground-truth domain schemas, verified metrics, statistical uncertainty estimation,
+and a reproducible evaluation harness.
+"""
+
+from videx.evaluation.metrics import (
+    DetectionPrediction,
+    EventPrediction,
+    QAPrediction,
+    compute_cer,
+    compute_iou,
+    compute_temporal_iou,
+    compute_wer,
+    evaluate_detections,
+    evaluate_evidence_reference_integrity,
+    evaluate_qa_abstention,
+    evaluate_temporal_events,
+    wilson_score_interval,
+)
+from videx.evaluation.schemas import (
+    AnnotationDataset,
+    AnnotationStatus,
+    EvaluationResult,
+    GroundTruthDetection,
+    GroundTruthEvent,
+    GroundTruthOCR,
+    GroundTruthQA,
+    GroundTruthTrack,
+    GroundTruthTranscript,
+    MetricResult,
+    MetricStatus,
+    ModalityAnnotation,
+    VideoAnnotation,
+    VideoEvaluationSummary,
+)
+
+__all__ = [
+    "AnnotationDataset",
+    "AnnotationStatus",
+    "DetectionPrediction",
+    "EvaluationResult",
+    "EventPrediction",
+    "GroundTruthDetection",
+    "GroundTruthEvent",
+    "GroundTruthOCR",
+    "GroundTruthQA",
+    "GroundTruthTrack",
+    "GroundTruthTranscript",
+    "MetricResult",
+    "MetricStatus",
+    "ModalityAnnotation",
+    "QAPrediction",
+    "VideoAnnotation",
+    "VideoEvaluationSummary",
+    "compute_cer",
+    "compute_iou",
+    "compute_temporal_iou",
+    "compute_wer",
+    "evaluate_detections",
+    "evaluate_evidence_reference_integrity",
+    "evaluate_qa_abstention",
+    "evaluate_temporal_events",
+    "wilson_score_interval",
+]

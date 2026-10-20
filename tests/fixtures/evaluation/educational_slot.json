@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "videx_educational_slot_v1",
+  "provenance": "VIDEX Educational Evaluation Committee (Specification & Slot Template)",
+  "annotation_guidelines": "docs/evaluation/annotation-guidelines.md",
+  "videos": [
+    {
+      "video_id": "video_lecture_slot_001",
+      "source_identifier": "educational_lecture_pending.mp4",
+      "duration_seconds": 300.0,
+      "overall_status": "not_annotated",
+      "detections": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Pending selection and provisioning of licensed educational lecture clip"
+      },
+      "tracks": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Pending source video provisioning"
+      },
+      "ocr": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Slide text and formula annotations pending source video provisioning"
+      },
+      "transcripts": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Spoken dialogue transcription pending source video provisioning"
+      },
+      "events": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Slide transition and topic shift annotations pending source video provisioning"
+      },
+      "qa": {
+        "status": "not_annotated",
+        "items": [],
+        "rationale": "Conceptual comprehension and unanswerable QA pairs pending source video provisioning"
+      }
+    }
+  ]
+}
