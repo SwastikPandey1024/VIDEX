@@ -159,7 +159,9 @@ def build_consolidation_prompt(
 Synthesize the final consolidated elements for the full lecture note:
 1. Learning Objectives (3-5 bullet points)
 2. Executive Summary (comprehensive, rigorous summary paragraph)
-3. Practice Questions grounded in the lecture content (2-4 questions with hints/answers)
+3. Practice Questions: Distinguish questions directly derived from lecture
+   statements (tag with [SOURCE-DERIVED]) from supplementary questions
+   (tag with [SUPPLEMENTARY PRACTICE]).
 4. Overall Key Takeaways (ordered for quick revision)
 
 Respond ONLY with a JSON object strictly following this structure:
@@ -168,7 +170,7 @@ Respond ONLY with a JSON object strictly following this structure:
   "executive_summary": "Thorough summary paragraph...",
   "practice_questions": [
     {{
-      "question": "Question statement grounded in lecture",
+      "question": "[SOURCE-DERIVED] or [SUPPLEMENTARY PRACTICE] Question statement",
       "hint": "Conceptual hint",
       "solution": "Solution or approach",
       "is_exam_style": true

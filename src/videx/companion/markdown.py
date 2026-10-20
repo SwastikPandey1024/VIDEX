@@ -61,6 +61,12 @@ class MarkdownExporter:
             lines.append(f'duration: "{format_seconds(note.duration_seconds)}"')
             lines.append(f'coverage: "{note.coverage_percentage}%"')
             lines.append(f'status: "{note.status.value}"')
+            synth_mode = note.generation_metadata.get("synthesizer_mode", "deterministic")
+            lines.append(f'synthesis_mode: "{synth_mode}"')
+            if "llm_provider" in note.generation_metadata:
+                lines.append(f'llm_provider: "{note.generation_metadata["llm_provider"]}"')
+            if "model_id" in note.generation_metadata and note.generation_metadata["model_id"]:
+                lines.append(f'model_id: "{note.generation_metadata["model_id"]}"')
             lines.append("tags:")
             lines.append("  - gate-data-science")
             lines.append("  - linear-algebra")
@@ -216,12 +222,18 @@ class MarkdownExporter:
         # 9. Validation Audit Summary Footer
         if note.validation:
             v = note.validation
+            synth_mode = note.generation_metadata.get("synthesizer_mode", "deterministic")
             lines.append("---\n")
             lines.append(
                 f"*(VIDEX Grounding Audit: {v.grounded_claims}/{v.total_claims} claims grounded "
                 f"({v.grounding_ratio * 100:.1f}%), LaTeX valid: {v.formulas_valid_latex}, "
-                f"Status: {note.status.value})*\n"
+                f"Synthesis Mode: {synth_mode}, Status: {note.status.value})*\n"
             )
+            if v.warnings:
+                lines.append("\n> [!note] Synthesizer Audit Notes:")
+                for w in v.warnings:
+                    lines.append(f"> - {w}")
+                lines.append("")
 
         return "\n".join(lines)
 

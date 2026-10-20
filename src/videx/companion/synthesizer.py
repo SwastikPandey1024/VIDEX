@@ -848,27 +848,49 @@ class StudyNoteSynthesizer:
         if "dot product" in lower:
             expr = "$u \\cdot v = \\sum_{i=1}^n u_i v_i$"
             name = "Dot Product / Inner Product"
+            variables = {
+                "u, v": "Input vectors in Euclidean space R^n",
+                "u_i, v_i": "Corresponding component real values",
+            }
         elif "eigen" in lower:
             expr = "$A x = \\lambda x$"
             name = "Eigenvalue Equation"
-        elif "linear combination" in lower or "system" in lower:
+            variables = {
+                "A": "Square transformation matrix",
+                "x": "Non-zero eigenvector",
+                "\\lambda": "Scalar eigenvalue (stretch factor)",
+            }
+        elif "linear regression" in lower or "norm" in lower or "||a x - b||" in lower:
+            expr = "$\\min_x \\|A x - b\\|_2^2$"
+            name = "Least Squares Error Norm Minimization"
+            variables = {
+                "A": "Feature / design matrix",
+                "x": "Weight / coefficient parameter vector",
+                "b": "Target observation vector",
+            }
+        elif "system" in lower or "a x = b" in lower or "linear equations" in lower:
             expr = "$A x = b$"
-            name = "Matrix-Vector Equation"
-        elif "norm" in lower:
-            expr = "$\\|x\\|_2 = \\sqrt{\\sum_{i=1}^n x_i^2}$"
-            name = "Euclidean $L_2$ Norm"
-        else:
+            name = "Matrix-Vector System of Linear Equations"
+            variables = {
+                "A": "Coefficient matrix",
+                "x": "Unknown solution vector",
+                "b": "Constant RHS vector",
+            }
+        elif "y = a x" in lower or "transforms the vector" in lower or "transforms vector" in lower:
             expr = "$y = A x$"
-            name = "Linear Transformation Equation"
+            name = "Linear Transformation Matrix Equation"
+            variables = {
+                "A": "Transformation matrix",
+                "x": "Input vector",
+                "y": "Transformed output vector",
+            }
+        else:
+            return None
 
         return FormulaItem(
             name=name,
             latex_expression=expr,
-            variables={
-                "A": "Transformation matrix",
-                "x": "Input vector",
-                "y": "Transformed vector",
-            },
+            variables=variables,
             conditions=("Dimensions must be compatible for matrix multiplication",),
             evidence_refs=(ev_ref,),
         )
@@ -934,6 +956,32 @@ class StudyNoteSynthesizer:
                         suggested_resolution="Consult visual video frame or lecture notes.",
                     )
                 )
+
+        # Check for abridged transcript density (< 50 wpm)
+        if doc.segments:
+            start_sec = doc.segments[0].start_seconds
+            end_sec = doc.segments[-1].end_seconds
+            span_min = max(1.0, (end_sec - start_sec) / 60.0)
+            total_words = sum(len(s.text.split()) for s in doc.segments if s.text)
+            wpm = total_words / span_min
+            if wpm < 50.0 and span_min >= 5.0:
+                uncertainties.append(
+                    UncertaintyItem(
+                        uncertainty_type=UncertaintyType.OMITTED_DERIVATION,
+                        description=(
+                            f"Transcript is an abridged conceptual synopsis "
+                            f"({wpm:.1f} wpm, {total_words} words). "
+                            "Exhaustive whiteboard derivations and intermediate algebraic "
+                            "steps from the full lecture are not contained in this transcript."
+                        ),
+                        affected_concept_or_timestamp="Intermediate Derivations",
+                        suggested_resolution=(
+                            "Acquire full verbatim ASR transcript via faster-whisper "
+                            "or authorized video recording."
+                        ),
+                    )
+                )
+
         return uncertainties
 
     def _extract_objectives(
@@ -1016,7 +1064,7 @@ class StudyNoteSynthesizer:
             questions.append(
                 PracticeQuestionItem(
                     question=(
-                        "Why is Linear Algebra essential in ML for "
+                        "[SOURCE-DERIVED] Why is Linear Algebra essential in ML for "
                         "high-dimensional representations?"
                     ),
                     answer_or_hint=(
@@ -1029,7 +1077,10 @@ class StudyNoteSynthesizer:
             )
             questions.append(
                 PracticeQuestionItem(
-                    question="What is the geometric interpretation of matrix-vector product $A x$?",
+                    question=(
+                        "[SUPPLEMENTARY PRACTICE] What is the geometric interpretation "
+                        "of matrix-vector product $A x$?"
+                    ),
                     answer_or_hint=(
                         "It transforms vector $x$ into vector $y$ in the column space of $A$, "
                         "representing rotation, reflection, and scaling in Euclidean space."

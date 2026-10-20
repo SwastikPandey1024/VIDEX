@@ -238,3 +238,79 @@ class TestTranscriptQualityAudit:
         assert report.segment_count == 0
         assert report.can_support_full_lecture_notes is False
         assert report.can_support_topic_synopsis is False
+
+
+class TestSynthesisDefectsAndProvenance:
+    """Test targeted defect fixes for provenance, formula attribution, and uncertainties."""
+
+    def test_markdown_provenance_frontmatter_and_footer(
+        self, pilot_metadata: YouTubeVideoMetadata, pilot_transcript_doc: TranscriptDocument
+    ) -> None:
+        """Markdown output must include synthesis_mode in frontmatter and footer."""
+        from videx.companion.markdown import MarkdownExporter
+
+        client = MockLLMClient()
+        synthesizer = StudyNoteSynthesizer(llm_client=client)
+        note = synthesizer.synthesize(pilot_metadata, pilot_transcript_doc)
+
+        exporter = MarkdownExporter()
+        md = exporter.export_note_to_markdown(note)
+
+        assert 'synthesis_mode: "llm"' in md
+        assert 'llm_provider: "mock"' in md
+        assert "Synthesis Mode: llm" in md
+
+    def test_formula_attribution_avoids_over_eager_y_equals_ax(
+        self, pilot_metadata: YouTubeVideoMetadata
+    ) -> None:
+        """Segments defining vector concepts without equations must not fabricate y = Ax."""
+        from videx.companion.schemas import TranscriptSegment
+
+        seg = TranscriptSegment(
+            video_id="DrCeIbpfuzE",
+            start_seconds=45.0,
+            end_seconds=120.0,
+            text=(
+                "In computer science and machine learning, data is represented using vectors "
+                "and matrices. A feature vector is an ordered collection of real numbers."
+            ),
+        )
+        doc = TranscriptDocument(
+            video_id="DrCeIbpfuzE",
+            acquisition_method="user_file_json",
+            segments=(seg,),
+        )
+        synthesizer = StudyNoteSynthesizer()
+        note = synthesizer.synthesize(pilot_metadata, doc)
+
+        # Segment defines vector, but does not state the linear transformation equation y = Ax
+        all_formulas = [f for sec in note.sections for f in sec.formulas]
+        assert len(all_formulas) == 0
+
+    def test_abridged_transcript_uncertainty_flag(
+        self, pilot_metadata: YouTubeVideoMetadata, pilot_transcript_doc: TranscriptDocument
+    ) -> None:
+        """Abridged transcripts (< 50 wpm) must produce an OMITTED_DERIVATION uncertainty."""
+        synthesizer = StudyNoteSynthesizer()
+        note = synthesizer.synthesize(pilot_metadata, pilot_transcript_doc)
+
+        omitted_derivations = [
+            u
+            for u in note.uncertainties
+            if u.uncertainty_type == UncertaintyType.OMITTED_DERIVATION
+        ]
+        assert len(omitted_derivations) == 1
+        assert "abridged conceptual synopsis" in omitted_derivations[0].description
+        assert "Intermediate Derivations" in omitted_derivations[0].affected_concept_or_timestamp
+
+    def test_practice_question_source_distinction(
+        self, pilot_metadata: YouTubeVideoMetadata, pilot_transcript_doc: TranscriptDocument
+    ) -> None:
+        """Practice questions must explicitly distinguish source-derived from supplementary."""
+        synthesizer = StudyNoteSynthesizer()
+        note = synthesizer.synthesize(pilot_metadata, pilot_transcript_doc)
+
+        assert len(note.practice_questions) >= 2
+        q_texts = [q.question for q in note.practice_questions]
+        assert any("[SOURCE-DERIVED]" in q for q in q_texts)
+        assert any("[SUPPLEMENTARY PRACTICE]" in q for q in q_texts)
