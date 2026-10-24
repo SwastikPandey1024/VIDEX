@@ -78,4 +78,19 @@ __all__ = [
     "min_cost_assignment",
     "normalize_text",
     "wilson_score_interval",
+    "BenchmarkReport",
+    "BenchmarkRunMetadata",
+    "LatencyStatistics",
+    "SystemEnvironmentMetadata",
+    "calculate_latency_statistics",
+    "collect_system_environment",
 ]
+
+from videx.evaluation.benchmarking import (
+    BenchmarkReport,
+    BenchmarkRunMetadata,
+    LatencyStatistics,
+    SystemEnvironmentMetadata,
+    calculate_latency_statistics,
+    collect_system_environment,
+)
