@@ -1,0 +1,40 @@
+{
+  "dataset_id": "videx_multiclip_v4_independent",
+  "dataset_version": "4.0.0",
+  "sha256": "eacc5e18afe5d74b61db80808ba96a03f766ba15a1bf13a761fde11b710f65f1",
+  "total_clips": 5,
+  "total_sampled_frames": 100,
+  "total_boxes": 170,
+  "clips": [
+    {
+      "source_identifier": "ppe-1.mp4",
+      "video_sha256": "6d9b0fa5b59abc7b7a8d0a91dc90eb537276064187dfa00e895b993d7fd6e978",
+      "sampled_frames": 20,
+      "boxes": 20
+    },
+    {
+      "source_identifier": "ppe-2.mp4",
+      "video_sha256": "a96eaefd61b10812601a17181eeb5fa2ad92ed3dfdfa2f63dd10e6a695148415",
+      "sampled_frames": 20,
+      "boxes": 40
+    },
+    {
+      "source_identifier": "ppe-3.mp4",
+      "video_sha256": "9461ac805dbb202b3636822afa9ea8f5953b522bbb0c90d38e81f430bec06f1d",
+      "sampled_frames": 20,
+      "boxes": 60
+    },
+    {
+      "source_identifier": "people.mp4",
+      "video_sha256": "f0dad541d3ce7dac4e5d615e62b74a9cf0cff2c52669b4ba59e753958b4aa75f",
+      "sampled_frames": 25,
+      "boxes": 50
+    },
+    {
+      "source_identifier": "sample.mp4",
+      "video_sha256": "9338be56f0b3c6eb8633b4a8aba0aed75a8c258503e204a4f19f36551bcfcf20",
+      "sampled_frames": 15,
+      "boxes": 0
+    }
+  ]
+}

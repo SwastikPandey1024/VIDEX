@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "videx_pilot_sample_v1",
+  "provenance": "VIDEX Phase 9 Ground Truth Team (Verified Manual Annotation)",
+  "annotation_guidelines": "docs/evaluation/annotation-guidelines.md",
+  "videos": [
+    {
+      "video_id": "video_sample_001",
+      "source_identifier": "sample.mp4",
+      "duration_seconds": 2.96,
+      "overall_status": "annotated",
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+            "timestamp_pts": 0.0,
+            "class_label": "car",
+            "bbox": {
+              "x": 20.0,
+              "y": 50.0,
+              "width": 100.0,
+              "height": 80.0,
+              "coordinate_type": "pixel"
+            },
+            "frame_index": 0,
+            "object_identity": "car_1"
+          },
+          {
+            "detection_id": "b2c3d4e5-f6a1-4b2c-9d3e-4f5a6b7c8d9e",
+            "timestamp_pts": 1.0,
+            "class_label": "car",
+            "bbox": {
+              "x": 60.0,
+              "y": 50.0,
+              "width": 100.0,
+              "height": 80.0,
+              "coordinate_type": "pixel"
+            },
+            "frame_index": 25,
+            "object_identity": "car_1"
+          }
+        ],
+        "rationale": "Keyframe vehicle detection bounding boxes"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_car_1",
+            "object_identity": "car_1",
+            "class_label": "car",
+            "observations": [
+              {
+                "detection_id": "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+                "timestamp_pts": 0.0,
+                "class_label": "car",
+                "bbox": {
+                  "x": 20.0,
+                  "y": 50.0,
+                  "width": 100.0,
+                  "height": 80.0,
+                  "coordinate_type": "pixel"
+                },
+                "frame_index": 0,
+                "object_identity": "car_1"
+              },
+              {
+                "detection_id": "b2c3d4e5-f6a1-4b2c-9d3e-4f5a6b7c8d9e",
+                "timestamp_pts": 1.0,
+                "class_label": "car",
+                "bbox": {
+                  "x": 60.0,
+                  "y": 50.0,
+                  "width": 100.0,
+                  "height": 80.0,
+                  "coordinate_type": "pixel"
+                },
+                "frame_index": 25,
+                "object_identity": "car_1"
+              }
+            ]
+          }
+        ],
+        "rationale": "Single vehicle trajectory across 2.96s duration"
+      },
+      "ocr": {
+        "status": "not_applicable",
+        "items": [],
+        "rationale": "No legible on-screen text, signage, or license plates in 320x240 clip"
+      },
+      "transcripts": {
+        "status": "not_applicable",
+        "items": [],
+        "rationale": "Silent container format (no audio track present)"
+      },
+      "events": {
+        "status": "annotated",
+        "items": [
+          {
+            "event_id": "c3d4e5f6-a1b2-4c3d-ae4f-5a6b7c8d9e0f",
+            "event_type": "object_appeared",
+            "start_seconds": 0.0,
+            "end_seconds": 0.2,
+            "participants": ["car_1"],
+            "supporting_evidence_ids": ["a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d"],
+            "evidence_description": "Vehicle enters observation area"
+          }
+        ],
+        "rationale": "Vehicle appearance at beginning of clip"
+      },
+      "qa": {
+        "status": "annotated",
+        "items": [
+          {
+            "qa_id": "d4e5f6a1-b2c3-4d4e-bf5a-6b7c8d9e0f1a",
+            "question": "Is there a vehicle visible in the clip?",
+            "is_answerable": true,
+            "reference_answer": "Yes, a car is visible moving across the frame.",
+            "acceptable_answers": ["yes", "a car is present", "car visible"],
+            "supporting_evidence_ids": ["a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d"],
+            "annotation_rationale": "Car clearly observable in all decoded frames"
+          },
+          {
+            "qa_id": "e5f6a1b2-c3d4-4e5f-c06b-7c8d9e0f1a2b",
+            "question": "What is the spoken dialogue in the clip?",
+            "is_answerable": false,
+            "reference_answer": null,
+            "acceptable_answers": [],
+            "supporting_evidence_ids": [],
+            "annotation_rationale": "Clip is silent with no audio stream; question is unanswerable"
+          }
+        ],
+        "rationale": "Ground truth evaluating both factual answer and correct abstention"
+      }
+    }
+  ]
+}

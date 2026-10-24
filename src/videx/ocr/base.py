@@ -39,6 +39,8 @@ class PaddleOCRConfig:
     enable_mkldnn: bool = False
     provider_name: str | None = None
     custom_model_dir: str | None = None
+    use_doc_preprocessor: bool = False
+    use_textline_orientation: bool = False
     extra_options: dict[str, Any] = field(default_factory=dict)
 
 

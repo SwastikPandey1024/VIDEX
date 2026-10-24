@@ -133,12 +133,10 @@ def test_investigation_semantic_abstention_insufficient_evidence() -> None:
     )
     # The VLM candidate claim cites no evidence IDs so gate marks it rejected/insufficient
     assert any(
-        c.status in (ClaimStatus.INSUFFICIENT_EVIDENCE, ClaimStatus.REJECTED)
-        for c in result.claims
+        c.status in (ClaimStatus.INSUFFICIENT_EVIDENCE, ClaimStatus.REJECTED) for c in result.claims
     )
     assert not any(
-        c.status == ClaimStatus.SUPPORTED and "weapon" in c.claim_text
-        for c in result.claims
+        c.status == ClaimStatus.SUPPORTED and "weapon" in c.claim_text for c in result.claims
     )
 
 
@@ -152,8 +150,7 @@ def test_cross_video_isolation_rejection(investigator: MockInvestigator) -> None
 
     assert result.status == InvestigationStatus.INSUFFICIENT_EVIDENCE
     assert all(
-        c.status in (ClaimStatus.INSUFFICIENT_EVIDENCE, ClaimStatus.REJECTED)
-        for c in result.claims
+        c.status in (ClaimStatus.INSUFFICIENT_EVIDENCE, ClaimStatus.REJECTED) for c in result.claims
     )
     assert "Insufficient" in result.answer
 

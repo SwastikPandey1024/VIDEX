@@ -368,16 +368,12 @@ class GraphProjection:
                 target_store.upsert_edge(t_edge)
 
         if self.config.enable_spatial_relations and detections:
-            spatial_engine = SpatialGraphEngine(
-                iou_threshold=self.config.iou_overlap_threshold
-            )
+            spatial_engine = SpatialGraphEngine(iou_threshold=self.config.iou_overlap_threshold)
             for s_edge in spatial_engine.compute_spatial_overlap_edges(detections):
                 target_store.upsert_edge(s_edge)
 
         if self.config.enable_zone_containment and tracks and zones:
-            spatial_engine = SpatialGraphEngine(
-                iou_threshold=self.config.iou_overlap_threshold
-            )
+            spatial_engine = SpatialGraphEngine(iou_threshold=self.config.iou_overlap_threshold)
             for z_edge in spatial_engine.compute_zone_containment_edges(tracks, zones):
                 target_store.upsert_edge(z_edge)
 

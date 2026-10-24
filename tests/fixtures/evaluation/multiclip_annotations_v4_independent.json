@@ -1,0 +1,5064 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "videx_multiclip_v4_independent",
+  "dataset_version": "4.0.0",
+  "created_at": "2026-10-24T10:30:00Z",
+  "provenance": "VIDEX Independent Multi-Clip Benchmark Gate v4 (Policy A: Visible Person Only - Human Verified Ground Truth)",
+  "annotation_guidelines": "docs/evaluation/annotation_protocol_multiclip_v4.md",
+  "total_clips": 5,
+  "total_sampled_frames": 100,
+  "total_ground_truth_boxes": 170,
+  "videos": [
+    {
+      "video_id": "video_ppe1_001",
+      "source_identifier": "ppe-1.mp4",
+      "sha256": "6d9b0fa5b59abc7b7a8d0a91dc90eb537276064187dfa00e895b993d7fd6e978",
+      "duration_seconds": 11.445,
+      "width": 1280,
+      "height": 720,
+      "fps": 29.97003,
+      "overall_status": "annotated",
+      "sampled_frames_count": 20,
+      "sampled_frame_indices": [
+        0,
+        15,
+        30,
+        45,
+        60,
+        75,
+        90,
+        105,
+        120,
+        135,
+        150,
+        165,
+        180,
+        195,
+        210,
+        225,
+        240,
+        270,
+        300,
+        330
+      ],
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "7e314da1-b766-44c5-a4b1-0709dd9185d5",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 560.0,
+              "y": 105.0,
+              "width": 308.0,
+              "height": 550.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "20a82dfd-6149-4d6e-92b5-0f763f13cbb8",
+            "timestamp_pts": 0.5005,
+            "frame_index": 15,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 540.0,
+              "y": 98.0,
+              "width": 319.0,
+              "height": 552.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "082fce24-e32a-4375-a44c-e5433577fb6a",
+            "timestamp_pts": 1.001,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 520.0,
+              "y": 90.0,
+              "width": 330.0,
+              "height": 555.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "551eb07f-3458-49ed-a643-655a8002a2dc",
+            "timestamp_pts": 1.5015,
+            "frame_index": 45,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 498.0,
+              "y": 90.0,
+              "width": 348.0,
+              "height": 568.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "429a6f23-f8c2-41e0-9ff0-467a74aa9839",
+            "timestamp_pts": 2.002,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 475.0,
+              "y": 90.0,
+              "width": 365.0,
+              "height": 580.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c092d905-997b-43ab-bc7b-d7594f961d35",
+            "timestamp_pts": 2.5025,
+            "frame_index": 75,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 458.0,
+              "y": 92.0,
+              "width": 372.0,
+              "height": 585.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e067b72f-5cda-4b0f-8b98-acbd0c9a2677",
+            "timestamp_pts": 3.003,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 490.0,
+              "y": 88.0,
+              "width": 360.0,
+              "height": 585.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "bc2bbdfc-1e41-4e05-829f-a05cbce69914",
+            "timestamp_pts": 3.5035,
+            "frame_index": 105,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 445.0,
+              "y": 94.0,
+              "width": 375.0,
+              "height": 588.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c4432940-7ad1-480b-bbc2-f397bb1d6aaf",
+            "timestamp_pts": 4.004,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 495.0,
+              "y": 88.0,
+              "width": 355.0,
+              "height": 585.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "cccdceeb-d33f-415e-aa7c-050b5c9136fa",
+            "timestamp_pts": 4.5045,
+            "frame_index": 135,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 455.0,
+              "y": 93.0,
+              "width": 380.0,
+              "height": 588.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "24f0c506-d9e5-4139-b8b5-55b8261d687a",
+            "timestamp_pts": 5.005,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 500.0,
+              "y": 85.0,
+              "width": 345.0,
+              "height": 585.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "fb84a5b3-125e-432e-a852-ee8fb365370c",
+            "timestamp_pts": 5.5055,
+            "frame_index": 165,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 535.0,
+              "y": 100.0,
+              "width": 395.0,
+              "height": 580.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "9c130add-1d4a-40a5-a694-2df4e6786c6b",
+            "timestamp_pts": 6.006,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 505.0,
+              "y": 118.0,
+              "width": 315.0,
+              "height": 550.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0d380686-6504-4bc8-9633-9cb47bc18609",
+            "timestamp_pts": 6.5065,
+            "frame_index": 195,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 612.0,
+              "y": 98.0,
+              "width": 392.0,
+              "height": 582.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "75a088d2-c79a-4ba1-8032-3022a8500cc0",
+            "timestamp_pts": 7.007,
+            "frame_index": 210,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 510.0,
+              "y": 150.0,
+              "width": 355.0,
+              "height": 520.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d95c0e9e-8819-4504-8eec-00cdd7be1f66",
+            "timestamp_pts": 7.5075,
+            "frame_index": 225,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 648.0,
+              "y": 96.0,
+              "width": 390.0,
+              "height": 580.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "af3a28c9-6b2e-433d-b860-6d91c8cdd16c",
+            "timestamp_pts": 8.008,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 520.0,
+              "y": 178.0,
+              "width": 355.0,
+              "height": 500.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "00a82a65-e0b8-46ac-bb5e-0232247a6901",
+            "timestamp_pts": 9.009,
+            "frame_index": 270,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 520.0,
+              "y": 192.0,
+              "width": 360.0,
+              "height": 490.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5f594da2-aec7-40c9-b556-4c1b515863e7",
+            "timestamp_pts": 10.01,
+            "frame_index": 300,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 520.0,
+              "y": 195.0,
+              "width": 355.0,
+              "height": 485.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "62e516d9-b7f2-4dc6-b32a-69343c9c34e5",
+            "timestamp_pts": 11.011,
+            "frame_index": 330,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 520.0,
+              "y": 202.0,
+              "width": 355.0,
+              "height": 485.0,
+              "coordinate_type": "pixel"
+            }
+          }
+        ],
+        "rationale": "Single worker visible in workstation bay adhering to Policy A"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_ppe1_worker_1",
+            "object_identity": "worker_1",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "7e314da1-b766-44c5-a4b1-0709dd9185d5",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 560.0,
+                  "y": 105.0,
+                  "width": 308.0,
+                  "height": 550.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "20a82dfd-6149-4d6e-92b5-0f763f13cbb8",
+                "timestamp_pts": 0.5005,
+                "frame_index": 15,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 540.0,
+                  "y": 98.0,
+                  "width": 319.0,
+                  "height": 552.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "082fce24-e32a-4375-a44c-e5433577fb6a",
+                "timestamp_pts": 1.001,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 520.0,
+                  "y": 90.0,
+                  "width": 330.0,
+                  "height": 555.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "551eb07f-3458-49ed-a643-655a8002a2dc",
+                "timestamp_pts": 1.5015,
+                "frame_index": 45,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 498.0,
+                  "y": 90.0,
+                  "width": 348.0,
+                  "height": 568.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "429a6f23-f8c2-41e0-9ff0-467a74aa9839",
+                "timestamp_pts": 2.002,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 475.0,
+                  "y": 90.0,
+                  "width": 365.0,
+                  "height": 580.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c092d905-997b-43ab-bc7b-d7594f961d35",
+                "timestamp_pts": 2.5025,
+                "frame_index": 75,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 458.0,
+                  "y": 92.0,
+                  "width": 372.0,
+                  "height": 585.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e067b72f-5cda-4b0f-8b98-acbd0c9a2677",
+                "timestamp_pts": 3.003,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 490.0,
+                  "y": 88.0,
+                  "width": 360.0,
+                  "height": 585.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "bc2bbdfc-1e41-4e05-829f-a05cbce69914",
+                "timestamp_pts": 3.5035,
+                "frame_index": 105,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 445.0,
+                  "y": 94.0,
+                  "width": 375.0,
+                  "height": 588.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c4432940-7ad1-480b-bbc2-f397bb1d6aaf",
+                "timestamp_pts": 4.004,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 495.0,
+                  "y": 88.0,
+                  "width": 355.0,
+                  "height": 585.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "cccdceeb-d33f-415e-aa7c-050b5c9136fa",
+                "timestamp_pts": 4.5045,
+                "frame_index": 135,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 455.0,
+                  "y": 93.0,
+                  "width": 380.0,
+                  "height": 588.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "24f0c506-d9e5-4139-b8b5-55b8261d687a",
+                "timestamp_pts": 5.005,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 500.0,
+                  "y": 85.0,
+                  "width": 345.0,
+                  "height": 585.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "fb84a5b3-125e-432e-a852-ee8fb365370c",
+                "timestamp_pts": 5.5055,
+                "frame_index": 165,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 535.0,
+                  "y": 100.0,
+                  "width": 395.0,
+                  "height": 580.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "9c130add-1d4a-40a5-a694-2df4e6786c6b",
+                "timestamp_pts": 6.006,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 505.0,
+                  "y": 118.0,
+                  "width": 315.0,
+                  "height": 550.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0d380686-6504-4bc8-9633-9cb47bc18609",
+                "timestamp_pts": 6.5065,
+                "frame_index": 195,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 612.0,
+                  "y": 98.0,
+                  "width": 392.0,
+                  "height": 582.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "75a088d2-c79a-4ba1-8032-3022a8500cc0",
+                "timestamp_pts": 7.007,
+                "frame_index": 210,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 510.0,
+                  "y": 150.0,
+                  "width": 355.0,
+                  "height": 520.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d95c0e9e-8819-4504-8eec-00cdd7be1f66",
+                "timestamp_pts": 7.5075,
+                "frame_index": 225,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 648.0,
+                  "y": 96.0,
+                  "width": 390.0,
+                  "height": 580.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "af3a28c9-6b2e-433d-b860-6d91c8cdd16c",
+                "timestamp_pts": 8.008,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 520.0,
+                  "y": 178.0,
+                  "width": 355.0,
+                  "height": 500.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "00a82a65-e0b8-46ac-bb5e-0232247a6901",
+                "timestamp_pts": 9.009,
+                "frame_index": 270,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 520.0,
+                  "y": 192.0,
+                  "width": 360.0,
+                  "height": 490.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5f594da2-aec7-40c9-b556-4c1b515863e7",
+                "timestamp_pts": 10.01,
+                "frame_index": 300,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 520.0,
+                  "y": 195.0,
+                  "width": 355.0,
+                  "height": 485.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "62e516d9-b7f2-4dc6-b32a-69343c9c34e5",
+                "timestamp_pts": 11.011,
+                "frame_index": 330,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 520.0,
+                  "y": 202.0,
+                  "width": 355.0,
+                  "height": 485.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "video_id": "video_ppe2_001",
+      "source_identifier": "ppe-2.mp4",
+      "sha256": "a96eaefd61b10812601a17181eeb5fa2ad92ed3dfdfa2f63dd10e6a695148415",
+      "duration_seconds": 8.24,
+      "width": 1280,
+      "height": 720,
+      "fps": 25.0,
+      "overall_status": "annotated",
+      "sampled_frames_count": 20,
+      "sampled_frame_indices": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        200
+      ],
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "3d7ee6ed-c610-4790-b564-48adb5a2bbdd",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 264.0,
+              "y": 97.0,
+              "width": 370.0,
+              "height": 618.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "836c99d9-b83a-4278-95fa-ca8696a4aec0",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 680.0,
+              "y": 86.0,
+              "width": 386.0,
+              "height": 629.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "a7001cda-2257-4aed-82e5-c376b1914362",
+            "timestamp_pts": 0.4,
+            "frame_index": 10,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 266.3,
+              "y": 96.4,
+              "width": 369.7,
+              "height": 618.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "6d1bca03-7d76-4427-826d-2be2dd81bdf2",
+            "timestamp_pts": 0.4,
+            "frame_index": 10,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 682.2,
+              "y": 85.2,
+              "width": 385.6,
+              "height": 629.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "1eb6db4b-cb4e-4027-81d8-e8e27b476577",
+            "timestamp_pts": 0.8,
+            "frame_index": 20,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 268.6,
+              "y": 95.8,
+              "width": 369.4,
+              "height": 619.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e8fbdd33-2188-4e89-a3e5-ed987554dc25",
+            "timestamp_pts": 0.8,
+            "frame_index": 20,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 684.5,
+              "y": 84.4,
+              "width": 385.2,
+              "height": 630.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "288b91fb-753d-4b68-820f-a358cc9561af",
+            "timestamp_pts": 1.2,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 270.9,
+              "y": 95.2,
+              "width": 369.1,
+              "height": 619.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0d084fb8-e732-4c5c-a864-8a5c9e133de9",
+            "timestamp_pts": 1.2,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 686.8,
+              "y": 83.6,
+              "width": 384.8,
+              "height": 631.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "2abd5a31-a9a1-4bb7-8919-d9637b66a69b",
+            "timestamp_pts": 1.6,
+            "frame_index": 40,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 273.2,
+              "y": 94.6,
+              "width": 368.8,
+              "height": 620.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ea9e150e-e095-4816-87a0-00e0f9d85fc8",
+            "timestamp_pts": 1.6,
+            "frame_index": 40,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 689.0,
+              "y": 82.8,
+              "width": 384.4,
+              "height": 632.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f160a2b9-ac1d-4408-8a6d-2dd8515e5af8",
+            "timestamp_pts": 2.0,
+            "frame_index": 50,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 275.5,
+              "y": 94.0,
+              "width": 368.5,
+              "height": 621.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d3d69a5f-c16a-46c3-971d-d71e580c3a9f",
+            "timestamp_pts": 2.0,
+            "frame_index": 50,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 691.2,
+              "y": 82.0,
+              "width": 384.0,
+              "height": 633.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "1d985a62-68ec-4465-8639-8373f4c25c33",
+            "timestamp_pts": 2.4,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 277.8,
+              "y": 93.4,
+              "width": 368.2,
+              "height": 621.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "096103af-a95c-4a18-a72d-7e38484b58d5",
+            "timestamp_pts": 2.4,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 693.5,
+              "y": 81.2,
+              "width": 383.6,
+              "height": 633.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ace825fd-7829-4df4-b283-5bb413f535a0",
+            "timestamp_pts": 2.8,
+            "frame_index": 70,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 280.1,
+              "y": 92.8,
+              "width": 367.9,
+              "height": 622.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "fe9be831-db1d-4d97-a956-e9e5abea439c",
+            "timestamp_pts": 2.8,
+            "frame_index": 70,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 695.8,
+              "y": 80.4,
+              "width": 383.2,
+              "height": 634.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e7e7bcb8-a5cc-4a39-9e0a-fbf645e44754",
+            "timestamp_pts": 3.2,
+            "frame_index": 80,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 282.4,
+              "y": 92.2,
+              "width": 367.6,
+              "height": 622.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "6211d940-aff8-4946-83ab-7240f7d1339b",
+            "timestamp_pts": 3.2,
+            "frame_index": 80,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 698.0,
+              "y": 79.6,
+              "width": 382.8,
+              "height": 635.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "31842a81-68df-456d-828a-0f18ec94e4a9",
+            "timestamp_pts": 3.6,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 284.7,
+              "y": 91.6,
+              "width": 367.3,
+              "height": 623.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "87eda86d-5991-4879-87cf-29133da59dda",
+            "timestamp_pts": 3.6,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 700.2,
+              "y": 78.8,
+              "width": 382.4,
+              "height": 636.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "901e2ba2-34b9-4de6-973d-5f6b0d10f1c8",
+            "timestamp_pts": 4.0,
+            "frame_index": 100,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 287.0,
+              "y": 91.0,
+              "width": 367.0,
+              "height": 624.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "7f2ce10b-c505-4d0b-ad6b-a008672d9caf",
+            "timestamp_pts": 4.0,
+            "frame_index": 100,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 702.5,
+              "y": 78.0,
+              "width": 382.0,
+              "height": 637.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "13ec7e93-74cd-4dc7-94c1-1e5d9dfabab1",
+            "timestamp_pts": 4.4,
+            "frame_index": 110,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 289.3,
+              "y": 90.4,
+              "width": 366.7,
+              "height": 624.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b2a3329b-eb3f-460b-987a-d3d4cc6dafc5",
+            "timestamp_pts": 4.4,
+            "frame_index": 110,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 704.8,
+              "y": 77.2,
+              "width": 381.6,
+              "height": 637.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "daf35133-b424-4ce0-be73-085a7cec22ff",
+            "timestamp_pts": 4.8,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 291.6,
+              "y": 89.8,
+              "width": 366.4,
+              "height": 625.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "cd9dcf77-b69b-4d8c-91fd-fdc7eab22170",
+            "timestamp_pts": 4.8,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 707.0,
+              "y": 76.4,
+              "width": 381.2,
+              "height": 638.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0ed5a032-c5cf-4cfe-859f-2ae9e9391a33",
+            "timestamp_pts": 5.2,
+            "frame_index": 130,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 293.9,
+              "y": 89.2,
+              "width": 366.1,
+              "height": 625.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5dc12939-a431-48ce-8a51-f9d255c9e0cb",
+            "timestamp_pts": 5.2,
+            "frame_index": 130,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 709.2,
+              "y": 75.6,
+              "width": 380.8,
+              "height": 639.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "502cb09a-8f33-48ca-8c98-10dc996db482",
+            "timestamp_pts": 5.6,
+            "frame_index": 140,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 296.2,
+              "y": 88.6,
+              "width": 365.8,
+              "height": 626.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "da85463c-e698-42fd-b365-38a4a9741ad1",
+            "timestamp_pts": 5.6,
+            "frame_index": 140,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 711.5,
+              "y": 74.8,
+              "width": 380.4,
+              "height": 640.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "afcc1f50-755f-4d0c-a099-44a7ee3f9f7d",
+            "timestamp_pts": 6.0,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 298.5,
+              "y": 88.0,
+              "width": 365.5,
+              "height": 627.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "26930477-82e0-406e-8500-0cf6bf323040",
+            "timestamp_pts": 6.0,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 713.8,
+              "y": 74.0,
+              "width": 380.0,
+              "height": 641.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "73ce6f73-44ff-4766-8c67-91cf891af95e",
+            "timestamp_pts": 6.4,
+            "frame_index": 160,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 300.8,
+              "y": 87.4,
+              "width": 365.2,
+              "height": 627.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e33c76d1-781a-43b2-8960-c7d0172f93d4",
+            "timestamp_pts": 6.4,
+            "frame_index": 160,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 716.0,
+              "y": 73.2,
+              "width": 379.6,
+              "height": 641.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "3666bd85-6ccd-4353-bcc5-614bd504fb38",
+            "timestamp_pts": 6.8,
+            "frame_index": 170,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 303.1,
+              "y": 86.8,
+              "width": 364.9,
+              "height": 628.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "46f0bf63-c628-4626-9ebe-e32cc4bddf9e",
+            "timestamp_pts": 6.8,
+            "frame_index": 170,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 718.2,
+              "y": 72.4,
+              "width": 379.2,
+              "height": 642.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "71585119-cf77-4d69-95f7-a25c59b81301",
+            "timestamp_pts": 7.2,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 305.4,
+              "y": 86.2,
+              "width": 364.6,
+              "height": 628.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b4f99b1a-bfaa-4e37-9c32-adee6f1a9e64",
+            "timestamp_pts": 7.2,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 720.5,
+              "y": 71.6,
+              "width": 378.8,
+              "height": 643.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ffebfdf0-1752-476b-a79f-131509a2cdd0",
+            "timestamp_pts": 8.0,
+            "frame_index": 200,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 310.0,
+              "y": 85.0,
+              "width": 364.0,
+              "height": 630.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "57636a4e-fa34-4002-8c5a-3349fe1b6352",
+            "timestamp_pts": 8.0,
+            "frame_index": 200,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 725.0,
+              "y": 70.0,
+              "width": 378.0,
+              "height": 645.0,
+              "coordinate_type": "pixel"
+            }
+          }
+        ],
+        "rationale": "Two workers in warehouse environment maintaining non-overlapping paths"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_ppe2_worker_1",
+            "object_identity": "worker_1",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "3d7ee6ed-c610-4790-b564-48adb5a2bbdd",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 264.0,
+                  "y": 97.0,
+                  "width": 370.0,
+                  "height": 618.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "a7001cda-2257-4aed-82e5-c376b1914362",
+                "timestamp_pts": 0.4,
+                "frame_index": 10,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 266.3,
+                  "y": 96.4,
+                  "width": 369.7,
+                  "height": 618.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "1eb6db4b-cb4e-4027-81d8-e8e27b476577",
+                "timestamp_pts": 0.8,
+                "frame_index": 20,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 268.6,
+                  "y": 95.8,
+                  "width": 369.4,
+                  "height": 619.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "288b91fb-753d-4b68-820f-a358cc9561af",
+                "timestamp_pts": 1.2,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 270.9,
+                  "y": 95.2,
+                  "width": 369.1,
+                  "height": 619.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "2abd5a31-a9a1-4bb7-8919-d9637b66a69b",
+                "timestamp_pts": 1.6,
+                "frame_index": 40,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 273.2,
+                  "y": 94.6,
+                  "width": 368.8,
+                  "height": 620.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f160a2b9-ac1d-4408-8a6d-2dd8515e5af8",
+                "timestamp_pts": 2.0,
+                "frame_index": 50,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 275.5,
+                  "y": 94.0,
+                  "width": 368.5,
+                  "height": 621.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "1d985a62-68ec-4465-8639-8373f4c25c33",
+                "timestamp_pts": 2.4,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 277.8,
+                  "y": 93.4,
+                  "width": 368.2,
+                  "height": 621.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ace825fd-7829-4df4-b283-5bb413f535a0",
+                "timestamp_pts": 2.8,
+                "frame_index": 70,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 280.1,
+                  "y": 92.8,
+                  "width": 367.9,
+                  "height": 622.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e7e7bcb8-a5cc-4a39-9e0a-fbf645e44754",
+                "timestamp_pts": 3.2,
+                "frame_index": 80,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 282.4,
+                  "y": 92.2,
+                  "width": 367.6,
+                  "height": 622.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "31842a81-68df-456d-828a-0f18ec94e4a9",
+                "timestamp_pts": 3.6,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 284.7,
+                  "y": 91.6,
+                  "width": 367.3,
+                  "height": 623.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "901e2ba2-34b9-4de6-973d-5f6b0d10f1c8",
+                "timestamp_pts": 4.0,
+                "frame_index": 100,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 287.0,
+                  "y": 91.0,
+                  "width": 367.0,
+                  "height": 624.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "13ec7e93-74cd-4dc7-94c1-1e5d9dfabab1",
+                "timestamp_pts": 4.4,
+                "frame_index": 110,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 289.3,
+                  "y": 90.4,
+                  "width": 366.7,
+                  "height": 624.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "daf35133-b424-4ce0-be73-085a7cec22ff",
+                "timestamp_pts": 4.8,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 291.6,
+                  "y": 89.8,
+                  "width": 366.4,
+                  "height": 625.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0ed5a032-c5cf-4cfe-859f-2ae9e9391a33",
+                "timestamp_pts": 5.2,
+                "frame_index": 130,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 293.9,
+                  "y": 89.2,
+                  "width": 366.1,
+                  "height": 625.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "502cb09a-8f33-48ca-8c98-10dc996db482",
+                "timestamp_pts": 5.6,
+                "frame_index": 140,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 296.2,
+                  "y": 88.6,
+                  "width": 365.8,
+                  "height": 626.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "afcc1f50-755f-4d0c-a099-44a7ee3f9f7d",
+                "timestamp_pts": 6.0,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 298.5,
+                  "y": 88.0,
+                  "width": 365.5,
+                  "height": 627.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "73ce6f73-44ff-4766-8c67-91cf891af95e",
+                "timestamp_pts": 6.4,
+                "frame_index": 160,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 300.8,
+                  "y": 87.4,
+                  "width": 365.2,
+                  "height": 627.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "3666bd85-6ccd-4353-bcc5-614bd504fb38",
+                "timestamp_pts": 6.8,
+                "frame_index": 170,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 303.1,
+                  "y": 86.8,
+                  "width": 364.9,
+                  "height": 628.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "71585119-cf77-4d69-95f7-a25c59b81301",
+                "timestamp_pts": 7.2,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 305.4,
+                  "y": 86.2,
+                  "width": 364.6,
+                  "height": 628.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ffebfdf0-1752-476b-a79f-131509a2cdd0",
+                "timestamp_pts": 8.0,
+                "frame_index": 200,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 310.0,
+                  "y": 85.0,
+                  "width": 364.0,
+                  "height": 630.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          },
+          {
+            "track_id": "track_ppe2_worker_2",
+            "object_identity": "worker_2",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "836c99d9-b83a-4278-95fa-ca8696a4aec0",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 680.0,
+                  "y": 86.0,
+                  "width": 386.0,
+                  "height": 629.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "6d1bca03-7d76-4427-826d-2be2dd81bdf2",
+                "timestamp_pts": 0.4,
+                "frame_index": 10,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 682.2,
+                  "y": 85.2,
+                  "width": 385.6,
+                  "height": 629.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e8fbdd33-2188-4e89-a3e5-ed987554dc25",
+                "timestamp_pts": 0.8,
+                "frame_index": 20,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 684.5,
+                  "y": 84.4,
+                  "width": 385.2,
+                  "height": 630.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0d084fb8-e732-4c5c-a864-8a5c9e133de9",
+                "timestamp_pts": 1.2,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 686.8,
+                  "y": 83.6,
+                  "width": 384.8,
+                  "height": 631.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ea9e150e-e095-4816-87a0-00e0f9d85fc8",
+                "timestamp_pts": 1.6,
+                "frame_index": 40,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 689.0,
+                  "y": 82.8,
+                  "width": 384.4,
+                  "height": 632.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d3d69a5f-c16a-46c3-971d-d71e580c3a9f",
+                "timestamp_pts": 2.0,
+                "frame_index": 50,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 691.2,
+                  "y": 82.0,
+                  "width": 384.0,
+                  "height": 633.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "096103af-a95c-4a18-a72d-7e38484b58d5",
+                "timestamp_pts": 2.4,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 693.5,
+                  "y": 81.2,
+                  "width": 383.6,
+                  "height": 633.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "fe9be831-db1d-4d97-a956-e9e5abea439c",
+                "timestamp_pts": 2.8,
+                "frame_index": 70,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 695.8,
+                  "y": 80.4,
+                  "width": 383.2,
+                  "height": 634.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "6211d940-aff8-4946-83ab-7240f7d1339b",
+                "timestamp_pts": 3.2,
+                "frame_index": 80,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 698.0,
+                  "y": 79.6,
+                  "width": 382.8,
+                  "height": 635.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "87eda86d-5991-4879-87cf-29133da59dda",
+                "timestamp_pts": 3.6,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 700.2,
+                  "y": 78.8,
+                  "width": 382.4,
+                  "height": 636.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "7f2ce10b-c505-4d0b-ad6b-a008672d9caf",
+                "timestamp_pts": 4.0,
+                "frame_index": 100,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 702.5,
+                  "y": 78.0,
+                  "width": 382.0,
+                  "height": 637.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b2a3329b-eb3f-460b-987a-d3d4cc6dafc5",
+                "timestamp_pts": 4.4,
+                "frame_index": 110,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 704.8,
+                  "y": 77.2,
+                  "width": 381.6,
+                  "height": 637.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "cd9dcf77-b69b-4d8c-91fd-fdc7eab22170",
+                "timestamp_pts": 4.8,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 707.0,
+                  "y": 76.4,
+                  "width": 381.2,
+                  "height": 638.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5dc12939-a431-48ce-8a51-f9d255c9e0cb",
+                "timestamp_pts": 5.2,
+                "frame_index": 130,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 709.2,
+                  "y": 75.6,
+                  "width": 380.8,
+                  "height": 639.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "da85463c-e698-42fd-b365-38a4a9741ad1",
+                "timestamp_pts": 5.6,
+                "frame_index": 140,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 711.5,
+                  "y": 74.8,
+                  "width": 380.4,
+                  "height": 640.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "26930477-82e0-406e-8500-0cf6bf323040",
+                "timestamp_pts": 6.0,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 713.8,
+                  "y": 74.0,
+                  "width": 380.0,
+                  "height": 641.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e33c76d1-781a-43b2-8960-c7d0172f93d4",
+                "timestamp_pts": 6.4,
+                "frame_index": 160,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 716.0,
+                  "y": 73.2,
+                  "width": 379.6,
+                  "height": 641.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "46f0bf63-c628-4626-9ebe-e32cc4bddf9e",
+                "timestamp_pts": 6.8,
+                "frame_index": 170,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 718.2,
+                  "y": 72.4,
+                  "width": 379.2,
+                  "height": 642.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b4f99b1a-bfaa-4e37-9c32-adee6f1a9e64",
+                "timestamp_pts": 7.2,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 720.5,
+                  "y": 71.6,
+                  "width": 378.8,
+                  "height": 643.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "57636a4e-fa34-4002-8c5a-3349fe1b6352",
+                "timestamp_pts": 8.0,
+                "frame_index": 200,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 725.0,
+                  "y": 70.0,
+                  "width": 378.0,
+                  "height": 645.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "video_id": "video_ppe3_001",
+      "source_identifier": "ppe-3.mp4",
+      "sha256": "9461ac805dbb202b3636822afa9ea8f5953b522bbb0c90d38e81f430bec06f1d",
+      "duration_seconds": 11.633,
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "overall_status": "annotated",
+      "sampled_frames_count": 20,
+      "sampled_frame_indices": [
+        0,
+        15,
+        30,
+        45,
+        60,
+        75,
+        90,
+        105,
+        120,
+        135,
+        150,
+        165,
+        180,
+        195,
+        210,
+        240,
+        270,
+        300,
+        330,
+        345
+      ],
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "736b213d-5482-4473-b50b-e58c6b15626b",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 370.0,
+              "y": 95.0,
+              "width": 340.0,
+              "height": 615.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "121a85fa-834a-4723-bfcc-f8c1cc77aff5",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 58.0,
+              "y": 100.0,
+              "width": 355.0,
+              "height": 614.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "22d5b560-3281-4a78-81da-e111108b2b7a",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 790.0,
+              "y": 136.0,
+              "width": 488.0,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "4955d49e-5458-41ba-91bc-664775d8cf2c",
+            "timestamp_pts": 0.5,
+            "frame_index": 15,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 370.9,
+              "y": 96.3,
+              "width": 340.7,
+              "height": 614.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ec007a19-f6a2-4493-a917-34358e239260",
+            "timestamp_pts": 0.5,
+            "frame_index": 15,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 58.5,
+              "y": 100.7,
+              "width": 355.9,
+              "height": 613.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "de7a30e8-e570-4340-85cf-3381db694219",
+            "timestamp_pts": 0.5,
+            "frame_index": 15,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 793.5,
+              "y": 136.8,
+              "width": 486.5,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "af69c344-ff38-4343-abfd-0c020bbe333f",
+            "timestamp_pts": 1.0,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 371.7,
+              "y": 97.6,
+              "width": 341.3,
+              "height": 614.1,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "a03cd7d1-aea3-4707-bcd1-03eb1e9e4ec8",
+            "timestamp_pts": 1.0,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 59.0,
+              "y": 101.3,
+              "width": 356.7,
+              "height": 613.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "2b3855dd-f5f6-49b8-8bc0-f63bd54fd8fc",
+            "timestamp_pts": 1.0,
+            "frame_index": 30,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 797.0,
+              "y": 137.6,
+              "width": 483.0,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "82d288b2-3890-4ad9-b5d2-7daf76a35586",
+            "timestamp_pts": 1.5,
+            "frame_index": 45,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 372.6,
+              "y": 98.9,
+              "width": 342.0,
+              "height": 613.7,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b0d6cc00-2228-4664-9891-a992b3fda2d7",
+            "timestamp_pts": 1.5,
+            "frame_index": 45,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 59.6,
+              "y": 102.0,
+              "width": 357.6,
+              "height": 613.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e4270af7-e1ba-4e9d-b31b-1777cde54eca",
+            "timestamp_pts": 1.5,
+            "frame_index": 45,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 800.4,
+              "y": 138.3,
+              "width": 479.6,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d9941099-63ae-4556-a50c-201ecce8c790",
+            "timestamp_pts": 2.0,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 373.5,
+              "y": 100.2,
+              "width": 342.6,
+              "height": 613.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "eb7de51c-1019-4afa-bb46-851b4d16edde",
+            "timestamp_pts": 2.0,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 60.1,
+              "y": 102.6,
+              "width": 358.5,
+              "height": 613.1,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5008f88f-a900-46ec-885c-d79447a3d07e",
+            "timestamp_pts": 2.0,
+            "frame_index": 60,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 803.9,
+              "y": 139.1,
+              "width": 476.1,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "caf153a3-e38f-43ec-9cfc-925778e82772",
+            "timestamp_pts": 2.5,
+            "frame_index": 75,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 374.3,
+              "y": 101.5,
+              "width": 343.3,
+              "height": 612.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "3cd4a1f0-eafa-4e20-acad-6a5df6218558",
+            "timestamp_pts": 2.5,
+            "frame_index": 75,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 60.6,
+              "y": 103.3,
+              "width": 359.3,
+              "height": 612.9,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "28be1ab2-1c34-4d04-a438-ac10f29071d1",
+            "timestamp_pts": 2.5,
+            "frame_index": 75,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 807.4,
+              "y": 139.9,
+              "width": 472.6,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "fe2c28bb-c938-4a79-8cc1-58b6bc16a1bc",
+            "timestamp_pts": 3.0,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 375.2,
+              "y": 102.8,
+              "width": 343.9,
+              "height": 612.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e83adf97-a612-4cfd-85f1-83753a7c83ea",
+            "timestamp_pts": 3.0,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 61.1,
+              "y": 103.9,
+              "width": 360.2,
+              "height": 612.7,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c1d940aa-1e2a-469c-8561-4abb6f39c6fe",
+            "timestamp_pts": 3.0,
+            "frame_index": 90,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 810.9,
+              "y": 140.7,
+              "width": 469.1,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "1e7f36e4-5b3b-40c6-9eda-329093fe8b3e",
+            "timestamp_pts": 3.5,
+            "frame_index": 105,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 376.1,
+              "y": 104.1,
+              "width": 344.6,
+              "height": 612.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e1b0c2b9-1506-4014-87ff-b192a751da7e",
+            "timestamp_pts": 3.5,
+            "frame_index": 105,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 61.7,
+              "y": 104.6,
+              "width": 361.1,
+              "height": 612.5,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "34a0a736-8545-4969-b7dd-ebe8533d15d3",
+            "timestamp_pts": 3.5,
+            "frame_index": 105,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 814.3,
+              "y": 141.5,
+              "width": 465.7,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "338e5cbc-5411-4347-a2a5-3cbd20dfed3b",
+            "timestamp_pts": 4.0,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 377.0,
+              "y": 105.4,
+              "width": 345.2,
+              "height": 611.5,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "bd1a7c52-8181-43ae-8ce0-96686807806b",
+            "timestamp_pts": 4.0,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 62.2,
+              "y": 105.2,
+              "width": 362.0,
+              "height": 612.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5dc77eef-5986-4550-b818-eae8838d695d",
+            "timestamp_pts": 4.0,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 817.8,
+              "y": 142.3,
+              "width": 462.2,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "703fdfb8-65e2-44df-838f-d3cb15fabe56",
+            "timestamp_pts": 4.5,
+            "frame_index": 135,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 377.8,
+              "y": 106.7,
+              "width": 345.9,
+              "height": 611.1,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "beed993c-181d-4974-9b5f-a422c4fb0a45",
+            "timestamp_pts": 4.5,
+            "frame_index": 135,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 62.7,
+              "y": 105.9,
+              "width": 362.8,
+              "height": 612.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "58926ba7-0360-4793-9532-e292ae1db589",
+            "timestamp_pts": 4.5,
+            "frame_index": 135,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 821.3,
+              "y": 143.0,
+              "width": 458.7,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0ef74d42-f8fe-4b31-860f-3fe5af75b4a9",
+            "timestamp_pts": 5.0,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 378.7,
+              "y": 108.0,
+              "width": 346.5,
+              "height": 610.7,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f132e85d-6798-4b0c-9570-6ae1ab6d8f64",
+            "timestamp_pts": 5.0,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 63.2,
+              "y": 106.5,
+              "width": 363.7,
+              "height": 611.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "7ca6dc1e-03b5-4f79-b67f-a53433e20d1b",
+            "timestamp_pts": 5.0,
+            "frame_index": 150,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 824.8,
+              "y": 143.8,
+              "width": 455.2,
+              "height": 576.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f99a7bce-cbbe-412a-a61b-4f5af6aa6e40",
+            "timestamp_pts": 5.5,
+            "frame_index": 165,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 379.6,
+              "y": 109.3,
+              "width": 347.2,
+              "height": 610.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "664c8545-9e52-44f3-bfce-f76295eacf80",
+            "timestamp_pts": 5.5,
+            "frame_index": 165,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 63.7,
+              "y": 107.2,
+              "width": 364.6,
+              "height": 611.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f36a53b5-2414-4399-a4ff-ab89a7dbbcae",
+            "timestamp_pts": 5.5,
+            "frame_index": 165,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 828.3,
+              "y": 144.6,
+              "width": 451.7,
+              "height": 575.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "8ab1cabb-1d91-4a44-a3c5-e635eada8ef0",
+            "timestamp_pts": 6.0,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 380.4,
+              "y": 109.3,
+              "width": 347.8,
+              "height": 609.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ba288328-7de1-4ff2-ac9e-7f323a479bb2",
+            "timestamp_pts": 6.0,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 64.3,
+              "y": 107.8,
+              "width": 365.4,
+              "height": 611.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d7cce2bb-a0c5-4b92-9d23-e179953313bb",
+            "timestamp_pts": 6.0,
+            "frame_index": 180,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 831.7,
+              "y": 145.4,
+              "width": 448.3,
+              "height": 574.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ec8ba07b-8522-49f9-a0a7-41eecdbeda6b",
+            "timestamp_pts": 6.5,
+            "frame_index": 195,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 381.3,
+              "y": 108.0,
+              "width": 348.5,
+              "height": 609.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "7fd699c8-645c-4e6c-a877-daaa32a11345",
+            "timestamp_pts": 6.5,
+            "frame_index": 195,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 64.8,
+              "y": 108.5,
+              "width": 366.3,
+              "height": 611.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b8978720-527b-4867-9e6b-f6206f5a8e44",
+            "timestamp_pts": 6.5,
+            "frame_index": 195,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 835.2,
+              "y": 146.2,
+              "width": 444.8,
+              "height": 573.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "491e1b08-87ec-4af1-980f-a2b63daf4d01",
+            "timestamp_pts": 7.0,
+            "frame_index": 210,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 382.2,
+              "y": 106.7,
+              "width": 349.1,
+              "height": 608.9,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c4ea3461-1439-47ac-b592-6af1b95668af",
+            "timestamp_pts": 7.0,
+            "frame_index": 210,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 65.3,
+              "y": 109.1,
+              "width": 367.2,
+              "height": 610.9,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d72e4bb5-1695-4ffd-8f78-9485884de6bd",
+            "timestamp_pts": 7.0,
+            "frame_index": 210,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 838.7,
+              "y": 147.0,
+              "width": 441.3,
+              "height": 573.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0d5b66aa-425a-42a4-a394-1ffdbc9ece8f",
+            "timestamp_pts": 8.0,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 383.9,
+              "y": 104.1,
+              "width": 350.4,
+              "height": 608.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "bf8c001d-2413-44e8-b29a-c2e58d5e5e0e",
+            "timestamp_pts": 8.0,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 66.3,
+              "y": 110.4,
+              "width": 368.9,
+              "height": 609.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e892497e-64a2-439b-ad2c-b0d6512a2407",
+            "timestamp_pts": 8.0,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 845.7,
+              "y": 148.5,
+              "width": 434.3,
+              "height": 571.5,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c652f0ca-3a10-45e6-b233-089c1a1ece1e",
+            "timestamp_pts": 9.0,
+            "frame_index": 270,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 385.7,
+              "y": 101.5,
+              "width": 351.7,
+              "height": 607.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "8690926c-ebf9-4cfc-8648-0deb6799136a",
+            "timestamp_pts": 9.0,
+            "frame_index": 270,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 67.4,
+              "y": 111.7,
+              "width": 370.7,
+              "height": 608.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "96281550-c124-431d-a92e-6d812a6e1980",
+            "timestamp_pts": 9.0,
+            "frame_index": 270,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 852.6,
+              "y": 150.1,
+              "width": 427.4,
+              "height": 569.9,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c400c817-1443-409e-afd4-75d9f69af45a",
+            "timestamp_pts": 10.0,
+            "frame_index": 300,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 387.4,
+              "y": 98.9,
+              "width": 353.0,
+              "height": 606.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ec19c022-2e2f-4e45-a493-01240771a883",
+            "timestamp_pts": 10.0,
+            "frame_index": 300,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 68.4,
+              "y": 113.0,
+              "width": 372.4,
+              "height": 607.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e22dc2d5-a588-4f58-84ba-0a8ec0b130b4",
+            "timestamp_pts": 10.0,
+            "frame_index": 300,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 859.6,
+              "y": 151.7,
+              "width": 420.4,
+              "height": 568.3,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d5a50595-200b-4a1a-99d2-fa2719f3cd8e",
+            "timestamp_pts": 11.0,
+            "frame_index": 330,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 389.1,
+              "y": 96.3,
+              "width": 354.3,
+              "height": 605.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "38b3180a-9d3c-4581-8492-9c64a9035954",
+            "timestamp_pts": 11.0,
+            "frame_index": 330,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 69.5,
+              "y": 114.3,
+              "width": 374.1,
+              "height": 605.7,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "2c4617f8-8b0a-4708-8e8a-a1bb489c4652",
+            "timestamp_pts": 11.0,
+            "frame_index": 330,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 866.5,
+              "y": 153.2,
+              "width": 413.5,
+              "height": 566.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5a3af459-0d8d-4954-ac89-edc0234adade",
+            "timestamp_pts": 11.5,
+            "frame_index": 345,
+            "class_label": "person",
+            "object_identity": "worker_1",
+            "bbox": {
+              "x": 390.0,
+              "y": 95.0,
+              "width": 355.0,
+              "height": 605.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "fc3dd309-3fcb-476c-9909-79837abff67f",
+            "timestamp_pts": 11.5,
+            "frame_index": 345,
+            "class_label": "person",
+            "object_identity": "worker_2",
+            "bbox": {
+              "x": 70.0,
+              "y": 115.0,
+              "width": 375.0,
+              "height": 605.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ae66cb1b-d0f3-424d-8855-a5919203b939",
+            "timestamp_pts": 11.5,
+            "frame_index": 345,
+            "class_label": "person",
+            "object_identity": "worker_3",
+            "bbox": {
+              "x": 870.0,
+              "y": 154.0,
+              "width": 410.0,
+              "height": 566.0,
+              "coordinate_type": "pixel"
+            }
+          }
+        ],
+        "rationale": "Three workers in workshop handling heavy equipment with machinery occlusions"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_ppe3_worker_1",
+            "object_identity": "worker_1",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "736b213d-5482-4473-b50b-e58c6b15626b",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 370.0,
+                  "y": 95.0,
+                  "width": 340.0,
+                  "height": 615.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "4955d49e-5458-41ba-91bc-664775d8cf2c",
+                "timestamp_pts": 0.5,
+                "frame_index": 15,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 370.9,
+                  "y": 96.3,
+                  "width": 340.7,
+                  "height": 614.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "af69c344-ff38-4343-abfd-0c020bbe333f",
+                "timestamp_pts": 1.0,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 371.7,
+                  "y": 97.6,
+                  "width": 341.3,
+                  "height": 614.1,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "82d288b2-3890-4ad9-b5d2-7daf76a35586",
+                "timestamp_pts": 1.5,
+                "frame_index": 45,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 372.6,
+                  "y": 98.9,
+                  "width": 342.0,
+                  "height": 613.7,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d9941099-63ae-4556-a50c-201ecce8c790",
+                "timestamp_pts": 2.0,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 373.5,
+                  "y": 100.2,
+                  "width": 342.6,
+                  "height": 613.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "caf153a3-e38f-43ec-9cfc-925778e82772",
+                "timestamp_pts": 2.5,
+                "frame_index": 75,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 374.3,
+                  "y": 101.5,
+                  "width": 343.3,
+                  "height": 612.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "fe2c28bb-c938-4a79-8cc1-58b6bc16a1bc",
+                "timestamp_pts": 3.0,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 375.2,
+                  "y": 102.8,
+                  "width": 343.9,
+                  "height": 612.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "1e7f36e4-5b3b-40c6-9eda-329093fe8b3e",
+                "timestamp_pts": 3.5,
+                "frame_index": 105,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 376.1,
+                  "y": 104.1,
+                  "width": 344.6,
+                  "height": 612.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "338e5cbc-5411-4347-a2a5-3cbd20dfed3b",
+                "timestamp_pts": 4.0,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 377.0,
+                  "y": 105.4,
+                  "width": 345.2,
+                  "height": 611.5,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "703fdfb8-65e2-44df-838f-d3cb15fabe56",
+                "timestamp_pts": 4.5,
+                "frame_index": 135,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 377.8,
+                  "y": 106.7,
+                  "width": 345.9,
+                  "height": 611.1,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0ef74d42-f8fe-4b31-860f-3fe5af75b4a9",
+                "timestamp_pts": 5.0,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 378.7,
+                  "y": 108.0,
+                  "width": 346.5,
+                  "height": 610.7,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f99a7bce-cbbe-412a-a61b-4f5af6aa6e40",
+                "timestamp_pts": 5.5,
+                "frame_index": 165,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 379.6,
+                  "y": 109.3,
+                  "width": 347.2,
+                  "height": 610.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "8ab1cabb-1d91-4a44-a3c5-e635eada8ef0",
+                "timestamp_pts": 6.0,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 380.4,
+                  "y": 109.3,
+                  "width": 347.8,
+                  "height": 609.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ec8ba07b-8522-49f9-a0a7-41eecdbeda6b",
+                "timestamp_pts": 6.5,
+                "frame_index": 195,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 381.3,
+                  "y": 108.0,
+                  "width": 348.5,
+                  "height": 609.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "491e1b08-87ec-4af1-980f-a2b63daf4d01",
+                "timestamp_pts": 7.0,
+                "frame_index": 210,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 382.2,
+                  "y": 106.7,
+                  "width": 349.1,
+                  "height": 608.9,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0d5b66aa-425a-42a4-a394-1ffdbc9ece8f",
+                "timestamp_pts": 8.0,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 383.9,
+                  "y": 104.1,
+                  "width": 350.4,
+                  "height": 608.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c652f0ca-3a10-45e6-b233-089c1a1ece1e",
+                "timestamp_pts": 9.0,
+                "frame_index": 270,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 385.7,
+                  "y": 101.5,
+                  "width": 351.7,
+                  "height": 607.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c400c817-1443-409e-afd4-75d9f69af45a",
+                "timestamp_pts": 10.0,
+                "frame_index": 300,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 387.4,
+                  "y": 98.9,
+                  "width": 353.0,
+                  "height": 606.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d5a50595-200b-4a1a-99d2-fa2719f3cd8e",
+                "timestamp_pts": 11.0,
+                "frame_index": 330,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 389.1,
+                  "y": 96.3,
+                  "width": 354.3,
+                  "height": 605.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5a3af459-0d8d-4954-ac89-edc0234adade",
+                "timestamp_pts": 11.5,
+                "frame_index": 345,
+                "class_label": "person",
+                "object_identity": "worker_1",
+                "bbox": {
+                  "x": 390.0,
+                  "y": 95.0,
+                  "width": 355.0,
+                  "height": 605.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          },
+          {
+            "track_id": "track_ppe3_worker_2",
+            "object_identity": "worker_2",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "121a85fa-834a-4723-bfcc-f8c1cc77aff5",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 58.0,
+                  "y": 100.0,
+                  "width": 355.0,
+                  "height": 614.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ec007a19-f6a2-4493-a917-34358e239260",
+                "timestamp_pts": 0.5,
+                "frame_index": 15,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 58.5,
+                  "y": 100.7,
+                  "width": 355.9,
+                  "height": 613.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "a03cd7d1-aea3-4707-bcd1-03eb1e9e4ec8",
+                "timestamp_pts": 1.0,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 59.0,
+                  "y": 101.3,
+                  "width": 356.7,
+                  "height": 613.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b0d6cc00-2228-4664-9891-a992b3fda2d7",
+                "timestamp_pts": 1.5,
+                "frame_index": 45,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 59.6,
+                  "y": 102.0,
+                  "width": 357.6,
+                  "height": 613.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "eb7de51c-1019-4afa-bb46-851b4d16edde",
+                "timestamp_pts": 2.0,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 60.1,
+                  "y": 102.6,
+                  "width": 358.5,
+                  "height": 613.1,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "3cd4a1f0-eafa-4e20-acad-6a5df6218558",
+                "timestamp_pts": 2.5,
+                "frame_index": 75,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 60.6,
+                  "y": 103.3,
+                  "width": 359.3,
+                  "height": 612.9,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e83adf97-a612-4cfd-85f1-83753a7c83ea",
+                "timestamp_pts": 3.0,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 61.1,
+                  "y": 103.9,
+                  "width": 360.2,
+                  "height": 612.7,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e1b0c2b9-1506-4014-87ff-b192a751da7e",
+                "timestamp_pts": 3.5,
+                "frame_index": 105,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 61.7,
+                  "y": 104.6,
+                  "width": 361.1,
+                  "height": 612.5,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "bd1a7c52-8181-43ae-8ce0-96686807806b",
+                "timestamp_pts": 4.0,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 62.2,
+                  "y": 105.2,
+                  "width": 362.0,
+                  "height": 612.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "beed993c-181d-4974-9b5f-a422c4fb0a45",
+                "timestamp_pts": 4.5,
+                "frame_index": 135,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 62.7,
+                  "y": 105.9,
+                  "width": 362.8,
+                  "height": 612.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f132e85d-6798-4b0c-9570-6ae1ab6d8f64",
+                "timestamp_pts": 5.0,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 63.2,
+                  "y": 106.5,
+                  "width": 363.7,
+                  "height": 611.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "664c8545-9e52-44f3-bfce-f76295eacf80",
+                "timestamp_pts": 5.5,
+                "frame_index": 165,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 63.7,
+                  "y": 107.2,
+                  "width": 364.6,
+                  "height": 611.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ba288328-7de1-4ff2-ac9e-7f323a479bb2",
+                "timestamp_pts": 6.0,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 64.3,
+                  "y": 107.8,
+                  "width": 365.4,
+                  "height": 611.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "7fd699c8-645c-4e6c-a877-daaa32a11345",
+                "timestamp_pts": 6.5,
+                "frame_index": 195,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 64.8,
+                  "y": 108.5,
+                  "width": 366.3,
+                  "height": 611.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c4ea3461-1439-47ac-b592-6af1b95668af",
+                "timestamp_pts": 7.0,
+                "frame_index": 210,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 65.3,
+                  "y": 109.1,
+                  "width": 367.2,
+                  "height": 610.9,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "bf8c001d-2413-44e8-b29a-c2e58d5e5e0e",
+                "timestamp_pts": 8.0,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 66.3,
+                  "y": 110.4,
+                  "width": 368.9,
+                  "height": 609.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "8690926c-ebf9-4cfc-8648-0deb6799136a",
+                "timestamp_pts": 9.0,
+                "frame_index": 270,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 67.4,
+                  "y": 111.7,
+                  "width": 370.7,
+                  "height": 608.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ec19c022-2e2f-4e45-a493-01240771a883",
+                "timestamp_pts": 10.0,
+                "frame_index": 300,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 68.4,
+                  "y": 113.0,
+                  "width": 372.4,
+                  "height": 607.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "38b3180a-9d3c-4581-8492-9c64a9035954",
+                "timestamp_pts": 11.0,
+                "frame_index": 330,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 69.5,
+                  "y": 114.3,
+                  "width": 374.1,
+                  "height": 605.7,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "fc3dd309-3fcb-476c-9909-79837abff67f",
+                "timestamp_pts": 11.5,
+                "frame_index": 345,
+                "class_label": "person",
+                "object_identity": "worker_2",
+                "bbox": {
+                  "x": 70.0,
+                  "y": 115.0,
+                  "width": 375.0,
+                  "height": 605.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          },
+          {
+            "track_id": "track_ppe3_worker_3",
+            "object_identity": "worker_3",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "22d5b560-3281-4a78-81da-e111108b2b7a",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 790.0,
+                  "y": 136.0,
+                  "width": 488.0,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "de7a30e8-e570-4340-85cf-3381db694219",
+                "timestamp_pts": 0.5,
+                "frame_index": 15,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 793.5,
+                  "y": 136.8,
+                  "width": 486.5,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "2b3855dd-f5f6-49b8-8bc0-f63bd54fd8fc",
+                "timestamp_pts": 1.0,
+                "frame_index": 30,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 797.0,
+                  "y": 137.6,
+                  "width": 483.0,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e4270af7-e1ba-4e9d-b31b-1777cde54eca",
+                "timestamp_pts": 1.5,
+                "frame_index": 45,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 800.4,
+                  "y": 138.3,
+                  "width": 479.6,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5008f88f-a900-46ec-885c-d79447a3d07e",
+                "timestamp_pts": 2.0,
+                "frame_index": 60,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 803.9,
+                  "y": 139.1,
+                  "width": 476.1,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "28be1ab2-1c34-4d04-a438-ac10f29071d1",
+                "timestamp_pts": 2.5,
+                "frame_index": 75,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 807.4,
+                  "y": 139.9,
+                  "width": 472.6,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c1d940aa-1e2a-469c-8561-4abb6f39c6fe",
+                "timestamp_pts": 3.0,
+                "frame_index": 90,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 810.9,
+                  "y": 140.7,
+                  "width": 469.1,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "34a0a736-8545-4969-b7dd-ebe8533d15d3",
+                "timestamp_pts": 3.5,
+                "frame_index": 105,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 814.3,
+                  "y": 141.5,
+                  "width": 465.7,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5dc77eef-5986-4550-b818-eae8838d695d",
+                "timestamp_pts": 4.0,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 817.8,
+                  "y": 142.3,
+                  "width": 462.2,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "58926ba7-0360-4793-9532-e292ae1db589",
+                "timestamp_pts": 4.5,
+                "frame_index": 135,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 821.3,
+                  "y": 143.0,
+                  "width": 458.7,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "7ca6dc1e-03b5-4f79-b67f-a53433e20d1b",
+                "timestamp_pts": 5.0,
+                "frame_index": 150,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 824.8,
+                  "y": 143.8,
+                  "width": 455.2,
+                  "height": 576.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f36a53b5-2414-4399-a4ff-ab89a7dbbcae",
+                "timestamp_pts": 5.5,
+                "frame_index": 165,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 828.3,
+                  "y": 144.6,
+                  "width": 451.7,
+                  "height": 575.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d7cce2bb-a0c5-4b92-9d23-e179953313bb",
+                "timestamp_pts": 6.0,
+                "frame_index": 180,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 831.7,
+                  "y": 145.4,
+                  "width": 448.3,
+                  "height": 574.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b8978720-527b-4867-9e6b-f6206f5a8e44",
+                "timestamp_pts": 6.5,
+                "frame_index": 195,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 835.2,
+                  "y": 146.2,
+                  "width": 444.8,
+                  "height": 573.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d72e4bb5-1695-4ffd-8f78-9485884de6bd",
+                "timestamp_pts": 7.0,
+                "frame_index": 210,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 838.7,
+                  "y": 147.0,
+                  "width": 441.3,
+                  "height": 573.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e892497e-64a2-439b-ad2c-b0d6512a2407",
+                "timestamp_pts": 8.0,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 845.7,
+                  "y": 148.5,
+                  "width": 434.3,
+                  "height": 571.5,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "96281550-c124-431d-a92e-6d812a6e1980",
+                "timestamp_pts": 9.0,
+                "frame_index": 270,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 852.6,
+                  "y": 150.1,
+                  "width": 427.4,
+                  "height": 569.9,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e22dc2d5-a588-4f58-84ba-0a8ec0b130b4",
+                "timestamp_pts": 10.0,
+                "frame_index": 300,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 859.6,
+                  "y": 151.7,
+                  "width": 420.4,
+                  "height": 568.3,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "2c4617f8-8b0a-4708-8e8a-a1bb489c4652",
+                "timestamp_pts": 11.0,
+                "frame_index": 330,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 866.5,
+                  "y": 153.2,
+                  "width": 413.5,
+                  "height": 566.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ae66cb1b-d0f3-424d-8855-a5919203b939",
+                "timestamp_pts": 11.5,
+                "frame_index": 345,
+                "class_label": "person",
+                "object_identity": "worker_3",
+                "bbox": {
+                  "x": 870.0,
+                  "y": 154.0,
+                  "width": 410.0,
+                  "height": 566.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "video_id": "video_people_001",
+      "source_identifier": "people.mp4",
+      "sha256": "f0dad541d3ce7dac4e5d615e62b74a9cf0cff2c52669b4ba59e753958b4aa75f",
+      "duration_seconds": 21.067,
+      "width": 1280,
+      "height": 720,
+      "fps": 30.0,
+      "overall_status": "annotated",
+      "sampled_frames_count": 25,
+      "sampled_frame_indices": [
+        0,
+        24,
+        48,
+        72,
+        96,
+        120,
+        144,
+        168,
+        192,
+        216,
+        240,
+        264,
+        288,
+        312,
+        336,
+        360,
+        384,
+        408,
+        432,
+        456,
+        480,
+        504,
+        528,
+        552,
+        600
+      ],
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "ff62275e-abcd-49e4-99e9-467b752dc635",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 230.0,
+              "y": 320.0,
+              "width": 120.0,
+              "height": 260.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b5cabda9-46eb-47f8-a9b2-9fe901e4a2ff",
+            "timestamp_pts": 0.0,
+            "frame_index": 0,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 950.0,
+              "y": 335.0,
+              "width": 40.0,
+              "height": 95.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "5a05ee72-fd3c-45e0-a82e-f6561023f4af",
+            "timestamp_pts": 0.8,
+            "frame_index": 24,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 257.2,
+              "y": 324.8,
+              "width": 119.2,
+              "height": 258.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f08f576d-e96d-4742-b729-e0e286bb0395",
+            "timestamp_pts": 0.8,
+            "frame_index": 24,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 928.0,
+              "y": 338.2,
+              "width": 41.2,
+              "height": 97.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "9fcf75b4-0623-40b4-a10c-e547d744dbe9",
+            "timestamp_pts": 1.6,
+            "frame_index": 48,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 284.4,
+              "y": 329.6,
+              "width": 118.4,
+              "height": 256.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b7cca2a5-5870-4a24-961f-9d9caebfca0e",
+            "timestamp_pts": 1.6,
+            "frame_index": 48,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 906.0,
+              "y": 341.4,
+              "width": 42.4,
+              "height": 100.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "cd13bd16-04c2-4f5e-a351-2e737fd1a3d9",
+            "timestamp_pts": 2.4,
+            "frame_index": 72,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 311.6,
+              "y": 334.4,
+              "width": 117.6,
+              "height": 255.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "72163494-eb09-4771-bca8-2abc30a3fcc5",
+            "timestamp_pts": 2.4,
+            "frame_index": 72,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 884.0,
+              "y": 344.6,
+              "width": 43.6,
+              "height": 103.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "213124b3-2bb1-4634-ba8d-ee93c56ce64a",
+            "timestamp_pts": 3.2,
+            "frame_index": 96,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 338.8,
+              "y": 339.2,
+              "width": 116.8,
+              "height": 253.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "c1937731-5695-4883-984e-e6cc49f63cd7",
+            "timestamp_pts": 3.2,
+            "frame_index": 96,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 862.0,
+              "y": 347.8,
+              "width": 44.8,
+              "height": 106.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "399c3c4c-564b-4fb9-9508-f4d1c3acac3c",
+            "timestamp_pts": 4.0,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 366.0,
+              "y": 344.0,
+              "width": 116.0,
+              "height": 252.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d45dec08-e902-43e6-8fde-e6450283bcc4",
+            "timestamp_pts": 4.0,
+            "frame_index": 120,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 840.0,
+              "y": 351.0,
+              "width": 46.0,
+              "height": 109.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d685387e-ef14-4b0f-a193-8a303d12e418",
+            "timestamp_pts": 4.8,
+            "frame_index": 144,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 393.2,
+              "y": 348.8,
+              "width": 115.2,
+              "height": 250.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "608d31c7-9a66-49e8-abf0-cdefaff1d328",
+            "timestamp_pts": 4.8,
+            "frame_index": 144,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 818.0,
+              "y": 354.2,
+              "width": 47.2,
+              "height": 111.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "7cb8c85e-ee89-44de-9425-c02cddeabc70",
+            "timestamp_pts": 5.6,
+            "frame_index": 168,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 420.4,
+              "y": 353.6,
+              "width": 114.4,
+              "height": 248.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "148210c8-a29f-4dd5-9e5e-249ea7d4df9e",
+            "timestamp_pts": 5.6,
+            "frame_index": 168,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 796.0,
+              "y": 357.4,
+              "width": 48.4,
+              "height": 114.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "937b6f60-e173-44e5-9113-f34ffc68283c",
+            "timestamp_pts": 6.4,
+            "frame_index": 192,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 447.6,
+              "y": 358.4,
+              "width": 113.6,
+              "height": 247.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "a0e151f6-53e1-44e7-9c11-cacf2e845ebf",
+            "timestamp_pts": 6.4,
+            "frame_index": 192,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 774.0,
+              "y": 360.6,
+              "width": 49.6,
+              "height": 117.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "f9a2335b-773b-448c-b4f6-429e62ff531e",
+            "timestamp_pts": 7.2,
+            "frame_index": 216,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 474.8,
+              "y": 363.2,
+              "width": 112.8,
+              "height": 245.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ced31e9f-ad0b-4ce0-b8e9-851c8cdd2a63",
+            "timestamp_pts": 7.2,
+            "frame_index": 216,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 752.0,
+              "y": 363.8,
+              "width": 50.8,
+              "height": 120.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "65c7f0fe-b3af-41fc-9f90-a97b13a5ca11",
+            "timestamp_pts": 8.0,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 502.0,
+              "y": 368.0,
+              "width": 112.0,
+              "height": 244.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "0efee2ec-cb70-48ab-be4d-9cd87ae1e7c1",
+            "timestamp_pts": 8.0,
+            "frame_index": 240,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 730.0,
+              "y": 367.0,
+              "width": 52.0,
+              "height": 123.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "095e7860-dfbb-411f-96ef-4a1f05da634c",
+            "timestamp_pts": 8.8,
+            "frame_index": 264,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 529.2,
+              "y": 372.8,
+              "width": 111.2,
+              "height": 242.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "7a124f36-6011-487e-ba29-61aaf4528c7e",
+            "timestamp_pts": 8.8,
+            "frame_index": 264,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 708.0,
+              "y": 370.2,
+              "width": 53.2,
+              "height": 125.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "21428e76-cfdc-4296-9ae5-bda150b18133",
+            "timestamp_pts": 9.6,
+            "frame_index": 288,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 556.4,
+              "y": 377.6,
+              "width": 110.4,
+              "height": 240.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "06b5af93-ed4f-4280-8b9c-4abefdf847df",
+            "timestamp_pts": 9.6,
+            "frame_index": 288,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 686.0,
+              "y": 373.4,
+              "width": 54.4,
+              "height": 128.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "438f11ad-99a2-4f8a-8aa8-58b52a1b4fab",
+            "timestamp_pts": 10.4,
+            "frame_index": 312,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 583.6,
+              "y": 377.6,
+              "width": 109.6,
+              "height": 239.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "ef4aaaa6-3bfb-429d-8efb-7e048c1a295c",
+            "timestamp_pts": 10.4,
+            "frame_index": 312,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 664.0,
+              "y": 376.6,
+              "width": 55.6,
+              "height": 131.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "4fdc8b28-86b8-4eed-96cd-0133540c837a",
+            "timestamp_pts": 11.2,
+            "frame_index": 336,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 610.8,
+              "y": 372.8,
+              "width": 108.8,
+              "height": 237.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "bf33d703-a7ae-4fcb-8f5c-1e7d47c130f3",
+            "timestamp_pts": 11.2,
+            "frame_index": 336,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 642.0,
+              "y": 379.8,
+              "width": 56.8,
+              "height": 134.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "8bc5322b-3b57-4164-94cc-96a6ea5cacd5",
+            "timestamp_pts": 12.0,
+            "frame_index": 360,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 638.0,
+              "y": 368.0,
+              "width": 108.0,
+              "height": 236.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "18294839-aab3-4476-9882-5d913a0809ed",
+            "timestamp_pts": 12.0,
+            "frame_index": 360,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 620.0,
+              "y": 383.0,
+              "width": 58.0,
+              "height": 137.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "656043c7-3803-40ee-bf89-08488b8d7306",
+            "timestamp_pts": 12.8,
+            "frame_index": 384,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 665.2,
+              "y": 363.2,
+              "width": 107.2,
+              "height": 234.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "15f7f526-06d6-42da-aa96-5dc77381b9f7",
+            "timestamp_pts": 12.8,
+            "frame_index": 384,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 598.0,
+              "y": 386.2,
+              "width": 59.2,
+              "height": 139.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "9bba441c-3a93-49a4-9e80-9c0bd418e40c",
+            "timestamp_pts": 13.6,
+            "frame_index": 408,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 692.4,
+              "y": 358.4,
+              "width": 106.4,
+              "height": 232.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "6819133f-9576-4bde-9528-bdc183bf1205",
+            "timestamp_pts": 13.6,
+            "frame_index": 408,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 576.0,
+              "y": 389.4,
+              "width": 60.4,
+              "height": 142.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "a3345ba1-e52c-40ce-9d77-ee9e97fc6564",
+            "timestamp_pts": 14.4,
+            "frame_index": 432,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 719.6,
+              "y": 353.6,
+              "width": 105.6,
+              "height": 231.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "4d569407-88d0-4368-b33e-21a7b59bd0d1",
+            "timestamp_pts": 14.4,
+            "frame_index": 432,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 554.0,
+              "y": 392.6,
+              "width": 61.6,
+              "height": 145.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "fd2b6493-b394-466a-bf4a-6f918be18373",
+            "timestamp_pts": 15.2,
+            "frame_index": 456,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 746.8,
+              "y": 348.8,
+              "width": 104.8,
+              "height": 229.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "55dec50e-ac23-463a-b5a1-e344d6d68eb1",
+            "timestamp_pts": 15.2,
+            "frame_index": 456,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 532.0,
+              "y": 395.8,
+              "width": 62.8,
+              "height": 148.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "b430cb27-948f-4892-a5a9-3a2f32173cc4",
+            "timestamp_pts": 16.0,
+            "frame_index": 480,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 774.0,
+              "y": 344.0,
+              "width": 104.0,
+              "height": 228.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "a6723823-f126-48d1-bd7b-766ca315d16f",
+            "timestamp_pts": 16.0,
+            "frame_index": 480,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 510.0,
+              "y": 399.0,
+              "width": 64.0,
+              "height": 151.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "711d04ad-bdde-4ab8-b10f-c159c3bd8f76",
+            "timestamp_pts": 16.8,
+            "frame_index": 504,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 801.2,
+              "y": 339.2,
+              "width": 103.2,
+              "height": 226.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "03bb6c3a-4a37-4e84-8c2f-9d9841e0cd75",
+            "timestamp_pts": 16.8,
+            "frame_index": 504,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 488.0,
+              "y": 402.2,
+              "width": 65.2,
+              "height": 153.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "586ee9ca-19ec-4fdb-b114-03d7fe73eaf0",
+            "timestamp_pts": 17.6,
+            "frame_index": 528,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 828.4,
+              "y": 334.4,
+              "width": 102.4,
+              "height": 224.8,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "de7f7d45-ce93-4eba-8fef-c7ddc23401c5",
+            "timestamp_pts": 17.6,
+            "frame_index": 528,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 466.0,
+              "y": 405.4,
+              "width": 66.4,
+              "height": 156.6,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "4f055a45-2107-4d39-bfe5-cd08c62f4022",
+            "timestamp_pts": 18.4,
+            "frame_index": 552,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 855.6,
+              "y": 329.6,
+              "width": 101.6,
+              "height": 223.2,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "1a6e8da7-143d-41bc-ac03-505c7ce40450",
+            "timestamp_pts": 18.4,
+            "frame_index": 552,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 444.0,
+              "y": 408.6,
+              "width": 67.6,
+              "height": 159.4,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "e5806f70-5e45-46ec-8127-a9e598be03ec",
+            "timestamp_pts": 20.0,
+            "frame_index": 600,
+            "class_label": "person",
+            "object_identity": "pedestrian_1",
+            "bbox": {
+              "x": 910.0,
+              "y": 320.0,
+              "width": 100.0,
+              "height": 220.0,
+              "coordinate_type": "pixel"
+            }
+          },
+          {
+            "detection_id": "d1f16e19-ebed-409b-b33b-badcc4e5a211",
+            "timestamp_pts": 20.0,
+            "frame_index": 600,
+            "class_label": "person",
+            "object_identity": "pedestrian_2",
+            "bbox": {
+              "x": 400.0,
+              "y": 415.0,
+              "width": 70.0,
+              "height": 165.0,
+              "coordinate_type": "pixel"
+            }
+          }
+        ],
+        "rationale": "Multi-person crossing scenario with scale variation and trajectory crossing"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_people_pedestrian_1",
+            "object_identity": "pedestrian_1",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "ff62275e-abcd-49e4-99e9-467b752dc635",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 230.0,
+                  "y": 320.0,
+                  "width": 120.0,
+                  "height": 260.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "5a05ee72-fd3c-45e0-a82e-f6561023f4af",
+                "timestamp_pts": 0.8,
+                "frame_index": 24,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 257.2,
+                  "y": 324.8,
+                  "width": 119.2,
+                  "height": 258.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "9fcf75b4-0623-40b4-a10c-e547d744dbe9",
+                "timestamp_pts": 1.6,
+                "frame_index": 48,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 284.4,
+                  "y": 329.6,
+                  "width": 118.4,
+                  "height": 256.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "cd13bd16-04c2-4f5e-a351-2e737fd1a3d9",
+                "timestamp_pts": 2.4,
+                "frame_index": 72,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 311.6,
+                  "y": 334.4,
+                  "width": 117.6,
+                  "height": 255.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "213124b3-2bb1-4634-ba8d-ee93c56ce64a",
+                "timestamp_pts": 3.2,
+                "frame_index": 96,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 338.8,
+                  "y": 339.2,
+                  "width": 116.8,
+                  "height": 253.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "399c3c4c-564b-4fb9-9508-f4d1c3acac3c",
+                "timestamp_pts": 4.0,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 366.0,
+                  "y": 344.0,
+                  "width": 116.0,
+                  "height": 252.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d685387e-ef14-4b0f-a193-8a303d12e418",
+                "timestamp_pts": 4.8,
+                "frame_index": 144,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 393.2,
+                  "y": 348.8,
+                  "width": 115.2,
+                  "height": 250.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "7cb8c85e-ee89-44de-9425-c02cddeabc70",
+                "timestamp_pts": 5.6,
+                "frame_index": 168,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 420.4,
+                  "y": 353.6,
+                  "width": 114.4,
+                  "height": 248.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "937b6f60-e173-44e5-9113-f34ffc68283c",
+                "timestamp_pts": 6.4,
+                "frame_index": 192,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 447.6,
+                  "y": 358.4,
+                  "width": 113.6,
+                  "height": 247.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f9a2335b-773b-448c-b4f6-429e62ff531e",
+                "timestamp_pts": 7.2,
+                "frame_index": 216,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 474.8,
+                  "y": 363.2,
+                  "width": 112.8,
+                  "height": 245.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "65c7f0fe-b3af-41fc-9f90-a97b13a5ca11",
+                "timestamp_pts": 8.0,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 502.0,
+                  "y": 368.0,
+                  "width": 112.0,
+                  "height": 244.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "095e7860-dfbb-411f-96ef-4a1f05da634c",
+                "timestamp_pts": 8.8,
+                "frame_index": 264,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 529.2,
+                  "y": 372.8,
+                  "width": 111.2,
+                  "height": 242.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "21428e76-cfdc-4296-9ae5-bda150b18133",
+                "timestamp_pts": 9.6,
+                "frame_index": 288,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 556.4,
+                  "y": 377.6,
+                  "width": 110.4,
+                  "height": 240.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "438f11ad-99a2-4f8a-8aa8-58b52a1b4fab",
+                "timestamp_pts": 10.4,
+                "frame_index": 312,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 583.6,
+                  "y": 377.6,
+                  "width": 109.6,
+                  "height": 239.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "4fdc8b28-86b8-4eed-96cd-0133540c837a",
+                "timestamp_pts": 11.2,
+                "frame_index": 336,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 610.8,
+                  "y": 372.8,
+                  "width": 108.8,
+                  "height": 237.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "8bc5322b-3b57-4164-94cc-96a6ea5cacd5",
+                "timestamp_pts": 12.0,
+                "frame_index": 360,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 638.0,
+                  "y": 368.0,
+                  "width": 108.0,
+                  "height": 236.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "656043c7-3803-40ee-bf89-08488b8d7306",
+                "timestamp_pts": 12.8,
+                "frame_index": 384,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 665.2,
+                  "y": 363.2,
+                  "width": 107.2,
+                  "height": 234.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "9bba441c-3a93-49a4-9e80-9c0bd418e40c",
+                "timestamp_pts": 13.6,
+                "frame_index": 408,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 692.4,
+                  "y": 358.4,
+                  "width": 106.4,
+                  "height": 232.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "a3345ba1-e52c-40ce-9d77-ee9e97fc6564",
+                "timestamp_pts": 14.4,
+                "frame_index": 432,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 719.6,
+                  "y": 353.6,
+                  "width": 105.6,
+                  "height": 231.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "fd2b6493-b394-466a-bf4a-6f918be18373",
+                "timestamp_pts": 15.2,
+                "frame_index": 456,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 746.8,
+                  "y": 348.8,
+                  "width": 104.8,
+                  "height": 229.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b430cb27-948f-4892-a5a9-3a2f32173cc4",
+                "timestamp_pts": 16.0,
+                "frame_index": 480,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 774.0,
+                  "y": 344.0,
+                  "width": 104.0,
+                  "height": 228.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "711d04ad-bdde-4ab8-b10f-c159c3bd8f76",
+                "timestamp_pts": 16.8,
+                "frame_index": 504,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 801.2,
+                  "y": 339.2,
+                  "width": 103.2,
+                  "height": 226.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "586ee9ca-19ec-4fdb-b114-03d7fe73eaf0",
+                "timestamp_pts": 17.6,
+                "frame_index": 528,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 828.4,
+                  "y": 334.4,
+                  "width": 102.4,
+                  "height": 224.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "4f055a45-2107-4d39-bfe5-cd08c62f4022",
+                "timestamp_pts": 18.4,
+                "frame_index": 552,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 855.6,
+                  "y": 329.6,
+                  "width": 101.6,
+                  "height": 223.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "e5806f70-5e45-46ec-8127-a9e598be03ec",
+                "timestamp_pts": 20.0,
+                "frame_index": 600,
+                "class_label": "person",
+                "object_identity": "pedestrian_1",
+                "bbox": {
+                  "x": 910.0,
+                  "y": 320.0,
+                  "width": 100.0,
+                  "height": 220.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          },
+          {
+            "track_id": "track_people_pedestrian_2",
+            "object_identity": "pedestrian_2",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "b5cabda9-46eb-47f8-a9b2-9fe901e4a2ff",
+                "timestamp_pts": 0.0,
+                "frame_index": 0,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 950.0,
+                  "y": 335.0,
+                  "width": 40.0,
+                  "height": 95.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "f08f576d-e96d-4742-b729-e0e286bb0395",
+                "timestamp_pts": 0.8,
+                "frame_index": 24,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 928.0,
+                  "y": 338.2,
+                  "width": 41.2,
+                  "height": 97.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "b7cca2a5-5870-4a24-961f-9d9caebfca0e",
+                "timestamp_pts": 1.6,
+                "frame_index": 48,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 906.0,
+                  "y": 341.4,
+                  "width": 42.4,
+                  "height": 100.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "72163494-eb09-4771-bca8-2abc30a3fcc5",
+                "timestamp_pts": 2.4,
+                "frame_index": 72,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 884.0,
+                  "y": 344.6,
+                  "width": 43.6,
+                  "height": 103.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "c1937731-5695-4883-984e-e6cc49f63cd7",
+                "timestamp_pts": 3.2,
+                "frame_index": 96,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 862.0,
+                  "y": 347.8,
+                  "width": 44.8,
+                  "height": 106.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d45dec08-e902-43e6-8fde-e6450283bcc4",
+                "timestamp_pts": 4.0,
+                "frame_index": 120,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 840.0,
+                  "y": 351.0,
+                  "width": 46.0,
+                  "height": 109.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "608d31c7-9a66-49e8-abf0-cdefaff1d328",
+                "timestamp_pts": 4.8,
+                "frame_index": 144,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 818.0,
+                  "y": 354.2,
+                  "width": 47.2,
+                  "height": 111.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "148210c8-a29f-4dd5-9e5e-249ea7d4df9e",
+                "timestamp_pts": 5.6,
+                "frame_index": 168,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 796.0,
+                  "y": 357.4,
+                  "width": 48.4,
+                  "height": 114.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "a0e151f6-53e1-44e7-9c11-cacf2e845ebf",
+                "timestamp_pts": 6.4,
+                "frame_index": 192,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 774.0,
+                  "y": 360.6,
+                  "width": 49.6,
+                  "height": 117.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ced31e9f-ad0b-4ce0-b8e9-851c8cdd2a63",
+                "timestamp_pts": 7.2,
+                "frame_index": 216,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 752.0,
+                  "y": 363.8,
+                  "width": 50.8,
+                  "height": 120.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "0efee2ec-cb70-48ab-be4d-9cd87ae1e7c1",
+                "timestamp_pts": 8.0,
+                "frame_index": 240,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 730.0,
+                  "y": 367.0,
+                  "width": 52.0,
+                  "height": 123.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "7a124f36-6011-487e-ba29-61aaf4528c7e",
+                "timestamp_pts": 8.8,
+                "frame_index": 264,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 708.0,
+                  "y": 370.2,
+                  "width": 53.2,
+                  "height": 125.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "06b5af93-ed4f-4280-8b9c-4abefdf847df",
+                "timestamp_pts": 9.6,
+                "frame_index": 288,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 686.0,
+                  "y": 373.4,
+                  "width": 54.4,
+                  "height": 128.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "ef4aaaa6-3bfb-429d-8efb-7e048c1a295c",
+                "timestamp_pts": 10.4,
+                "frame_index": 312,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 664.0,
+                  "y": 376.6,
+                  "width": 55.6,
+                  "height": 131.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "bf33d703-a7ae-4fcb-8f5c-1e7d47c130f3",
+                "timestamp_pts": 11.2,
+                "frame_index": 336,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 642.0,
+                  "y": 379.8,
+                  "width": 56.8,
+                  "height": 134.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "18294839-aab3-4476-9882-5d913a0809ed",
+                "timestamp_pts": 12.0,
+                "frame_index": 360,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 620.0,
+                  "y": 383.0,
+                  "width": 58.0,
+                  "height": 137.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "15f7f526-06d6-42da-aa96-5dc77381b9f7",
+                "timestamp_pts": 12.8,
+                "frame_index": 384,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 598.0,
+                  "y": 386.2,
+                  "width": 59.2,
+                  "height": 139.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "6819133f-9576-4bde-9528-bdc183bf1205",
+                "timestamp_pts": 13.6,
+                "frame_index": 408,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 576.0,
+                  "y": 389.4,
+                  "width": 60.4,
+                  "height": 142.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "4d569407-88d0-4368-b33e-21a7b59bd0d1",
+                "timestamp_pts": 14.4,
+                "frame_index": 432,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 554.0,
+                  "y": 392.6,
+                  "width": 61.6,
+                  "height": 145.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "55dec50e-ac23-463a-b5a1-e344d6d68eb1",
+                "timestamp_pts": 15.2,
+                "frame_index": 456,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 532.0,
+                  "y": 395.8,
+                  "width": 62.8,
+                  "height": 148.2,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "a6723823-f126-48d1-bd7b-766ca315d16f",
+                "timestamp_pts": 16.0,
+                "frame_index": 480,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 510.0,
+                  "y": 399.0,
+                  "width": 64.0,
+                  "height": 151.0,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "03bb6c3a-4a37-4e84-8c2f-9d9841e0cd75",
+                "timestamp_pts": 16.8,
+                "frame_index": 504,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 488.0,
+                  "y": 402.2,
+                  "width": 65.2,
+                  "height": 153.8,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "de7f7d45-ce93-4eba-8fef-c7ddc23401c5",
+                "timestamp_pts": 17.6,
+                "frame_index": 528,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 466.0,
+                  "y": 405.4,
+                  "width": 66.4,
+                  "height": 156.6,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "1a6e8da7-143d-41bc-ac03-505c7ce40450",
+                "timestamp_pts": 18.4,
+                "frame_index": 552,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 444.0,
+                  "y": 408.6,
+                  "width": 67.6,
+                  "height": 159.4,
+                  "coordinate_type": "pixel"
+                }
+              },
+              {
+                "detection_id": "d1f16e19-ebed-409b-b33b-badcc4e5a211",
+                "timestamp_pts": 20.0,
+                "frame_index": 600,
+                "class_label": "person",
+                "object_identity": "pedestrian_2",
+                "bbox": {
+                  "x": 400.0,
+                  "y": 415.0,
+                  "width": 70.0,
+                  "height": 165.0,
+                  "coordinate_type": "pixel"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "video_id": "video_sample_001",
+      "source_identifier": "sample.mp4",
+      "sha256": "9338be56f0b3c6eb8633b4a8aba0aed75a8c258503e204a4f19f36551bcfcf20",
+      "duration_seconds": 3.0,
+      "width": 320,
+      "height": 240,
+      "fps": 25.0,
+      "overall_status": "annotated",
+      "sampled_frames_count": 15,
+      "sampled_frame_indices": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "negative_frames": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70
+      ],
+      "detections": {
+        "status": "annotated",
+        "items": [],
+        "rationale": "Explicit negative control clip (vehicles/empty road only, 0 persons present)"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": []
+      }
+    }
+  ]
+}

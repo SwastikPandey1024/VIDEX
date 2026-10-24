@@ -37,6 +37,7 @@ class PaddleOCRProvider:
         self._provider_name = f"paddle_{self.config.language}"
         self._engine: Any = injected_engine
         self._is_initialized = injected_engine is not None
+        self._applied_optimizations: dict[str, bool] = {}
 
     @property
     def provider_name(self) -> str:
@@ -46,6 +47,11 @@ class PaddleOCRProvider:
     def supported_languages(self) -> tuple[str, ...]:
         return (self.config.language,)
 
+    @property
+    def applied_optimizations(self) -> dict[str, bool]:
+        """Return dictionary of optimizations negotiated with the underlying OCR engine."""
+        return dict(self._applied_optimizations)
+
     def warmup(self) -> None:
         """Initialize and warm up PaddleOCR engine."""
         if self._engine is not None:
@@ -53,7 +59,7 @@ class PaddleOCRProvider:
 
         try:
             try:
-                import torch  # noqa: F401  # Pre-import on Windows to avoid shm.dll conflicts
+                importlib.import_module("torch")  # Pre-import on Windows to avoid shm.dll conflicts
             except ImportError:
                 pass
 
@@ -87,6 +93,27 @@ class PaddleOCRProvider:
 
             if "show_log" in param_names:
                 kwargs["show_log"] = False
+
+            # PaddleX / PaddleOCR 3.x document preprocessing & textline orientation options
+            if "use_doc_orientation_classify" in param_names:
+                kwargs["use_doc_orientation_classify"] = self.config.use_doc_preprocessor
+                self._applied_optimizations[
+                    "use_doc_orientation_classify"
+                ] = not self.config.use_doc_preprocessor
+            if "use_doc_unwarping" in param_names:
+                kwargs["use_doc_unwarping"] = self.config.use_doc_preprocessor
+                self._applied_optimizations[
+                    "use_doc_unwarping"
+                ] = not self.config.use_doc_preprocessor
+            if "use_textline_orientation" in param_names:
+                kwargs["use_textline_orientation"] = self.config.use_textline_orientation
+                self._applied_optimizations["use_textline_orientation"] = (
+                    self.config.use_textline_orientation
+                )
+            if "text_det_thresh" in param_names:
+                kwargs["text_det_thresh"] = self.config.det_db_thresh
+            if "text_rec_score_thresh" in param_names:
+                kwargs["text_rec_score_thresh"] = self.config.rec_thresh
 
             if self.config.custom_model_dir:
                 if "det_model_dir" in param_names:
@@ -127,7 +154,46 @@ class PaddleOCRProvider:
         # PaddleOCR 3.x / PaddleX: predict() returns [OCRResult, ...]
         # PaddleOCR 2.x legacy: ocr() returns [ [ [ [x1,y1],... ], (text, confidence) ], ... ]
         if hasattr(self._engine, "predict"):
-            raw_results = self._engine.predict(img_array)
+            predict_kwargs: dict[str, Any] = {}
+            try:
+                import inspect
+
+                pred_sig = inspect.signature(self._engine.predict)
+                pred_params = set(pred_sig.parameters.keys())
+                has_pred_kw = any(
+                    p.kind == inspect.Parameter.VAR_KEYWORD for p in pred_sig.parameters.values()
+                )
+                if "use_doc_orientation_classify" in pred_params or has_pred_kw:
+                    predict_kwargs["use_doc_orientation_classify"] = (
+                        self.config.use_doc_preprocessor
+                    )
+                    self._applied_optimizations[
+                        "predict_use_doc_orientation_classify"
+                    ] = not self.config.use_doc_preprocessor
+                if "use_doc_unwarping" in pred_params or has_pred_kw:
+                    predict_kwargs["use_doc_unwarping"] = self.config.use_doc_preprocessor
+                    self._applied_optimizations[
+                        "predict_use_doc_unwarping"
+                    ] = not self.config.use_doc_preprocessor
+                if "use_textline_orientation" in pred_params or has_pred_kw:
+                    predict_kwargs["use_textline_orientation"] = (
+                        self.config.use_textline_orientation
+                    )
+                    self._applied_optimizations["predict_use_textline_orientation"] = (
+                        self.config.use_textline_orientation
+                    )
+                if "text_det_thresh" in pred_params or has_pred_kw:
+                    predict_kwargs["text_det_thresh"] = self.config.det_db_thresh
+                if "text_rec_score_thresh" in pred_params or has_pred_kw:
+                    predict_kwargs["text_rec_score_thresh"] = self.config.rec_thresh
+            except Exception:
+                predict_kwargs = {}
+
+            try:
+                raw_results = self._engine.predict(img_array, **predict_kwargs)
+            except TypeError:
+                # Safe backward-compatible fallback if engine signature rejects kwargs
+                raw_results = self._engine.predict(img_array)
         else:
             raw_results = self._engine.ocr(img_array, cls=self.config.use_angle_cls)
 
@@ -173,6 +239,8 @@ class PaddleOCRProvider:
                     "model_name": self.config.model_name,
                     "timestamp_source": resolved.frame_timestamp.timestamp_source.value,
                     "is_repaired": resolved.frame_timestamp.is_repaired,
+                    "doc_preprocessor_bypassed": not self.config.use_doc_preprocessor,
+                    "use_textline_orientation": self.config.use_textline_orientation,
                 }
                 if resolved.frame_timestamp.repair_reason:
                     attr["repair_reason"] = resolved.frame_timestamp.repair_reason
@@ -235,6 +303,8 @@ class PaddleOCRProvider:
                 "model_name": self.config.model_name,
                 "timestamp_source": resolved.frame_timestamp.timestamp_source.value,
                 "is_repaired": resolved.frame_timestamp.is_repaired,
+                "doc_preprocessor_bypassed": not self.config.use_doc_preprocessor,
+                "use_textline_orientation": self.config.use_textline_orientation,
             }
             if resolved.frame_timestamp.repair_reason:
                 attr["repair_reason"] = resolved.frame_timestamp.repair_reason

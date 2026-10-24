@@ -28,7 +28,7 @@ from videx.graph.schemas import (
     NodeFilter,
 )
 from videx.graph.spatial import SpatialGraphEngine, compute_bbox_iou
-from videx.graph.store import GraphStore, InMemoryGraphStore
+from videx.graph.store import GraphStore, InMemoryGraphStore, SQLiteGraphStore
 from videx.graph.temporal import TemporalGraphEngine
 from videx.graph.types import (
     DerivationType,
@@ -58,6 +58,7 @@ __all__ = [
     "InMemoryGraphStore",
     "NodeFilter",
     "NodeProvenance",
+    "SQLiteGraphStore",
     "SpatialGraphEngine",
     "TemporalGraphEngine",
     "compute_bbox_iou",

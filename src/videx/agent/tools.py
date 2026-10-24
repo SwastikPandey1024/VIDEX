@@ -198,13 +198,15 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
                     tool_name=ToolName.GET_TRACK.value,
                     success=True,
                     data={"track": trk.model_dump()},
-                    provenance=[{
-                        "source_id": str(trk.track_id),
-                        "source_type": "Track",
-                        "video_id": str(trk.video_id),
-                        "confidence": trk.confidence,
-                        "epistemic_status": "deterministically observed",
-                    }],
+                    provenance=[
+                        {
+                            "source_id": str(trk.track_id),
+                            "source_type": "Track",
+                            "video_id": str(trk.video_id),
+                            "confidence": trk.confidence,
+                            "epistemic_status": "deterministically observed",
+                        }
+                    ],
                 )
             return ToolResult(
                 call_id="",
@@ -214,9 +216,7 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
             )
 
         primary_class = (
-            node.attributes.get("primary_class")
-            or node.attributes.get("class_name")
-            or node.label
+            node.attributes.get("primary_class") or node.attributes.get("class_name") or node.label
         )
         t_start = node.timestamp_start or 0.0
         t_end = node.timestamp_end or t_start
@@ -325,27 +325,33 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
             nid = make_node_id(GraphNodeType.FRAME, str_fid)
             node = ctx.graph_query_service.get_node(nid)
             if node:
-                results.append({
-                    "frame_id": node.source_id,
-                    "pts_seconds": node.timestamp_start,
-                    "attributes": node.attributes,
-                })
+                results.append(
+                    {
+                        "frame_id": node.source_id,
+                        "pts_seconds": node.timestamp_start,
+                        "attributes": node.attributes,
+                    }
+                )
                 provs.append(_node_provenance(node))
             elif str_fid in ctx.frames:
                 f_rec = ctx.frames[str_fid]
-                results.append({
-                    "frame_id": str(f_rec.frame_id),
-                    "frame_number": f_rec.frame_number,
-                    "pts_seconds": f_rec.timestamp_seconds,
-                    "frame_data_path": f_rec.frame_data_path,
-                })
-                provs.append({
-                    "source_id": str(f_rec.frame_id),
-                    "source_type": "Frame",
-                    "video_id": str(f_rec.video_id),
-                    "timestamp_start": f_rec.timestamp_seconds,
-                    "epistemic_status": "deterministically observed",
-                })
+                results.append(
+                    {
+                        "frame_id": str(f_rec.frame_id),
+                        "frame_number": f_rec.frame_number,
+                        "pts_seconds": f_rec.timestamp_seconds,
+                        "frame_data_path": f_rec.frame_data_path,
+                    }
+                )
+                provs.append(
+                    {
+                        "source_id": str(f_rec.frame_id),
+                        "source_type": "Frame",
+                        "video_id": str(f_rec.video_id),
+                        "timestamp_start": f_rec.timestamp_seconds,
+                        "epistemic_status": "deterministically observed",
+                    }
+                )
 
         return ToolResult(
             call_id="",
@@ -413,14 +419,16 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
                 tool_name=ToolName.GET_EVIDENCE.value,
                 success=True,
                 data=ev_rec.model_dump(),
-                provenance=[{
-                    "source_id": str(ev_rec.evidence_id),
-                    "source_type": "Evidence",
-                    "video_id": str(ev_rec.video_id),
-                    "timestamp_start": ev_rec.timestamp_seconds,
-                    "confidence": ev_rec.confidence,
-                    "epistemic_status": "deterministically observed",
-                }],
+                provenance=[
+                    {
+                        "source_id": str(ev_rec.evidence_id),
+                        "source_type": "Evidence",
+                        "video_id": str(ev_rec.video_id),
+                        "timestamp_start": ev_rec.timestamp_seconds,
+                        "confidence": ev_rec.confidence,
+                        "epistemic_status": "deterministically observed",
+                    }
+                ],
             )
 
         return ToolResult(
@@ -569,14 +577,16 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
                 tool_name=ToolName.GET_SCENE.value,
                 success=True,
                 data=sc.model_dump(),
-                provenance=[{
-                    "source_id": str(sc.scene_id),
-                    "source_type": "Scene",
-                    "video_id": str(sc.video_id),
-                    "timestamp_start": sc.start_timestamp_seconds,
-                    "timestamp_end": sc.end_timestamp_seconds,
-                    "epistemic_status": "deterministically observed",
-                }],
+                provenance=[
+                    {
+                        "source_id": str(sc.scene_id),
+                        "source_type": "Scene",
+                        "video_id": str(sc.video_id),
+                        "timestamp_start": sc.start_timestamp_seconds,
+                        "timestamp_end": sc.end_timestamp_seconds,
+                        "epistemic_status": "deterministically observed",
+                    }
+                ],
             )
 
         return ToolResult(
@@ -862,14 +872,16 @@ def register_investigation_tools(registry: ToolRegistry, ctx: AgentToolContext) 
                 tool_name=ToolName.REASON_SEMANTIC.value,
                 success=True,
                 data=sem_result,
-                provenance=[{
-                    "source_id": str(cand_id or "semantic_query"),
-                    "source_type": "SemanticReasoning",
-                    "video_id": ctx.video_id,
-                    "epistemic_status": "VLM inferred",
-                    "confidence": sem_result.get("confidence", 0.8),
-                    "evidence_ids": sem_result.get("evidence_ids", []),
-                }],
+                provenance=[
+                    {
+                        "source_id": str(cand_id or "semantic_query"),
+                        "source_type": "SemanticReasoning",
+                        "video_id": ctx.video_id,
+                        "epistemic_status": "VLM inferred",
+                        "confidence": sem_result.get("confidence", 0.8),
+                        "evidence_ids": sem_result.get("evidence_ids", []),
+                    }
+                ],
             )
         except Exception as exc:
             return ToolResult(

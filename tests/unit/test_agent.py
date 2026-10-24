@@ -75,10 +75,7 @@ def test_executor_max_steps_limit() -> None:
         max_steps=2,
     )
 
-    calls = [
-        ToolCall.create("dummy_tool", {"step": i})
-        for i in range(5)
-    ]
+    calls = [ToolCall.create("dummy_tool", {"step": i}) for i in range(5)]
     steps, results, status = executor.execute(req, plan, calls)
     assert len(steps) == 2
     assert status == InvestigationStatus.MAX_STEPS_EXCEEDED

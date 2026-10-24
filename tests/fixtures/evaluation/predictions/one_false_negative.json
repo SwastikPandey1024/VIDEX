@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "pred_one_false_negative",
+  "model_info": {"model_name": "videx_test", "scenario": "one_fn"},
+  "videos": [
+    {
+      "video_id": "video_sample_001",
+      "detections": [
+        {
+          "timestamp_pts": 0.0,
+          "class_label": "car",
+          "bbox": {"x": 20.0, "y": 50.0, "width": 100.0, "height": 80.0, "coordinate_type": "pixel"},
+          "confidence": 1.0
+        }
+      ]
+    }
+  ]
+}
