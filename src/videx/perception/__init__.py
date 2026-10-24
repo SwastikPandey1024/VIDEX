@@ -7,7 +7,12 @@ trajectory computation.
 
 from __future__ import annotations
 
-from videx.perception.detection import MockDetector, YOLO26Detector, YOLO26DetectorConfig
+from videx.perception.detection import (
+    MockDetector,
+    YOLO26Detector,
+    YOLO26DetectorConfig,
+    create_detector,
+)
 from videx.perception.pipeline import PerceptionPipeline, PerceptionResult
 from videx.perception.tracking import BoTSORTConfig, BoTSORTTracker, MockTracker
 from videx.perception.trajectory import TrajectoryAnalyzer
@@ -22,4 +27,6 @@ __all__ = [
     "TrajectoryAnalyzer",
     "YOLO26Detector",
     "YOLO26DetectorConfig",
+    "create_detector",
 ]
+

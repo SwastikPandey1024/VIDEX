@@ -73,6 +73,21 @@ class TestSettings:
         s = Settings()
         assert s.asr_language == "en"
 
+    def test_detector_backend_defaults_and_validation(self) -> None:
+        s = Settings()
+        assert s.detector_backend == "pytorch"
+        assert s.detector_onnx_model_path == "models/yolo26n.onnx"
+
+        s_onnx = Settings(
+            detector_backend="onnx",
+            detector_onnx_model_path="weights/custom.onnx",
+        )
+        assert s_onnx.detector_backend == "onnx"
+        assert s_onnx.detector_onnx_model_path == "weights/custom.onnx"
+
+        with pytest.raises(ValidationError):
+            Settings(detector_backend="invalid_backend")
+
 
 class TestGetSettings:
     def setup_method(self) -> None:

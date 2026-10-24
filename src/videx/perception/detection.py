@@ -3,13 +3,16 @@
 Ensures all detections strictly preserve FrameTimestamp provenance and metadata
 from DecodedFrame / Frame.
 """
-
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, Literal
 from uuid import uuid4
+
+if TYPE_CHECKING:
+    from videx.config import Settings
 
 import cv2
 import numpy as np
@@ -23,6 +26,9 @@ from videx.domain.schemas import (
     TimestampSource,
 )
 from videx.ingestion.base import DecodedFrame
+from videx.providers.base import DetectionProvider
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -30,6 +36,8 @@ class YOLO26DetectorConfig:
     """Configuration for YOLO26 object detection provider."""
 
     model_path: str = "yolo26n.pt"
+    onnx_model_path: str = "models/yolo26n.onnx"
+    backend: Literal["pytorch", "onnx"] = "pytorch"
     confidence_threshold: float = 0.25
     iou_threshold: float = 0.45
     device: str = "cpu"
@@ -54,8 +62,9 @@ def _resolve_model_path(path_str: str) -> str:
 class YOLO26Detector:
     """YOLO26 object detection provider implementing DetectionProvider protocol.
 
-    Wraps the YOLO inference engine behind a clean boundary, supporting CPU execution,
-    configured confidence thresholds, class filtering, and exact timestamp inheritance.
+    Wraps the YOLO inference engine behind a clean boundary, supporting PyTorch FP32
+    (default) and opt-in ONNX Runtime FP32 execution, CPU execution, configured confidence
+    thresholds, class filtering, and exact timestamp inheritance.
     """
 
     def __init__(
@@ -65,26 +74,100 @@ class YOLO26Detector:
     ) -> None:
         self.config = config or YOLO26DetectorConfig()
         self._model: Any = model
-        self._provider_name = f"yolo26_{Path(self.config.model_path).stem}"
         self._is_warm = model is not None
+
+    def _resolve_active_model_path(self) -> str:
+        """Resolve the model path based on the selected backend."""
+        if self.config.backend == "onnx":
+            if self.config.model_path.lower().endswith(".onnx"):
+                raw_path = self.config.model_path
+            else:
+                raw_path = self.config.onnx_model_path
+        else:
+            raw_path = self.config.model_path
+        return _resolve_model_path(raw_path)
 
     @property
     def provider_name(self) -> str:
-        return self._provider_name
+        model_stem = Path(self._resolve_active_model_path()).stem
+        if self.config.backend == "onnx":
+            return f"yolo26_onnx_{model_stem}"
+        return f"yolo26_{model_stem}"
+
+    def _load_model(self) -> None:
+        """Lazily loads the backend model and validates dependencies and model paths."""
+        if self.config.backend == "onnx":
+            # 1. Validate onnxruntime dependency
+            try:
+                import importlib
+
+                importlib.import_module("onnxruntime")
+            except ImportError as err:
+                raise RuntimeError(
+                    "ONNX Runtime is required when detector backend is 'onnx', "
+                    "but 'onnxruntime' is not installed in the environment. "
+                    "Install it via 'pip install onnxruntime'."
+                ) from err
+
+            # 2. Validate ultralytics dependency
+            try:
+                import importlib
+
+                ultralytics_mod = importlib.import_module("ultralytics")
+                yolo_cls = ultralytics_mod.YOLO
+            except (ImportError, AttributeError) as err:
+                raise RuntimeError(
+                    f"Ultralytics is required for YOLO26Detector '{self.provider_name}' "
+                    "but is not installed in the environment."
+                ) from err
+
+            # 3. Validate ONNX model file exists
+            resolved_path = self._resolve_active_model_path()
+            p = Path(resolved_path)
+            if not p.is_file():
+                raise FileNotFoundError(
+                    f"ONNX model file not found at '{resolved_path}' "
+                    f"(configured as '{self.config.onnx_model_path}'). "
+                    "Please provide a valid path or export the ONNX model first."
+                )
+            if not resolved_path.lower().endswith(".onnx"):
+                raise ValueError(
+                    f"Expected an ONNX model file (.onnx) for backend='onnx', "
+                    f"but got '{resolved_path}'."
+                )
+
+            logger.info("Loading ONNX detector from %s", resolved_path)
+            self._model = yolo_cls(resolved_path)
+
+        elif self.config.backend == "pytorch":
+            try:
+                import importlib
+
+                ultralytics_mod = importlib.import_module("ultralytics")
+                yolo_cls = ultralytics_mod.YOLO
+            except (ImportError, AttributeError) as err:
+                raise RuntimeError(
+                    f"Ultralytics is required for YOLO26Detector '{self.provider_name}' "
+                    "but is not installed in the environment."
+                ) from err
+
+            resolved_path = self._resolve_active_model_path()
+            logger.info("Loading PyTorch detector from %s", resolved_path)
+            self._model = yolo_cls(resolved_path)
+        else:
+            raise ValueError(
+                f"Unsupported detector backend '{self.config.backend}'. "
+                "Must be 'pytorch' or 'onnx'."
+            )
 
     def warmup(self) -> None:
-        """Load model weights and perform dummy forward pass if ultralytics is available."""
+        """Load model weights and perform dummy forward pass if backend is available."""
         if self._is_warm:
             return
 
         try:
-            import importlib
-
-            ultralytics_mod = importlib.import_module("ultralytics")
-            yolo_cls = ultralytics_mod.YOLO
-            resolved_path = _resolve_model_path(self.config.model_path)
-            self._model = yolo_cls(resolved_path)
-            # Dummy forward pass on 640x640 blank array
+            if self._model is None:
+                self._load_model()
             dummy = np.zeros((640, 640, 3), dtype=np.uint8)
             self._model(
                 dummy,
@@ -94,7 +177,11 @@ class YOLO26Detector:
             )
             self._is_warm = True
         except (ImportError, AttributeError):
-            # Model execution will raise RuntimeError upon actual detection attempt
+            # Note on exception behavior: Actionable configuration and dependency errors
+            # raised by _load_model() (FileNotFoundError, ValueError, RuntimeError) are
+            # intentionally NOT caught here and propagate directly to the caller.
+            # Only non-fatal attribute/import mismatches during dummy execution reset the
+            # warmup flag to allow graceful fallback when probing optional components.
             self._model = None
             self._is_warm = False
 
@@ -115,31 +202,32 @@ class YOLO26Detector:
                 timestamp_source=TimestampSource.DERIVED,
             )
 
-        # 2. Check model availability
+        # 2. Check model availability (lazy loading)
         if self._model is None:
-            try:
-                import importlib
-
-                ultralytics_mod = importlib.import_module("ultralytics")
-                yolo_cls = ultralytics_mod.YOLO
-                resolved_path = _resolve_model_path(self.config.model_path)
-                self._model = yolo_cls(resolved_path)
-            except (ImportError, AttributeError) as err:
-                raise RuntimeError(
-                    f"Ultralytics is required for YOLO26Detector '{self.provider_name}' "
-                    "but is not installed in the environment."
-                ) from err
+            self._load_model()
 
         # 3. Execute inference
-        results = self._model(
-            frame_array,
-            device=self.config.device,
-            conf=self.config.confidence_threshold,
-            iou=self.config.iou_threshold,
-            classes=self.config.classes,
-            max_det=self.config.max_detections,
-            verbose=False,
-        )
+        try:
+            results = self._model(
+                frame_array,
+                device=self.config.device,
+                conf=self.config.confidence_threshold,
+                iou=self.config.iou_threshold,
+                classes=self.config.classes,
+                max_det=self.config.max_detections,
+                verbose=False,
+            )
+        except Exception as err:
+            logger.error(
+                "Inference failed on detector '%s' (backend=%s): %s",
+                self.provider_name,
+                self.config.backend,
+                err,
+            )
+            raise RuntimeError(
+                f"Inference failed on detector '{self.provider_name}' "
+                f"using backend '{self.config.backend}': {err}"
+            ) from err
 
         detections: list[Detection] = []
         if not results:
@@ -175,7 +263,8 @@ class YOLO26Detector:
             # Prepare provenance attributes
             attr: dict[str, Any] = {
                 "source_provider": self.provider_name,
-                "model_path": self.config.model_path,
+                "model_path": self._resolve_active_model_path(),
+                "backend": self.config.backend,
             }
             if frame_ts is not None:
                 attr["timestamp_source"] = frame_ts.timestamp_source.value
@@ -348,3 +437,53 @@ def _resolve_frame_input(
         height=h,
     )
     return img, f_meta, frame_ts
+
+
+def create_detector(
+    settings: Settings | None = None,
+    **kwargs: object,
+) -> DetectionProvider:
+    """Create a configured DetectionProvider from application settings.
+
+    Args:
+        settings: VIDEX Settings instance or None (calls get_settings() if None).
+        **kwargs: Overrides for YOLO26DetectorConfig fields.
+
+    Returns:
+        Configured DetectionProvider (YOLO26Detector).
+    """
+    if settings is None:
+        try:
+            from videx.config import get_settings
+
+            settings = get_settings()
+        except Exception:
+            settings = None
+
+    backend = getattr(settings, "detector_backend", "pytorch") if settings else "pytorch"
+    conf_thresh = getattr(settings, "detector_confidence_threshold", 0.25) if settings else 0.25
+    iou_thresh = getattr(settings, "detector_iou_threshold", 0.45) if settings else 0.45
+    device = getattr(settings, "detector_device", "cpu") if settings else "cpu"
+    pt_path = (
+        getattr(settings, "detector_model_path", "models/yolo26n.pt")
+        if settings
+        else "models/yolo26n.pt"
+    )
+    onnx_path = (
+        getattr(settings, "detector_onnx_model_path", "models/yolo26n.onnx")
+        if settings
+        else "models/yolo26n.onnx"
+    )
+
+    cfg_kwargs: dict[str, object] = {
+        "model_path": pt_path,
+        "onnx_model_path": onnx_path,
+        "backend": backend,
+        "confidence_threshold": conf_thresh,
+        "iou_threshold": iou_thresh,
+        "device": device,
+    }
+    cfg_kwargs.update(kwargs)
+
+    config = YOLO26DetectorConfig(**cfg_kwargs)  # type: ignore[arg-type]
+    return YOLO26Detector(config=config)

@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "videx_pilot_ppe1_v2_audited",
+  "provenance": "VIDEX Phase 3 Independent Annotation Audit (Physical Worker Extents)",
+  "annotation_guidelines": "docs/evaluation/annotation-guidelines.md",
+  "videos": [
+    {
+      "video_id": "video_ppe1_001",
+      "source_identifier": "ppe-1.mp4",
+      "duration_seconds": 11.411,
+      "overall_status": "annotated",
+      "detections": {
+        "status": "annotated",
+        "items": [
+          {
+            "detection_id": "11111111-2222-3333-4444-555555555551",
+            "timestamp_pts": 0.0,
+            "class_label": "person",
+            "bbox": {
+              "x": 574.0,
+              "y": 138.0,
+              "width": 300.0,
+              "height": 506.0,
+              "coordinate_type": "pixel"
+            },
+            "frame_index": 0,
+            "object_identity": "worker_1",
+            "annotation_rationale": "Audited physical worker pixel extent: corrected 125px leftward offset in v1 fixture"
+          },
+          {
+            "detection_id": "11111111-2222-3333-4444-555555555552",
+            "timestamp_pts": 3.0,
+            "class_label": "person",
+            "bbox": {
+              "x": 550.0,
+              "y": 133.0,
+              "width": 310.0,
+              "height": 540.0,
+              "coordinate_type": "pixel"
+            },
+            "frame_index": 90,
+            "object_identity": "worker_1"
+          }
+        ],
+        "rationale": "Keyframe worker bounding box observations"
+      },
+      "tracks": {
+        "status": "annotated",
+        "items": [
+          {
+            "track_id": "track_worker_1",
+            "object_identity": "worker_1",
+            "class_label": "person",
+            "observations": [
+              {
+                "detection_id": "11111111-2222-3333-4444-555555555551",
+                "timestamp_pts": 0.0,
+                "class_label": "person",
+                "bbox": {
+                  "x": 574.0,
+                  "y": 138.0,
+                  "width": 300.0,
+                  "height": 506.0,
+                  "coordinate_type": "pixel"
+                },
+                "frame_index": 0,
+                "object_identity": "worker_1"
+              },
+              {
+                "detection_id": "11111111-2222-3333-4444-555555555552",
+                "timestamp_pts": 3.0,
+                "class_label": "person",
+                "bbox": {
+                  "x": 550.0,
+                  "y": 133.0,
+                  "width": 310.0,
+                  "height": 540.0,
+                  "coordinate_type": "pixel"
+                },
+                "frame_index": 90,
+                "object_identity": "worker_1"
+              }
+            ]
+          }
+        ],
+        "rationale": "Single worker trajectory through workplace scene"
+      },
+      "ocr": {
+        "status": "not_applicable",
+        "items": [],
+        "rationale": "No signage or text placards present in workplace background"
+      },
+      "transcripts": {
+        "status": "not_applicable",
+        "items": [],
+        "rationale": "Silent clip (no audio track)"
+      },
+      "events": {
+        "status": "annotated",
+        "items": [
+          {
+            "event_id": "22222222-3333-4444-5555-666666666661",
+            "event_type": "worker_active",
+            "start_seconds": 0.0,
+            "end_seconds": 11.0,
+            "participants": [
+              "worker_1"
+            ],
+            "supporting_evidence_ids": [
+              "11111111-2222-3333-4444-555555555551"
+            ],
+            "evidence_description": "Worker operates in work zone"
+          }
+        ],
+        "rationale": "Continuous workplace presence event"
+      },
+      "qa": {
+        "status": "annotated",
+        "items": [
+          {
+            "qa_id": "33333333-4444-5555-6666-777777777771",
+            "question": "Is a worker present in the scene?",
+            "is_answerable": true,
+            "reference_answer": "Yes, a worker is present in the workplace scene.",
+            "acceptable_answers": [
+              "yes",
+              "one worker is visible",
+              "worker present"
+            ],
+            "supporting_evidence_ids": [
+              "11111111-2222-3333-4444-555555555551"
+            ],
+            "annotation_rationale": "Worker is visible throughout the video"
+          },
+          {
+            "qa_id": "33333333-4444-5555-6666-777777777772",
+            "question": "What is the worker's employee badge number?",
+            "is_answerable": false,
+            "reference_answer": null,
+            "acceptable_answers": [],
+            "supporting_evidence_ids": [],
+            "annotation_rationale": "No badge or employee number is visible in the scene; must abstain"
+          }
+        ],
+        "rationale": "Evaluates factual presence and correct abstention on unobservable identity"
+      }
+    }
+  ]
+}
