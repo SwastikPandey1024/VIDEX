@@ -7,6 +7,7 @@ stage latencies, and descriptive statistics (mean, median, p95, stdev, throughpu
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 import os
 import platform
@@ -16,7 +17,11 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import psutil  # type: ignore[import-untyped]
+
+try:
+    import psutil  # type: ignore[import-untyped]
+except ImportError:
+    psutil = None
 
 
 @dataclass(frozen=True)
@@ -150,12 +155,14 @@ class BenchmarkReport:
             f"**{e2e.std_dev_ms:.2f}** | **{e2e.throughput_fps:.1f}** |"
         )
 
-        lines.extend([
-            "",
-            "## 4. Run Observations & Errors",
-            f"- **Error Count:** {self.error_count}",
-            f"- **Skipped Frames:** {self.skipped_frames}",
-        ])
+        lines.extend(
+            [
+                "",
+                "## 4. Run Observations & Errors",
+                f"- **Error Count:** {self.error_count}",
+                f"- **Skipped Frames:** {self.skipped_frames}",
+            ]
+        )
 
         if self.notes:
             lines.append("- **Notes:**")
@@ -229,12 +236,27 @@ def collect_system_environment() -> SystemEnvironmentMetadata:
     # CPU Model
     cpu_model = platform.processor() or "Unknown CPU"
     # Logical and physical cores
-    logical_cores = psutil.cpu_count(logical=True) or 1
-    physical_cores = psutil.cpu_count(logical=False)
+    logical_cores = (psutil.cpu_count(logical=True) if psutil is not None else os.cpu_count()) or 1
+    physical_cores = psutil.cpu_count(logical=False) if psutil is not None else None
 
     # RAM in GB
-    ram_bytes = psutil.virtual_memory().total
-    ram_gb = round(ram_bytes / (1024**3), 2)
+    if psutil is not None:
+        ram_bytes = psutil.virtual_memory().total
+        ram_gb = round(ram_bytes / (1024**3), 2)
+    else:
+        ram_gb = 0.0
+        try:
+            sysconf = getattr(os, "sysconf", None)
+            sysconf_names = getattr(os, "sysconf_names", {})
+            if (
+                sysconf is not None
+                and "SC_PAGE_SIZE" in sysconf_names
+                and "SC_PHYS_PAGES" in sysconf_names
+            ):
+                ram_bytes = sysconf("SC_PAGE_SIZE") * sysconf("SC_PHYS_PAGES")
+                ram_gb = round(ram_bytes / (1024**3), 2)
+        except (ValueError, OSError, AttributeError):
+            ram_gb = 0.0
 
     # OS Platform & Version
     os_plat = platform.system()
@@ -246,28 +268,25 @@ def collect_system_environment() -> SystemEnvironmentMetadata:
     # Optional torch version
     torch_ver: str | None = None
     try:
-        import torch
-
-        torch_ver = str(torch.__version__)
-    except ImportError:
+        torch_mod = importlib.import_module("torch")
+        torch_ver = str(getattr(torch_mod, "__version__", "")) or None
+    except (ImportError, AttributeError):
         pass
 
     # Optional onnxruntime version
     onnx_ver: str | None = None
     try:
-        import onnxruntime  # type: ignore[import-untyped]
-
-        onnx_ver = str(onnxruntime.__version__)
-    except ImportError:
+        ort_mod = importlib.import_module("onnxruntime")
+        onnx_ver = str(getattr(ort_mod, "__version__", "")) or None
+    except (ImportError, AttributeError):
         pass
 
     # Optional cv2 version
     cv2_ver: str | None = None
     try:
-        import cv2
-
-        cv2_ver = str(cv2.__version__)
-    except ImportError:
+        cv2_mod = importlib.import_module("cv2")
+        cv2_ver = str(getattr(cv2_mod, "__version__", "")) or None
+    except (ImportError, AttributeError):
         pass
 
     # Effective thread count

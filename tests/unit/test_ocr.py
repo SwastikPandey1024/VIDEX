@@ -769,3 +769,110 @@ class TestPaddleOCRInjectedEngine:
         assert obs.bbox.height == 30.0
         assert obs.polygon is not None
         assert obs.polygon[0] == [10.0, 20.0]
+
+
+# ── 9. PaddleOCR Optimization & Preprocessor Wiring Tests ─────────────────────
+
+
+class TestPaddleOCROptimizationWiring:
+    """Verifies that document preprocessor and orientation configuration reach runtime engines."""
+
+    class MockPredictEngineWithDocFlags:
+        def __init__(self) -> None:
+            self.last_predict_kwargs: dict[str, object] = {}
+
+        def predict(
+            self,
+            input_array: np.ndarray,
+            *,
+            use_doc_orientation_classify: bool | None = None,
+            use_doc_unwarping: bool | None = None,
+            use_textline_orientation: bool | None = None,
+            **kwargs: object,
+        ) -> list[dict[str, object]]:
+            self.last_predict_kwargs = {
+                "use_doc_orientation_classify": use_doc_orientation_classify,
+                "use_doc_unwarping": use_doc_unwarping,
+                "use_textline_orientation": use_textline_orientation,
+            }
+            return [
+                {
+                    "rec_texts": ["OPTIMIZED TEXT"],
+                    "rec_scores": [0.98],
+                    "rec_polys": [[[10, 10], [100, 10], [100, 30], [10, 30]]],
+                }
+            ]
+
+    class MockLegacyPredictEngineWithoutKwargs:
+        """Simulates engine that does not accept keyword-only optimization flags."""
+
+        def predict(self, input_array: np.ndarray) -> list[dict[str, object]]:
+            return [
+                {
+                    "rec_texts": ["LEGACY ENGINE TEXT"],
+                    "rec_scores": [0.95],
+                    "rec_polys": [[[10, 10], [100, 10], [100, 30], [10, 30]]],
+                }
+            ]
+
+    def test_default_config_preserves_defaults(self) -> None:
+        cfg = PaddleOCRConfig()
+        assert cfg.use_doc_preprocessor is False
+        assert cfg.use_textline_orientation is False
+        assert cfg.language == "en"
+        assert cfg.det_db_thresh == 0.3
+        assert cfg.rec_thresh == 0.5
+
+    def test_predict_flags_reach_supporting_engine(self) -> None:
+        engine = self.MockPredictEngineWithDocFlags()
+        config = PaddleOCRConfig(
+            use_doc_preprocessor=False,
+            use_textline_orientation=False,
+        )
+        provider = PaddleGeneralOCRProvider(config=config, injected_engine=engine)
+        frame = make_decoded_frame(0, 0.0)
+
+        obs = provider.detect_text(frame)
+        assert len(obs) == 1
+        assert obs[0].text == "OPTIMIZED TEXT"
+        assert obs[0].attributes["doc_preprocessor_bypassed"] is True
+        assert obs[0].attributes["use_textline_orientation"] is False
+
+        # Confirm flags were passed directly to predict()
+        assert engine.last_predict_kwargs["use_doc_orientation_classify"] is False
+        assert engine.last_predict_kwargs["use_doc_unwarping"] is False
+        assert engine.last_predict_kwargs["use_textline_orientation"] is False
+        assert provider.applied_optimizations.get("predict_use_doc_unwarping") is True
+
+    def test_predict_flags_enabled_when_requested(self) -> None:
+        engine = self.MockPredictEngineWithDocFlags()
+        config = PaddleOCRConfig(
+            use_doc_preprocessor=True,
+            use_textline_orientation=True,
+        )
+        provider = PaddleGeneralOCRProvider(config=config, injected_engine=engine)
+        frame = make_decoded_frame(0, 0.0)
+
+        obs = provider.detect_text(frame)
+        assert len(obs) == 1
+        assert obs[0].attributes["doc_preprocessor_bypassed"] is False
+        assert obs[0].attributes["use_textline_orientation"] is True
+
+        assert engine.last_predict_kwargs["use_doc_orientation_classify"] is True
+        assert engine.last_predict_kwargs["use_doc_unwarping"] is True
+        assert engine.last_predict_kwargs["use_textline_orientation"] is True
+
+    def test_unsupported_engine_signature_degrades_safely(self) -> None:
+        engine = self.MockLegacyPredictEngineWithoutKwargs()
+        config = PaddleOCRConfig(
+            use_doc_preprocessor=False,
+            use_textline_orientation=True,
+        )
+        provider = PaddleGeneralOCRProvider(config=config, injected_engine=engine)
+        frame = make_decoded_frame(0, 0.0)
+
+        # Must not raise TypeError, must successfully execute and return observations
+        obs = provider.detect_text(frame)
+        assert len(obs) == 1
+        assert obs[0].text == "LEGACY ENGINE TEXT"
+        assert obs[0].confidence == pytest.approx(0.95)

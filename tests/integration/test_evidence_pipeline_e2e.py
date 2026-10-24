@@ -113,8 +113,7 @@ def test_end_to_end_evidence_pipeline_on_real_media() -> None:
 
     reader_ocr = OpenCVVideoReader(SAMPLE_VIDEO_PATH)
     frames_for_ocr = [
-        reader_ocr.read_decoded_frame(i)
-        for i in range(0, min(10, reader_ocr.total_frames), 5)
+        reader_ocr.read_decoded_frame(i) for i in range(0, min(10, reader_ocr.total_frames), 5)
     ]
     ocr_pipe.reset()
     for f in frames_for_ocr:

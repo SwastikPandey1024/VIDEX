@@ -470,24 +470,16 @@ class SQLiteGraphStore:
                 );
             """)
             # Secondary indices for performance
-            self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_nodes_video ON nodes(video_id);"
-            )
-            self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_nodes_type ON nodes(node_type);"
-            )
-            self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_nodes_source ON nodes(source_id);"
-            )
+            self._conn.execute("CREATE INDEX IF NOT EXISTS idx_nodes_video ON nodes(video_id);")
+            self._conn.execute("CREATE INDEX IF NOT EXISTS idx_nodes_type ON nodes(node_type);")
+            self._conn.execute("CREATE INDEX IF NOT EXISTS idx_nodes_source ON nodes(source_id);")
             self._conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_edges_source ON edges(source_node_id);"
             )
             self._conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_edges_target ON edges(target_node_id);"
             )
-            self._conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_edges_rel ON edges(relationship);"
-            )
+            self._conn.execute("CREATE INDEX IF NOT EXISTS idx_edges_rel ON edges(relationship);")
 
     @contextmanager
     def transaction(self) -> Iterator[sqlite3.Connection]:
@@ -576,9 +568,7 @@ class SQLiteGraphStore:
 
     def get_node(self, node_id: str) -> GraphNode | None:
         with self._lock:
-            cur = self._conn.execute(
-                "SELECT data_json FROM nodes WHERE node_id = ?;", (node_id,)
-            )
+            cur = self._conn.execute("SELECT data_json FROM nodes WHERE node_id = ?;", (node_id,))
             row = cur.fetchone()
             if row is None:
                 return None
@@ -586,9 +576,7 @@ class SQLiteGraphStore:
 
     def get_edge(self, edge_id: str) -> GraphEdge | None:
         with self._lock:
-            cur = self._conn.execute(
-                "SELECT data_json FROM edges WHERE edge_id = ?;", (edge_id,)
-            )
+            cur = self._conn.execute("SELECT data_json FROM edges WHERE edge_id = ?;", (edge_id,))
             row = cur.fetchone()
             if row is None:
                 return None

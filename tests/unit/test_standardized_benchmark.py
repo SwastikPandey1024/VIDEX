@@ -151,3 +151,78 @@ class TestBenchmarkReportIntegrity:
         assert len(h) == 64
         # Hash for non-existent file
         assert sha256_file(tmp_path / "does_not_exist.bin") == "FILE_NOT_FOUND"
+
+
+class TestBenchmarkRunnerSemantics:
+    """Test standardized benchmark runner scope separation and validation."""
+
+    def test_missing_files_raise_filenotfound(self, tmp_path: Path) -> None:
+        from scripts.run_standardized_benchmark import run_benchmark
+
+        with pytest.raises(FileNotFoundError, match="Video file not found"):
+            run_benchmark(
+                video_path=tmp_path / "missing_video.mp4",
+                model_path=Path("models/yolo26n.pt"),
+            )
+
+        with pytest.raises(FileNotFoundError, match="Model file not found"):
+            run_benchmark(
+                video_path=Path("Sample_Videos/sample.mp4"),
+                model_path=tmp_path / "missing_model.pt",
+            )
+
+    def test_scope_separation_semantics(self, tmp_path: Path) -> None:
+        from scripts.run_standardized_benchmark import run_benchmark
+
+        sample_video = Path("Sample_Videos/sample.mp4")
+        pt_model = Path("models/yolo26n.pt")
+        if not sample_video.is_file() or not pt_model.is_file():
+            pytest.skip("Sample video or model weights not present")
+
+        # 1. Detector-only scope
+        rep_det = run_benchmark(
+            video_path=sample_video,
+            model_path=pt_model,
+            backend="pytorch",
+            scope="detector",
+            max_frames=2,
+            output_dir=tmp_path / "out_det",
+        )
+        assert rep_det.metadata.stages_measured == ["detection"]
+        assert "detection" in rep_det.stage_statistics
+        assert "tracking_pipeline" not in rep_det.stage_statistics
+        assert rep_det.end_to_end_statistics.count == 2
+        det_mean = rep_det.stage_statistics["detection"].mean_ms
+        assert rep_det.end_to_end_statistics.mean_ms == det_mean
+
+        # 2. Tracker-only scope
+        rep_trk = run_benchmark(
+            video_path=sample_video,
+            model_path=pt_model,
+            backend="pytorch",
+            scope="tracker",
+            max_frames=2,
+            output_dir=tmp_path / "out_trk",
+        )
+        assert rep_trk.metadata.stages_measured == ["tracking_pipeline"]
+        assert "tracking_pipeline" in rep_trk.stage_statistics
+        assert "detection" not in rep_trk.stage_statistics
+        assert rep_trk.end_to_end_statistics.count == 2
+        assert (
+            rep_trk.end_to_end_statistics.mean_ms
+            == rep_trk.stage_statistics["tracking_pipeline"].mean_ms
+        )
+
+        # 3. Both scope (separate passes, no duplicate timing)
+        rep_both = run_benchmark(
+            video_path=sample_video,
+            model_path=pt_model,
+            backend="pytorch",
+            scope="both",
+            max_frames=2,
+            output_dir=tmp_path / "out_both",
+        )
+        assert rep_both.metadata.stages_measured == ["detection", "tracking_pipeline"]
+        assert "detection" in rep_both.stage_statistics
+        assert "tracking_pipeline" in rep_both.stage_statistics
+        assert any("Single-pass execution" in note for note in rep_both.notes)

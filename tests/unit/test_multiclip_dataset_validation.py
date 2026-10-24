@@ -100,8 +100,8 @@ class TestMultiClipDatasetIntegrity:
                 assert y >= 0.0, f"y negative: {y}"
                 assert w > 0.0, f"width non-positive: {w}"
                 assert h > 0.0, f"height non-positive: {h}"
-                assert x + w <= max_w, f"x+w ({x+w}) exceeds frame width {max_w}"
-                assert y + h <= max_h, f"y+h ({y+h}) exceeds frame height {max_h}"
+                assert x + w <= max_w, f"x+w ({x + w}) exceeds frame width {max_w}"
+                assert y + h <= max_h, f"y+h ({y + h}) exceeds frame height {max_h}"
 
     def test_validator_passes_zero_errors(self, dataset_v4: dict[str, Any]) -> None:
         report = validate_multiclip_annotation_data(dataset_v4)
@@ -124,6 +124,5 @@ class TestMultiClipDatasetIntegrity:
             assert path.is_file(), f"Historical fixture missing: {path}"
             actual_hash = hashlib.sha256(path.read_bytes()).hexdigest()
             assert actual_hash == expected_hash, (
-                f"Historical fixture {name} modified! "
-                f"Expected {expected_hash}, got {actual_hash}"
+                f"Historical fixture {name} modified! Expected {expected_hash}, got {actual_hash}"
             )

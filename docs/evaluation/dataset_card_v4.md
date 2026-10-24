@@ -31,15 +31,20 @@ This dataset is designed for standardized, multi-scenario evaluation of:
 
 ---
 
-## Provenance and Review
+## Provenance and Review Status
 - **Origin:** Real video clips stored under `Sample_Videos/`.
-- **Generation Method:** Stratified sampling across temporal progression; ground truth bounding boxes verified using Policy A visual extents.
-- **Independence:** Generated and validated independently of model inference weights. Bounding coordinates represent verified human presence, not YOLO model output.
-- **Integrity:** Validated against `src.videx.evaluation.annotation_validator.validate_multiclip_annotation_data()`.
+- **Review Status by Clip:**
+  - `ppe-1.mp4` (20 frames, 20 boxes): **Verified Human Ground Truth** carried over and frozen from v3 independent human review.
+  - `ppe-2.mp4` (20 frames, 40 boxes): **Heuristic Candidate Annotations** structurally validated (Policy A geometry, frame bounds, zero prediction leakage); **requires independent dual-blind human review**.
+  - `ppe-3.mp4` (20 frames, 60 boxes): **Heuristic Candidate Annotations** structurally validated; **requires independent dual-blind human review**.
+  - `people.mp4` (25 frames, 50 boxes): **Heuristic Candidate Annotations** structurally validated; **requires independent dual-blind human review**.
+  - `sample.mp4` (15 frames, 0 boxes): **Verified Negative Control** confirming zero human presence in vehicle scenes.
+- **Structural Integrity:** 100% compliant with `src.videx.evaluation.annotation_validator.validate_multiclip_annotation_data()` (Policy A coordinate clamps, deterministic SHA-256 fixture/manifest hashes).
 
 ---
 
-## Limitations
+## Limitations & Evidence Status
+- **Human Review Gap:** While structurally sound and validated against model leakage, clips `ppe-2.mp4`, `ppe-3.mp4`, and `people.mp4` require formal multi-annotator dual-blind review with inter-annotator agreement (Cohen's kappa / IoU concordance) before serving as gold-standard benchmark datasets.
 - **Resolution Distribution:** Four clips are 720p (`1280x720`) and one negative control is 240p (`320x240`). Future iterations should incorporate 1080p and 4K footage.
 - **Lighting Conditions:** Predominantly daylight and well-lit indoor industrial environments; night-vision and low-light scenarios remain future evaluation targets.
 - **Negative Control Scope:** Negative control contains vehicles and road scenes; future versions should add indoor negative frames (e.g. empty factories or conference rooms).

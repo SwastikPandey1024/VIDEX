@@ -66,3 +66,20 @@ flowchart TD
 3. **Failure Propagation & Rollbacks:**
    - Unhandled exceptions during batch persistence trigger explicit `ROLLBACK` via `SQLiteGraphStore.transaction()`, preventing partial or corrupted graph states.
    - Invalid media paths or missing model files raise actionable exceptions (`FileNotFoundError`, `RuntimeError`) rather than returning misleading empty successes.
+
+---
+
+## 4. Test Environments, Mocks & Benchmark Scope Clarifications
+
+1. **Mock vs. Live Model Testing:**
+   - In `test_end_to_end_evidence_pipeline_on_real_media`, detector and tracker stages utilize `MockDetector` and `MockTracker` over real decoded OpenCV video frames. This hermetically isolates ingestion, temporal indexing (PTS), event engine routing, and SQLite ACID persistence without incurring weight download overhead or long CPU inference times during default test runs.
+   - Live neural models (YOLO26, ByteTrack, PaddleOCR) are validated in dedicated acceptance and benchmarking suites (`test_ocr_acceptance.py`, `scripts/run_standardized_benchmark.py`).
+
+2. **OCR Video Preprocessor Optimization Scope:**
+   - Disabling paper document preprocessors (`use_doc_preprocessor=False` and `use_textline_orientation=False`) bypasses document orientation classification and paper unwarping on upright video camera frames.
+   - The reported 225x figure (24.5s -> 108ms) is strictly an isolated **synthetic-frame microbenchmark** on a printed text card (`"VIDEX PIPELINE DEMO"`). It is not a generalized video-level performance guarantee, and zero recall degradation cannot be extrapolated across natural video scenes with motion blur, perspective distortion, or dynamic lighting.
+
+3. **Backend Parity & Production Posture:**
+   - While solitary-worker tracking parity on `ppe-1.mp4` demonstrated high bounding box agreement (median IoU 0.9955), ONNX Runtime under CPU execution exhibits higher variance and p95 tail latency (180.82 ms vs. PyTorch 88.70 ms in standardized single-pass tracking runs).
+   - Multi-person scenes with occlusion and identity switching have not yet been evaluated for ONNX parity.
+   - PyTorch FP32 remains the authoritative production default backend.

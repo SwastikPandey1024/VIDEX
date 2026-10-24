@@ -563,10 +563,8 @@ def validate_multiclip_annotation_data(data: dict[str, Any]) -> ValidationReport
                         )
                     )
 
-
     is_valid = len(errors) == 0
     return ValidationReport(is_valid, dataset_id, total_frames, total_boxes, errors, warnings)
-
 
 
 def main() -> None:
