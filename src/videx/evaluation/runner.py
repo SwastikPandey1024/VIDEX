@@ -479,9 +479,7 @@ class EvaluationHarness:
             video_metrics["event_f1"] = MetricResult(
                 name="event_f1",
                 status=MetricStatus.UNAVAILABLE,
-                reason_if_unavailable=(
-                    f"Events GT status is {video_ann.events.status.value}"
-                ),
+                reason_if_unavailable=(f"Events GT status is {video_ann.events.status.value}"),
             )
 
         # 5. QA Abstention Evaluation
