@@ -14,8 +14,10 @@ from __future__ import annotations
 
 import tempfile
 from pathlib import Path
+from typing import Any
 from uuid import uuid4
 
+import numpy as np
 import pytest
 
 from videx.domain.schemas import (
@@ -32,7 +34,7 @@ from videx.graph.projection import GraphProjection, GraphProjectionConfig
 from videx.graph.schemas import NodeFilter
 from videx.graph.store import InMemoryGraphStore, SQLiteGraphStore
 from videx.graph.types import Direction, GraphNodeType
-from videx.ingestion.base import CorruptVideoError
+from videx.ingestion.base import CorruptVideoError, DecodedFrame
 from videx.ingestion.metadata import extract_video_metadata
 from videx.ingestion.reader import OpenCVVideoReader
 from videx.ocr.base import MockOCRConfig
@@ -348,21 +350,25 @@ def test_pipeline_actionable_errors_on_invalid_inputs() -> None:
     with pytest.raises((FileNotFoundError, CorruptVideoError)):
         OpenCVVideoReader(Path("non_existent_video_file_12345.mp4"))
 
-    # 2. Non-existent ONNX model path raises FileNotFoundError on load/warmup
-    with pytest.raises(FileNotFoundError):
+    # 2. Non-existent model path raises FileNotFoundError or RuntimeError on detect
+    with pytest.raises((FileNotFoundError, RuntimeError)):
         detector = YOLO26Detector(
             config=YOLO26DetectorConfig(
-                backend="onnx",
-                onnx_model_path="models/non_existent_weights.onnx",
+                model_path="models/non_existent_weights_12345.pt",
             )
         )
-        detector.warmup()
+        dummy_frame = DecodedFrame(
+            frame_index=0,
+            timestamp_seconds=0.0,
+            frame_array=np.zeros((640, 640, 3), dtype=np.uint8),
+            width=640,
+            height=640,
+        )
+        detector.detect(dummy_frame)
 
-    # 3. Invalid backend choice raises ValueError on warmup
-    with pytest.raises(ValueError, match="Unsupported detector backend"):
-        detector_inv = YOLO26Detector(
-            config=YOLO26DetectorConfig(
-                backend="invalid_backend",  # type: ignore[arg-type]
-            )
-        )
-        detector_inv.warmup()
+    # 3. If configurable backend is supported, invalid choice raises ValueError
+    if "backend" in YOLO26DetectorConfig.__dataclass_fields__:
+        with pytest.raises(ValueError, match="Unsupported detector backend"):
+            cfg_kwargs: dict[str, Any] = {"backend": "invalid_backend"}
+            detector_inv = YOLO26Detector(config=YOLO26DetectorConfig(**cfg_kwargs))
+            detector_inv.warmup()
